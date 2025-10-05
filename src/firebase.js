@@ -10,15 +10,6 @@ import {
   signOut,
 } from 'firebase/auth';
 
-// const firebaseConfig = {
-//   apiKey: 'AIzaSyCaxGPhbKfQUGkPKkzBu0NknYWj2ttjhv4',
-//   authDomain: 'dialogit-app.firebaseapp.com',
-//   projectId: 'dialogit-app',
-//   storageBucket: 'dialogit-app.firebasestorage.app',
-//   messagingSenderId: '1050056584281',
-//   appId: '1:1050056584281:web:2876d065c75fe4618b5548',
-// };
-
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,

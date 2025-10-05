@@ -66,5 +66,3 @@ dialogues
 └─ vite.config.js
 
 ```
-
-Проект для изучения Git и GitHub. Это мой тестовый проект.
