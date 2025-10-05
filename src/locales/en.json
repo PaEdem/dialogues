@@ -83,6 +83,7 @@
     "createNew": "Create new dialog",
     "topic": "Dialog topic",
     "reqWords": "Required words (comma-separated)",
+    "wordsPlaceholder": "word-1, word-2, word-3 ...",
     "level": "Difficulty level",
     "lines": "Number of lines"
   }

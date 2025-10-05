@@ -22,6 +22,7 @@
           id="words"
           v-model="form.words"
           rows="3"
+          :placeholder="$t('new.wordsPlaceholder')"
         ></textarea>
       </div>
 
@@ -48,7 +49,7 @@
           id="replicas"
           v-model.number="form.replicas"
           type="number"
-          min="2"
+          min="6"
           max="20"
           required
         />
@@ -94,10 +95,10 @@ const form = ref({
   topic: '',
   words: '',
   level: 'A1',
-  replicas: 8,
+  replicas: 10,
 });
 const errorMessage = ref('');
-const levels = ['A1', 'A2.1', 'A2.2', 'B1.1', 'B1.2', 'B2.1', 'B2.2', 'C1.1', 'C1.2'];
+const levels = ['A1', 'A2.1', 'A2.2', 'B1.1', 'B1.2', 'B2.1', 'B2.2', 'C1.1', 'C1.2', 'C2'];
 const isFormValid = computed(() => form.value.topic.trim() !== '');
 
 const handleCreateDialog = async () => {
@@ -162,7 +163,7 @@ textarea {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: var(--font-base);
+  font-size: var(--sm);
   font-family: inherit;
   resize: vertical;
 }
@@ -170,6 +171,12 @@ input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--bb);
+}
+textarea::placeholder {
+  transition: color 0.3s ease-out;
+}
+textarea:focus::placeholder {
+  color: transparent;
 }
 .submit-wrap {
   width: 100%;
