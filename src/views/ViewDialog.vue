@@ -34,7 +34,7 @@
           :to="{ name: level.name, params: { id: props.id } }"
         >
           <button
-            class="btn btn-menu"
+            class="btn btn-action"
             :disabled="level.isPro && !can('useAdvancedTraining')"
           >
             <span class="material-symbols-outlined">{{ level.icon }}</span>
@@ -388,7 +388,7 @@ const getInfo = async () => {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-.trainings-grid .btn.btn-action {
+.btn.btn-action {
   width: 100%;
 }
 .pro-badge-small {
