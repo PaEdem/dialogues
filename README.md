@@ -1,4 +1,3 @@
-
 ```
 dialogues
 ├─ .firebase
@@ -67,3 +66,5 @@ dialogues
 └─ vite.config.js
 
 ```
+
+Проект для изучения Git и GitHub.
