@@ -1,6 +1,7 @@
 // src/stores/trainingStore.js
 import { defineStore } from 'pinia';
 import { marked } from 'marked';
+import { useUserStore } from './userStore';
 import { useDialogStore } from './dialogStore';
 import { useUiStore } from './uiStore';
 import { compareAndFormatTexts } from '../utils/compareTexts';
