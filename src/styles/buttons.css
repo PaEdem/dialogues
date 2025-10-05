@@ -20,9 +20,9 @@
   box-shadow: 0 4px 8px var(--shadow);
 }
 .btn:disabled {
-  background: var(--bg-dis);
-  color: var(--c-dis);
-  border-color: var(--b-dis);
+  background: var(--w1);
+  color: var(--w2);
+  border-color: var(--w2);
   opacity: 0.6;
   cursor: not-allowed;
 }

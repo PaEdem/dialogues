@@ -1,13 +1,13 @@
 <!-- src\views\NewDialog.vue -->
 <template>
-  <div class="layout col-c-c">
-    <div class="title">Luo uusi dialogi</div>
+  <div class="layout">
+    <div class="title">{{ $t('new.createNew') }}</div>
     <form
       @submit.prevent="handleCreateDialog"
       class="dialog-form"
     >
       <div class="form-group">
-        <label for="topic">Тема диалога:</label>
+        <label for="topic">{{ $t('new.topic') }}</label>
         <input
           id="topic"
           v-model="form.topic"
@@ -17,16 +17,16 @@
       </div>
 
       <div class="form-group">
-        <label for="words">Обязательные слова (через запятую):</label>
-        <input
+        <label for="words">{{ $t('new.reqWords') }}</label>
+        <textarea
           id="words"
           v-model="form.words"
-          type="text"
-        />
+          rows="3"
+        ></textarea>
       </div>
 
       <div class="form-group">
-        <label for="level">Уровень сложности:</label>
+        <label for="level">{{ $t('new.level') }}</label>
         <select
           id="level"
           v-model="form.level"
@@ -43,7 +43,7 @@
       </div>
 
       <div class="form-group">
-        <label for="replicas">Количество реплик:</label>
+        <label for="replicas">{{ $t('new.lines') }}</label>
         <input
           id="replicas"
           v-model.number="form.replicas"
@@ -56,19 +56,19 @@
       <div class="submit-wrap">
         <router-link
           to="/dialogs"
-          class="btn blue"
+          class="btn btn-common"
           aria-label="Вернуться ко всем диалогам"
         >
           <span class="material-symbols-outlined icon">cancel</span>
-          Peruuta
+          {{ $t('buttons.cancel') }}
         </router-link>
         <button
-          class="btn tiffany"
+          class="btn btn-action width"
           type="submit"
           :disabled="!isFormValid || trainingStore.isLoading"
         >
           <span class="material-symbols-outlined icon">save</span>
-          Tallenna
+          {{ $t('buttons.save') }}
         </button>
       </div>
     </form>
@@ -102,7 +102,6 @@ const isFormValid = computed(() => form.value.topic.trim() !== '');
 
 const handleCreateDialog = async () => {
   errorMessage.value = '';
-  // Передаем параметры формы напрямую в action
   const newDialogId = await trainingStore.generateAndCreateDialog(form.value);
 
   if (newDialogId) {
@@ -113,114 +112,77 @@ const handleCreateDialog = async () => {
 };
 </script>
 
-<!-- <style scoped>
-.dialog-form {
+<style scoped>
+.layout {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 600px;
-  margin: 2rem auto;
-  background-color: var(--tiffany-90);
-  padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-}
-.form-group {
-  margin-bottom: 1.5rem;
-}
-label {
-  display: block;
-  margin-bottom: 0.2rem;
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--grey-30);
-}
-.submit-wrap {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-input,
-select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--tiffany-80);
-  border-radius: 4px;
-}
-.message {
-  font-size: var(--text);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--red-20);
-  text-align: center;
-  padding: 1rem 0;
-  margin: auto;
-}
-.error {
-  color: var(--red-20);
-}
-@media (max-width: 1280px) {
-  .dialog-form {
-    width: 50%;
-  }
-}
-</style> -->
-
-<style scoped>
-/* 1. Стили для МОБИЛЬНЫХ (по умолчанию) */
-.form-container {
-  /* Общий класс для контейнера формы */
-  display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   padding: 1rem;
-  background-color: var(--color-bg-sidebar); /* Легкий фон */
 }
-.form-card {
-  /* Сама карточка формы */
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  max-width: 420px; /* Ограничение ширины на мобильных */
-  background: var(--color-bg-main);
+  max-width: 420px;
   padding: 2rem 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: var(--bg-group);
+  box-shadow: 0 4px 15px var(--shadow);
 }
 .title {
   text-align: center;
   margin-bottom: 2rem;
-  font-size: var(--font-size-2xl);
+  font-size: var(--xxl);
 }
 .form-group {
+  width: 100%;
   margin-bottom: 1.25rem;
 }
 label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-size: var(--font-size-sm);
+  margin-bottom: 0.25rem;
+  font-size: var(--sm);
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--text-title);
 }
 input,
 select {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: var(--font-size-base);
+  font-size: var(--font-base);
+}
+textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: var(--font-base);
+  font-family: inherit;
+  resize: vertical;
 }
 input:focus,
-select:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px hsla(240, 50%, 60%, 0.3);
+select:focus,
+textarea:focus {
+  border-color: var(--bb);
 }
 .submit-wrap {
+  width: 100%;
   display: flex;
-  justify-content: flex-end; /* Кнопка справа */
+  justify-content: space-between;
   margin-top: 2rem;
+  gap: 2rem;
+}
+.submit-wrap .width {
+  width: 100%;
 }
 .error-message {
-  color: var(--color-danger);
+  color: var(--r3);
   margin-bottom: 1rem;
   font-weight: 500;
   text-align: center;

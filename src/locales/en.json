@@ -28,7 +28,9 @@
     "learning": "Learn",
     "listening": "Listen",
     "speaking": "Speak",
-    "translation": "Translate"
+    "translation": "Translate",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "welcome": {
     "title": "European Languages with AI",
@@ -76,5 +78,12 @@
   "view": {
     "training": "Training",
     "inPro": "Dialog analysis is available in the PRO version."
+  },
+  "new": {
+    "createNew": "Create new dialog",
+    "topic": "Dialog topic",
+    "reqWords": "Required words (comma-separated)",
+    "level": "Difficulty level",
+    "lines": "Number of lines"
   }
 }

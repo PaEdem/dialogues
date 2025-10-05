@@ -2,8 +2,8 @@
 :root {
   --shadow: rgba(0, 0, 0, 0.2);
   --gradient-pro: linear-gradient(hsl(40, 50%, 50%) 0%, hsl(40, 50%, 75%) 100%);
-  --w1: #a6a6a6;
-  --w2: #bfbfbf;
+  --w1: hsl(0, 0%, 95%);
+  --w2: hsl(0, 0%, 40%);
   --w3: #eef4f7;
   --w4: #edf7f2;
   --t-pro: #142952;
@@ -37,9 +37,6 @@
   --text-base: var(--y8);
   --text-accent: var(--y0);
   --border: var(--y10);
-  --bg-dis: var(--w2);
-  --c-dis: var(--w1);
-  --b-dis: var(--w1);
   --xs: 0.75rem; /* 12px */
   --sm: 0.875rem; /* 14px */
   --base: 1rem; /* 16px */
