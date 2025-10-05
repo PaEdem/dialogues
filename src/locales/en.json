@@ -1,0 +1,80 @@
+{
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "language": "Language",
+    "appLanguage": "Application language",
+    "languageToLearn": "Language to learn",
+    "voiceSettings": "Voice settings",
+    "voice": "Voice",
+    "defaultVoice": "Default voice (WaveNet, female)",
+    "speechRate": "Speech rate",
+    "preListening": "Pre-listening",
+    "test": "Test"
+  },
+  "buttons": {
+    "done": "Done",
+    "profile": "Profile",
+    "logOut": "Log out",
+    "delete": "Delete account",
+    "startFree": "Start free trial",
+    "dialogList": "Dialog List",
+    "analysis": "Dialog Analysis",
+    "listen": "Listen to the Dialog",
+    "delDialog": "Delete Dialog",
+    "learning": "Learn",
+    "listening": "Listen",
+    "speaking": "Speak",
+    "translation": "Translate"
+  },
+  "welcome": {
+    "title": "European Languages with AI",
+    "subtitle": "Dialogues for Life",
+    "text1": "Create personalized dialogues in any of the available European languages by specifying your level, topic, and keywords.",
+    "text2": "The application is your personal tutor, offering unique training modes: from simple text familiarization to practicing pronunciation and translation skills.",
+    "text3": "Get instant feedback, detailed grammatical and lexical analysis, adapted to your level."
+  },
+  "auth": {
+    "in": "Log in",
+    "up": "Sign up",
+    "errPass": "Incorrect password. Please try again.",
+    "errUser": "User with this email address not found.",
+    "errEmail": "This email address is already in use.",
+    "errDefault": "An error occurred. Please try again later.",
+    "email": "E-mail",
+    "pass": "Password",
+    "or": "or",
+    "notAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?"
+  },
+  "all": {
+    "createNew": "New dialog",
+    "profile": "Profile",
+    "settings": "Settings",
+    "savedDialogs": "Saved dialogs",
+    "notDialogs": "You don't have any dialogs yet.",
+    "createFirst": "First dialog"
+  },
+  "profile": {
+    "title": "Profile",
+    "subscr": "Subscription",
+    "yourSubscr": "Your subscription: ",
+    "genToday": "Generations today: ",
+    "savedDialog": "Saved dialogues: ",
+    "unlimGen": "Unlimited dialogue generations",
+    "unlimStor": "Unlimited dialogue storage",
+    "qualityVoice": "High-quality voices (Google Cloud)",
+    "allLevels": "Access to all levels (A1-C1)",
+    "allModes": "All training modes",
+    "analysis": "Lexical and grammar analysis of dialogues (AI)",
+    "upgrade": "Upgrade to PRO",
+    "accountMenag": "Account management"
+  },
+  "view": {
+    "training": "Training",
+    "inPro": "Dialog analysis is available in the PRO version."
+  }
+}
