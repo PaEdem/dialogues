@@ -27,7 +27,7 @@ export const useUserStore = defineStore('user', {
       };
       return this.isPro ? limits.PRO : limits.Free;
     },
-    dailyGenerationsUsage: () => {
+    dailyGenerationsCount: () => {
       const usageData = JSON.parse(localStorage.getItem('usage')) || { count: 0, date: new Date().toDateString() };
       const today = new Date().toDateString();
 

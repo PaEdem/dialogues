@@ -1,3 +1,4 @@
+// src\stores\dialogStore.js
 import { defineStore } from 'pinia';
 import { db, auth } from '../firebase';
 import { collection, getDocs, doc, getDoc, addDoc, deleteDoc, query, where } from 'firebase/firestore';
@@ -13,21 +14,18 @@ import {
 
 export const useDialogStore = defineStore('dialogs', {
   state: () => ({
-    allDialogs: [], // Теперь здесь будет храниться ОБЛЕГЧЕННЫЙ список
-    currentDialog: null, // А здесь - ПОЛНЫЙ объект текущего диалога
+    allDialogs: [],
+    currentDialog: null,
     isLoading: false,
   }),
   actions: {
-    // --- ACTIONS ---
-
-    // 1. Обновленный fetchAllDialogs
     async fetchAllDialogs() {
       this.isLoading = true;
       try {
         const cachedList = getDialogsListFromCache();
         if (cachedList) {
           this.allDialogs = cachedList;
-          return; // Нашли в кеше - выходим
+          return;
         }
 
         const user = auth.currentUser;
@@ -39,8 +37,8 @@ export const useDialogStore = defineStore('dialogs', {
           prepareDialogFromFirestore({ id: doc.id, ...doc.data() })
         );
 
-        saveDialogsListToCache(dialogsFromFS); // Сохраняем в кеш
-        this.allDialogs = getDialogsListFromCache(); // Записываем в state уже облегченный список
+        saveDialogsListToCache(dialogsFromFS);
+        this.allDialogs = getDialogsListFromCache();
       } catch (error) {
         console.error('Ошибка загрузки диалогов:', error);
       } finally {
@@ -48,7 +46,6 @@ export const useDialogStore = defineStore('dialogs', {
       }
     },
 
-    // 2. fetchDialogById - его логика уже была правильной, ничего не меняем
     async fetchDialogById(id) {
       this.isLoading = true;
       this.currentDialog = null;
@@ -74,7 +71,6 @@ export const useDialogStore = defineStore('dialogs', {
       }
     },
 
-    // 3. createDialog и deleteDialog теперь должны очищать кеш
     async createDialog(dialogData, creationParams) {
       this.isLoading = true;
       const user = auth.currentUser;
@@ -92,7 +88,7 @@ export const useDialogStore = defineStore('dialogs', {
           createdAt: new Date(),
         });
         const docRef = await addDoc(collection(db, 'dialogs'), dataToSave);
-        clearAllDialogCache(); // ОЧИЩАЕМ КЕШ, чтобы список обновился
+        clearAllDialogCache();
         return docRef.id;
       } catch (error) {
         console.error('Ошибка сохранения диалога:', error);
@@ -107,8 +103,8 @@ export const useDialogStore = defineStore('dialogs', {
       this.isLoading = true;
       try {
         await deleteDoc(doc(db, 'dialogs', id));
-        clearAllDialogCache(); // ОЧИЩАЕМ КЕШ, чтобы список обновился
-        // Обновляем state вручную, чтобы не делать лишний запрос
+        clearAllDialogCache();
+
         this.allDialogs = this.allDialogs.filter((d) => d.id !== id);
         if (this.currentDialog?.id === id) this.currentDialog = null;
         return true;

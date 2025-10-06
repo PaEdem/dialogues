@@ -7,7 +7,7 @@
   --w3: #eef4f7;
   --w4: #edf7f2;
   --t-pro: #142952;
-  --bg-pro: #e6a219;
+  --bg-pro: #f1a50b;
   --g1: #a9f4b7;
   --g2: #7ee790;
   --g3: #20602c;
@@ -31,7 +31,6 @@
   --bg-group: var(--y6);
   --bg-chat-l: var(--w3);
   --bg-chat-r: var(--w4);
-  --bg-pro: var(--bg-pro);
   --text-head: var(--y7);
   --text-title: var(--y5);
   --text-base: var(--y8);

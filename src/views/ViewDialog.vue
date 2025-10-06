@@ -7,7 +7,7 @@
         <button
           class="btn btn-menu"
           @click="getInfo"
-          :disabled="!can('useDialogAnalysis')"
+          :disabled="!isButtonActive('useDialogAnalysis')"
         >
           <span class="material-symbols-outlined">analytics</span>
           {{ $t('buttons.analysis') }}
@@ -28,24 +28,21 @@
         </div>
         <div class="grow"></div>
         <p class="training-title">{{ $t('view.training') }}</p>
-        <router-link
+        <button
           v-for="level in trainingLevels"
           :key="level.name"
-          :to="{ name: level.name, params: { id: props.id } }"
+          class="btn btn-action"
+          :disabled="level.isPro && !isButtonActive('useAdvancedTraining')"
+          @click="goToTraining(level)"
         >
-          <button
-            class="btn btn-action"
-            :disabled="level.isPro && !can('useAdvancedTraining')"
+          <span class="material-symbols-outlined">{{ level.icon }}</span>
+          <span class="text-mobile">{{ level.text }}</span>
+          <span
+            v-if="level.isPro && !can('useAdvancedTraining')"
+            class="pro-badge"
+            >PRO</span
           >
-            <span class="material-symbols-outlined">{{ level.icon }}</span>
-            <span>{{ level.text }}</span>
-            <span
-              v-if="level.isPro && !can('useAdvancedTraining')"
-              class="pro-badge"
-              >PRO</span
-            >
-          </button>
-        </router-link>
+        </button>
         <div class="grow"></div>
         <button
           class="btn btn-danger"
@@ -109,24 +106,26 @@
     <footer class="actions-footer">
       <div class="actions-grid">
         <button
-          class="btn btn-menu"
+          class="btn btn-menu text-mobile"
           @click="toggleListening"
           aria-label="Прослушать"
         >
           <span class="material-symbols-outlined">volume_up</span>
+          {{ $t('buttons.listenM') }}
         </button>
         <button
-          class="btn btn-menu"
+          class="btn btn-menu mobile text-mobile"
           @click="getInfo"
-          :disabled="!can('useDialogAnalysis')"
+          :disabled="!isButtonActive('useDialogAnalysis')"
           aria-label="Анализ"
         >
           <span class="material-symbols-outlined">analytics</span>
           <span
             v-if="!can('useDialogAnalysis')"
-            class="pro-badge-corner"
+            class="pro-badge-mobile"
             >PRO</span
           >
+          {{ $t('buttons.analysisM') }}
         </button>
         <button
           class="btn btn-danger half"
@@ -136,24 +135,21 @@
         </button>
       </div>
       <div class="trainings-grid">
-        <router-link
+        <button
           v-for="level in trainingLevels"
           :key="level.name"
-          :to="{ name: level.name, params: { id: props.id } }"
+          class="btn btn-action mobile"
+          :disabled="level.isPro && !isButtonActive('useAdvancedTraining')"
+          @click="goToTraining(level)"
         >
-          <button
-            class="btn btn-action"
-            :disabled="level.isPro && !can('useAdvancedTraining')"
+          <span class="material-symbols-outlined">{{ level.icon }}</span>
+          <span class="text-mobile">{{ level.text }}</span>
+          <span
+            v-if="level.isPro && !can('useAdvancedTraining')"
+            class="pro-badge-mobile"
+            >PRO</span
           >
-            <span class="material-symbols-outlined">{{ level.icon }}</span>
-            <span>{{ level.text }}</span>
-            <span
-              v-if="level.isPro && !can('useAdvancedTraining')"
-              class="pro-badge-corner"
-              >PRO</span
-            >
-          </button>
-        </router-link>
+        </button>
       </div>
     </footer>
   </div>
@@ -176,6 +172,7 @@
 import { useI18n } from 'vue-i18n';
 import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useSettingsStore } from '../stores/settingsStore';
 import { useDialogStore } from '../stores/dialogStore';
 import { useTrainingStore } from '../stores/trainingStore';
 import { useUiStore } from '../stores/uiStore';
@@ -188,19 +185,32 @@ import Loader from '../components/Loader.vue';
 const { t } = useI18n();
 const props = defineProps({ id: { type: String, required: true } });
 const router = useRouter();
+const settingsStore = useSettingsStore();
 const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
 const uiStore = useUiStore();
-const { can } = usePermissions();
+const { can, isButtonActive } = usePermissions();
 const { isDesktop } = useBreakpoint();
 
 const dialog = computed(() => dialogStore.currentDialog);
 
 const trainingLevels = [
-  { name: 'level-1', icon: 'interactive_space', text: t('buttons.learning'), isPro: false },
-  { name: 'level-4', icon: 'hearing', text: t('buttons.listening'), isPro: false },
-  { name: 'level-2', icon: 'record_voice_over', text: t('buttons.speaking'), isPro: true },
-  { name: 'level-3', icon: 'translate', text: t('buttons.translation'), isPro: true },
+  {
+    name: 'level-1',
+    icon: 'interactive_space',
+    text: t('buttons.learning'),
+    isPro: false,
+    feature: 'useBasicTraining',
+  },
+  { name: 'level-4', icon: 'hearing', text: t('buttons.listening'), isPro: false, feature: 'useBasicTraining' },
+  {
+    name: 'level-2',
+    icon: 'record_voice_over',
+    text: t('buttons.speaking'),
+    isPro: true,
+    feature: 'useAdvancedTraining',
+  },
+  { name: 'level-3', icon: 'translate', text: t('buttons.translation'), isPro: true, feature: 'useAdvancedTraining' },
 ];
 
 onMounted(() => {
@@ -217,14 +227,39 @@ const toggleListening = () => {
   if (!dialog.value) return;
   trainingStore.togglePlayStop(dialog.value.fin.join('. '));
 };
-const getInfo = async () => {
-  console.log('GET INFO');
-  if (!can('useDialogAnalysis')) {
-    alert($t('view.inPro'));
+const handleProFeatureClick = (featureName, actionCallback) => {
+  // 1. Если пользователь PRO, просто выполняем действие
+  if (can(featureName)) {
+    actionCallback();
     return;
   }
-  uiStore.showModal();
-  await trainingStore.fetchDialogAnalysis();
+  // 2. Если пользователь Free, проверяем, доступен ли демо-просмотр
+  if (!settingsStore.dailyPreviewUsed) {
+    // Демо-просмотр ДОСТУПЕН
+    uiStore.showToast('Вы использовали свой бесплатный PRO-просмотр на сегодня!', 'info');
+    settingsStore.markDailyPreviewAsUsed(); // Помечаем, что он использован
+    actionCallback(); // <<-- ВЫПОЛНЯЕМ саму PRO-функцию
+  } else {
+    // Демо-просмотр уже ИСПОЛЬЗОВАН
+    uiStore.showUpgradeModal(); // Показываем окно с предложением купить PRO
+  }
+};
+// ФУНКЦИЯ ДЛЯ ПЕРЕХОДА К ТРЕНИРОВКАМ
+const goToTraining = (level) => {
+  if (level.isPro) {
+    handleProFeatureClick('useAdvancedTraining', () => {
+      router.push({ name: level.name, params: { id: props.id } });
+    });
+  } else {
+    // Для бесплатных уровней просто переходим
+    router.push({ name: level.name, params: { id: props.id } });
+  }
+};
+const getInfo = async () => {
+  handleProFeatureClick('useDialogAnalysis', async () => {
+    uiStore.showModal('analysis');
+    await trainingStore.fetchDialogAnalysis();
+  });
 };
 </script>
 
@@ -331,8 +366,8 @@ const getInfo = async () => {
   margin-left: 0.5rem;
 }
 .content {
-  flex-grow: 1; /* Контент занимает всё доступное пространство */
-  overflow-y: auto; /* Включает скролл только для этого блока */
+  flex-grow: 1;
+  overflow-y: auto;
   padding: 1rem;
 }
 .chat-container {
@@ -365,8 +400,8 @@ const getInfo = async () => {
   margin-top: 0.25rem;
 }
 .actions-grid > .btn.half {
-  padding: 0.75rem 1rem;
-  flex: 0 1 64px;
+  padding: 0.75rem;
+  flex: 0 1 50px;
 }
 .actions-footer {
   flex-shrink: 0;
@@ -388,10 +423,27 @@ const getInfo = async () => {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-.btn.btn-action {
-  width: 100%;
+.btn.btn-action.mobile,
+.actions-grid .btn.btn-menu.mobile {
+  position: relative;
 }
-.pro-badge-small {
-  font-size: 0.6rem;
+.actions-grid .btn.btn-menu.text-mobile {
+  gap: 0.5rem;
+}
+.text-mobile {
+  font-size: var(--sm);
+}
+.pro-badge-mobile {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-right: 0.25rem;
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background-color: var(--bg-pro);
+  color: var(--t-pro);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
 }
 </style>

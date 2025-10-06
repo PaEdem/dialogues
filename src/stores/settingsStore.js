@@ -7,6 +7,7 @@ export const useSettingsStore = defineStore('settings', {
     theme: 'light',
     uiLanguage: 'en',
     learningLanguage: 'Finnish',
+    dailyPreviewUsed: false,
   }),
   actions: {
     setTheme(newTheme) {
@@ -23,6 +24,10 @@ export const useSettingsStore = defineStore('settings', {
       this.learningLanguage = lang;
       localStorage.setItem('app-learning-language', lang);
     },
+    markDailyPreviewAsUsed() {
+      this.dailyPreviewUsed = true;
+      localStorage.setItem('previewUsedDate', new Date().toDateString());
+    },
     initSettings() {
       const savedTheme = localStorage.getItem('app-theme');
       this.setTheme(savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
@@ -33,6 +38,11 @@ export const useSettingsStore = defineStore('settings', {
       const savedLearningLang = localStorage.getItem('app-learning-language');
       if (savedLearningLang) {
         this.setLearningLanguage(savedLearningLang);
+      }
+
+      const savedPreviewDate = localStorage.getItem('previewUsedDate');
+      if (savedPreviewDate === new Date().toDateString()) {
+        this.dailyPreviewUsed = true;
       }
     },
   },

@@ -5,15 +5,19 @@
     <main class="main">
       <router-view></router-view>
     </main>
+    <ToastContainer />
   </div>
 </template>
+
 <script setup>
 import { computed } from 'vue';
 import { useUiStore } from './stores/uiStore';
+import ToastContainer from './components/ToastContainer.vue';
 import Loader from './components/Loader.vue';
 const uiStore = useUiStore();
 const isLoading = computed(() => uiStore.isAppLoading);
 </script>
+
 <style scoped>
 .app-wrapper {
   min-height: 100vh;

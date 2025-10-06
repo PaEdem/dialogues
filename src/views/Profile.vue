@@ -107,7 +107,7 @@ const usageStats = computed(() => {
   const limits = userStore.planLimits;
   return {
     daily: {
-      count: userStore.dailyGenerationsUsage.count,
+      count: userStore.dailyGenerationsCount.count,
       limit: limits.dailyGenerations,
     },
     total: {

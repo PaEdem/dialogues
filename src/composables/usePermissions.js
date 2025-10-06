@@ -1,45 +1,53 @@
 // src/composables/usePermissions.js
 import { useUserStore } from '../stores/userStore';
-// import { useDialogStore } from '../stores/dialogStore';
+import { useSettingsStore } from '../stores/settingsStore';
+import { useDialogStore } from '../stores/dialogStore';
 
 export function usePermissions() {
   const userStore = useUserStore();
-  // const dialogStore = useDialogStore();
+  const settingsStore = useSettingsStore();
+  const dialogStore = useDialogStore();
 
   const can = (feature) => {
+    // PRO-пользователям можно всё
     if (userStore.isPro) {
-      return true; // PRO-пользователям можно всё
+      return true;
     }
-
     // Правила для Free-пользователей
     switch (feature) {
-      case 'useAdvancedTraining': // Level 2, 3
-      case 'useDialogAnalysis': // Анализ диалога
+      case 'useAdvancedTraining':
+      case 'useDialogAnalysis':
+      case 'useCloudTTS':
         return false;
-
-      // ✨ 2. ДОБАВЛЯЕМ ЛОГИКУ ПРОВЕРКИ ЛИМИТОВ
       case 'generateDialog': {
-        const usage = userStore.dailyUsage;
-        const dailyLimitReached = usage.daily.count >= usage.daily.limit;
-        const totalLimitReached = usage.total.count >= usage.total.limit;
+        const limits = userStore.planLimits;
+        const dailyCount = userStore.dailyGenerationsCount;
+        const totalCount = dialogStore.allDialogs.length;
 
-        if (dailyLimitReached) {
-          alert(`Вы достигли дневного лимита генераций (${usage.daily.limit}). Возвращайтесь завтра!`);
+        if (dailyCount >= limits.dailyGenerations) {
+          alert(`Дневной лимит генераций (${limits.dailyGenerations}) исчерпан.`);
           return false;
         }
-        if (totalLimitReached) {
-          alert(
-            `Вы достигли лимита на общее количество диалогов (${usage.total.limit}). Удалите старый диалог, чтобы создать новый, или перейдите на PRO.`
-          );
+        if (totalCount >= limits.totalDialogs) {
+          alert(`Достигнут лимит диалогов (${limits.totalDialogs}).`);
           return false;
         }
-        return true; // Если лимиты не достигнуты
+        return true;
       }
 
       default:
-        return true; // Все остальные функции разрешены
+        return true;
     }
   };
 
-  return { can };
+  const isButtonActive = (feature) => {
+    if (can(feature)) return true;
+    // Для PRO-функций, которые нельзя использовать, проверяем превью
+    if (['useAdvancedTraining', 'useDialogAnalysis', 'useCloudTTS'].includes(feature)) {
+      return !settingsStore.dailyPreviewUsed;
+    }
+    return false;
+  };
+
+  return { can, isButtonActive };
 }

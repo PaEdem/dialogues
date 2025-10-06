@@ -6,31 +6,29 @@ import { useTrainingStore } from './trainingStore';
 
 export const useUiStore = defineStore('ui', {
   state: () => ({
-    isLoading: false,
     isModalActive: false,
+    modalContent: 'default', // 'default', 'upgrade', 'analysis'
+    toasts: [],
+    toastIdCounter: 0,
   }),
-  getters: {
-    isAppLoading() {
-      const dialogStore = useDialogStore();
-      const userStore = useUserStore();
-      const trainingStore = useTrainingStore();
-      return this.isLoading || dialogStore.isLoading || userStore.isLoading || trainingStore.isLoading;
-    },
-  },
   actions: {
-    setLoading(value) {
-      this.isLoading = value;
+    showModal(content = 'default') {
+      this.modalContent = content;
+      this.isModalActive = true;
     },
-    showModal() {
-      const trainingStore = useTrainingStore();
-      if (trainingStore.currentTrainingType !== 'level-4') {
-        this.isModalActive = true;
-      } else {
-        setTimeout(() => (this.isModalActive = true), 1000);
-      }
+    showUpgradeModal() {
+      this.showModal('upgrade');
     },
     hideModal() {
       this.isModalActive = false;
+    },
+    showToast(message, type = 'info') {
+      const id = this.toastIdCounter++;
+      this.toasts.push({ id, message, type });
+
+      setTimeout(() => {
+        this.toasts = this.toasts.filter((toast) => toast.id !== id);
+      }, 5000);
     },
   },
 });

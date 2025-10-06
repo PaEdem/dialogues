@@ -30,7 +30,7 @@ export const useTrainingStore = defineStore('training', {
       const correctAnswer = { text: dialog.rus[state.currentLineIndex], correct: true };
       const incorrectOptions = dialog.options[state.currentLineIndex].map((o) => ({ text: o, correct: false }));
       const allOptions = [correctAnswer, ...incorrectOptions];
-      // Простое и эффективное перемешивание
+
       return allOptions.sort(() => Math.random() - 0.5);
     },
   },
@@ -38,7 +38,6 @@ export const useTrainingStore = defineStore('training', {
     setCurrentTrainingType(type) {
       this.currentTrainingType = type;
     },
-    // --- Training Flow ---
     startLevel() {
       this.stopSpeech();
       this.currentLineIndex = 0;
@@ -70,8 +69,6 @@ export const useTrainingStore = defineStore('training', {
       this.formattedRecognitionText = '';
       this.geminiResult = '';
     },
-
-    // --- Media and Recognition ---
     playCurrentLineAudio() {
       const dialogStore = useDialogStore();
       const text = dialogStore.currentDialog?.fin[this.currentLineIndex];
@@ -86,20 +83,15 @@ export const useTrainingStore = defineStore('training', {
       );
       proVoiceUtterance.lang = 'fi-FI';
 
-      // Пытаемся найти более качественный голос из доступных в браузере
       const voices = speechSynthesis.getVoices();
       const proVoice = voices.find((voice) => voice.lang === 'fi-FI' && voice.name.includes('Google'));
       if (proVoice) {
         proVoiceUtterance.voice = proVoice;
       }
 
-      this.stopSpeech(); // Останавливаем другую речь
+      this.stopSpeech();
       speechSynthesis.speak(proVoiceUtterance);
     },
-    /**
-     * Воспроизводит любой переданный финский текст.
-     * @param {string} text - Текст для воспроизведения.
-     */
     playText(text) {
       if (!text) return;
       this.stopSpeech();
@@ -122,7 +114,6 @@ export const useTrainingStore = defineStore('training', {
     togglePlayStop(text) {
       !this.isVoiceOver ? this.playText(text) : this.stopSpeech();
     },
-    // ACTION ДЛЯ МИКРОФОНА
     toggleSpeechRecognition() {
       if (this.recognition) {
         this.recognition.stop();
@@ -179,7 +170,6 @@ export const useTrainingStore = defineStore('training', {
         const finalTranscript = this.recognitionText.trim();
 
         if (finalTranscript && finalTranscript !== 'Kuunnellaan...') {
-          // И теперь решаем, что с ним делать
           if (this.currentTrainingType === 'level-2') {
             const { formattedText } = compareAndFormatTexts(finText, finalTranscript);
             this.formattedRecognitionText = formattedText;
@@ -187,32 +177,27 @@ export const useTrainingStore = defineStore('training', {
             this.checkUserTranslation(rusText, finText, level);
           }
         } else {
-          this.recognitionText = ''; // Очищаем, если ничего не было сказано
+          this.recognitionText = '';
         }
       };
-
       this.recognition.start();
     },
-
-    // --- AI Integration ---
     async generateAndCreateDialog(creationParams) {
-      // ВЫЗЫВАЕМ ПРОВЕРКУ ПЕРЕД НАЧАЛОМ
       const { can } = usePermissions();
       if (!can('generateDialog')) {
-        return null; // Прерываем выполнение, если лимиты исчерпаны
+        return null;
       }
       this.isLoading = true;
       try {
         const prompt = this.getPromptForNewDialog(creationParams);
         const responseText = await fetchGeminiResponse(prompt);
-        // const dialogData = JSON.parse(responseText);
+
         const cleanJsonString = responseText.trim().replace(/```json|```/g, '');
         const dialogData = JSON.parse(cleanJsonString);
-        // Передаем сгенерированные данные и параметры формы в dialogStore
+
         const dialogStore = useDialogStore();
         const newDialogId = await dialogStore.createDialog(dialogData, creationParams);
 
-        // ПОСЛЕ УСПЕШНОЙ ГЕНЕРАЦИИ НУЖНО ОБНОВИТЬ СЧЕТЧИК
         const userStore = useUserStore();
         userStore.incrementDailyUsage();
 
@@ -224,7 +209,6 @@ export const useTrainingStore = defineStore('training', {
         this.isLoading = false;
       }
     },
-
     async fetchDialogAnalysis() {
       const dialogStore = useDialogStore();
       const dialog = dialogStore.currentDialog;
@@ -236,7 +220,7 @@ export const useTrainingStore = defineStore('training', {
         const fullDialogText = dialog.fin.join('\n');
         const prompt = this.getPromptInfo(fullDialogText, dialog.level);
         const rawResult = await fetchGeminiResponse(prompt);
-        // Сразу форматируем в HTML здесь, в сторе
+
         this.geminiResult = marked.parse(rawResult);
       } catch (error) {
         console.error('Ошибка получения анализа диалога:', error);
@@ -245,7 +229,6 @@ export const useTrainingStore = defineStore('training', {
         this.isLoading = false;
       }
     },
-
     getPromptForNewDialog(params) {
       const { topic, level, replicas, words } = params;
       return `Create a coherent short dialogue in Finnish on the topic of "${topic}", with a parallel Russian translation for each line. The Finnish dialogue should be at the language proficiency level ${level}, using simple structures and vocabulary appropriate for that level. The entire dialogue must consist of exactly ${replicas} replicas (lines spoken by alternating speakers, like Person A and Person B). Incorporate all the following Finnish words naturally into the dialogue: ${words}.
@@ -264,10 +247,6 @@ export const useTrainingStore = defineStore('training', {
         ]
       }`;
     },
-
-    /**
-     * Формирует промпт для оценки перевода пользователя.
-     */
     getPromptForTranslation(rusText, finText, level) {
       return `
         You are an expert Finnish language tutor specializing in dialogue translations. Your task is to evaluate a user's spoken Finnish translation of a Russian dialogue line by comparing it to the provided correct Finnish version taking into account the language level of the user of the corresponding ${level}. You will receive three inputs:
@@ -287,10 +266,6 @@ export const useTrainingStore = defineStore('training', {
         Respond ONLY in Russian, in 2-3 sentences maximum. Keep feedback encouraging and concise.
       `;
     },
-
-    /**
-     * Формирует промпт для получения лингвистической справки по диалогу.
-     */
     getPromptInfo(fullDialogText, level) {
       if (!fullDialogText || fullDialogText.trim().length === 0) {
         return 'Недостаточно данных для анализа.';
@@ -306,13 +281,6 @@ export const useTrainingStore = defineStore('training', {
         Dialogue: ${fullDialogText}
       `;
     },
-
-    /**
-     * Запускает проверку перевода пользователя через AI.
-     * @param {string} rusText - Оригинальный русский текст.
-     * @param {string} finText - Правильный финский текст.
-     * @param {string} level - Уровень сложности.
-     */
     async checkUserTranslation(rusText, finText, level) {
       this.isLoading = true;
       this.geminiResult = '';

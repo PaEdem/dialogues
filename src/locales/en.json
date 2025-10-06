@@ -24,6 +24,8 @@
     "dialogList": "Dialog List",
     "analysis": "Dialog Analysis",
     "listen": "Listen to the Dialog",
+    "analysisM": "Analysis",
+    "listenM": "Listen all",
     "delDialog": "Delete Dialog",
     "learning": "Learn",
     "listening": "Listen",
