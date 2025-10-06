@@ -11,10 +11,10 @@
   align-items: center;
   gap: 1rem;
   font-size: var(--base);
-  color: var(--text-primary);
+  color: var(--text-head);
   margin-bottom: 0.75rem;
 }
 .icon {
-  color: var(--primary);
+  color: var(--g3);
 }
 </style>

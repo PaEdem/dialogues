@@ -36,7 +36,7 @@ const uiStore = useUiStore();
   transition: all 0.3s ease;
 }
 .toast--info {
-  background-color: var(--y10);
+  background-color: var(--bg-info);
 }
 .toast--success {
   background-color: var(--g1);

@@ -98,14 +98,14 @@
           class="tab-item"
         >
           <span class="material-symbols-outlined">settings</span>
-          <span>Asetukset</span>
+          <span>{{ $t('all.settings') }}</span>
         </router-link>
         <router-link
           to="/profile"
           class="tab-item"
         >
           <span class="material-symbols-outlined">person</span>
-          <span>Profiili</span>
+          <span>{{ $t('all.profile') }}</span>
         </router-link>
       </div>
     </footer>

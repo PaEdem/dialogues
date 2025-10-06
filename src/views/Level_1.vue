@@ -41,13 +41,20 @@
   </DialogLayout>
   <Teleport to="body">
     <Modal>
-      <div class="ohi">
-        <h3 class="ohi-title">Harjoitus on ohi</h3>
-        <div class="ohi-message">
-          Hyvää työtä! Voit aloittaa alusta tai valita toisen harjoituksen.<br />
-          <br />
-          Отличная работа! Можете начать заново или выбрать другую тренировку.
-        </div>
+      <template #header>
+        <h3 class="title">Harjoitus on ohi</h3>
+      </template>
+
+      <div class="end-of-level-message">
+        <p>Hyvää työtä!</p>
+        <button
+          @click="
+            // trainingStore.repeatLevel();
+            uiStore.hideModal()
+          "
+        >
+          Aloita alusta
+        </button>
       </div>
     </Modal>
   </Teleport>

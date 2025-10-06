@@ -14,11 +14,11 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
     isLoggedIn: false,
-    loading: true,
+    isLoading: true,
   }),
   getters: {
     isPro: (state) => {
-      return false;
+      return true;
     },
     planLimits() {
       const limits = {
@@ -42,7 +42,7 @@ export const useUserStore = defineStore('user', {
         onAuthStateChanged(auth, (user) => {
           this.user = user;
           this.isLoggedIn = !!user;
-          this.loading = false;
+          this.isLoading = false;
           resolve();
         });
       });

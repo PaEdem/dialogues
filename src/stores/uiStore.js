@@ -7,17 +7,21 @@ import { useTrainingStore } from './trainingStore';
 export const useUiStore = defineStore('ui', {
   state: () => ({
     isModalActive: false,
-    modalContent: 'default', // 'default', 'upgrade', 'analysis'
     toasts: [],
     toastIdCounter: 0,
   }),
-  actions: {
-    showModal(content = 'default') {
-      this.modalContent = content;
-      this.isModalActive = true;
+  getters: {
+    isAppLoading() {
+      const dialogStore = useDialogStore();
+      const userStore = useUserStore();
+      const trainingStore = useTrainingStore();
+
+      return dialogStore.isLoading || userStore.isLoading || trainingStore.isLoading;
     },
-    showUpgradeModal() {
-      this.showModal('upgrade');
+  },
+  actions: {
+    showModal() {
+      this.isModalActive = true;
     },
     hideModal() {
       this.isModalActive = false;
