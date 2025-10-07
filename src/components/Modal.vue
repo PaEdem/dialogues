@@ -6,7 +6,10 @@
       class="modal-mask"
       @click.self="uiStore.hideModal()"
     >
-      <div class="modal-container">
+      <div
+        class="modal-container"
+        :class="{ bgAnalysis: uiStore.modalContent !== 'analysis' }"
+      >
         <div
           class="modal-header"
           v-if="$slots.header"
@@ -20,6 +23,7 @@
 
         <div
           class="modal-footer"
+          :class="{ fAnalysis: uiStore.modalContent !== 'analysis' }"
           v-if="$slots.footer"
         >
           <slot name="footer"></slot>
@@ -30,7 +34,7 @@
           class="modal-footer"
         >
           <button
-            class="btn btn-common btn-modal"
+            class="btn btn-common w-10"
             @click="uiStore.hideModal()"
           >
             <span class="material-symbols-outlined">close</span>
@@ -68,11 +72,14 @@ const uiStore = useUiStore();
   border-radius: 8px;
   box-shadow: 0 4px 12px var(--shadow);
   transition: all 0.3s ease;
-
   /* Структура для контента */
   display: flex;
   flex-direction: column;
   max-height: 90vh; /* Максимальная высота */
+}
+.bgAnalysis {
+  max-width: 640px;
+  background: var(--gradient-pro);
 }
 .modal-header {
   padding: 1rem 1.5rem;
@@ -98,8 +105,8 @@ const uiStore = useUiStore();
   box-shadow: 0 -4px 8px var(--shadow);
   flex-shrink: 0;
 }
-.modal-footer .btn.btn-modal {
-  width: 240px;
+.modal-footer.fAnalysis {
+  justify-content: space-between;
 }
 /* Стили для контента, генерируемого v-html */
 .modal-body h3 {
@@ -132,27 +139,6 @@ const uiStore = useUiStore();
 .modal-info ul li ul li {
   padding-left: 1rem;
 }
-/*
-.ohi {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.ohi-title {
-  font-size: var(--xxl);
-  padding-top: 2rem;
-  text-align: center;
-  margin: 0 auto;
-  color: var(--r3);
-}
-.ohi-message {
-  font-size: var(--xl);
-  text-align: center;
-  padding: 2rem;
-  color: var(--text-head);
-} */
 .modal-enter-from,
 .modal-leave-to {
   opacity: 0;

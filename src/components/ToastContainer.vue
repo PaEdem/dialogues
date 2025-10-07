@@ -36,13 +36,16 @@ const uiStore = useUiStore();
   transition: all 0.3s ease;
 }
 .toast--info {
-  background-color: var(--bg-info);
+  background-color: var(--bg-t-info);
 }
 .toast--success {
-  background-color: var(--g1);
+  background-color: var(--bg-t-success);
+}
+.toast--warning {
+  background-color: var(--bg-t-warning);
 }
 .toast--error {
-  background-color: var(--r1);
+  background-color: var(--bg-t-error);
 }
 
 /* Анимации */

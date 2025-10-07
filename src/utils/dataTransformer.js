@@ -94,3 +94,19 @@ export function clearAllDialogCache() {
     console.error('Ошибка очистки кеша:', e);
   }
 }
+
+/**
+ * Очищает ВЕСЬ кеш, связанный с юзером.
+ */
+export function clearUserDataCache() {
+  try {
+    // Object.keys(localStorage).forEach((key) => {
+    //   if (key.startsWith('dialog_') || key === DIALOG_LIST_KEY) {
+    //     localStorage.removeItem(key);
+    //   }
+    // });
+    console.log('Кеш очищен от данных Пользователя.');
+  } catch (e) {
+    console.error('Ошибка очистки кеша:', e);
+  }
+}

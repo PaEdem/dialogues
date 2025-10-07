@@ -32,7 +32,8 @@
     "speaking": "Speak",
     "translation": "Translate",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "findMore": "Find out more"
   },
   "welcome": {
     "title": "European Languages with AI",
@@ -79,7 +80,10 @@
   },
   "view": {
     "training": "Training",
-    "inPro": "Dialog analysis is available in the PRO version."
+    "inPro": "Dialog analysis is available in the PRO version.",
+    "headerAnalysis": "Grammatical and lexical analysis.",
+    "goToPro": "Upgrade to PRO",
+    "unlock": "Unlock all the features of the app!"
   },
   "new": {
     "createNew": "Create new dialog",

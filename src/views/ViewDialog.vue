@@ -7,12 +7,12 @@
         <button
           class="btn btn-menu"
           @click="getInfo"
-          :disabled="!isButtonActive('useDialogAnalysis')"
+          :disabled="!isButtonActive()"
         >
           <span class="material-symbols-outlined">analytics</span>
           {{ $t('buttons.analysis') }}
           <span
-            v-if="!can('useDialogAnalysis')"
+            v-if="!userStore.isPro"
             class="pro-badge"
             >PRO</span
           >
@@ -32,13 +32,13 @@
           v-for="level in trainingLevels"
           :key="level.name"
           class="btn btn-action"
-          :disabled="level.isPro && !isButtonActive('useAdvancedTraining')"
+          :disabled="level.isPro && !isButtonActive()"
           @click="goToTraining(level)"
         >
           <span class="material-symbols-outlined">{{ level.icon }}</span>
           <span class="text-mobile">{{ level.text }}</span>
           <span
-            v-if="level.isPro && !can('useAdvancedTraining')"
+            v-if="!userStore.isPro && level.isPro"
             class="pro-badge"
             >PRO</span
           >
@@ -108,7 +108,6 @@
         <button
           class="btn btn-menu text-mobile"
           @click="toggleListening"
-          aria-label="Прослушать"
         >
           <span class="material-symbols-outlined">volume_up</span>
           {{ $t('buttons.listenM') }}
@@ -116,12 +115,11 @@
         <button
           class="btn btn-menu mobile text-mobile"
           @click="getInfo"
-          :disabled="!isButtonActive('useDialogAnalysis')"
-          aria-label="Анализ"
+          :disabled="!isButtonActive()"
         >
           <span class="material-symbols-outlined">analytics</span>
           <span
-            v-if="!can('useDialogAnalysis')"
+            v-if="!userStore.isPro"
             class="pro-badge-mobile"
             >PRO</span
           >
@@ -139,13 +137,13 @@
           v-for="level in trainingLevels"
           :key="level.name"
           class="btn btn-action mobile"
-          :disabled="level.isPro && !isButtonActive('useAdvancedTraining')"
+          :disabled="level.isPro && !isButtonActive()"
           @click="goToTraining(level)"
         >
           <span class="material-symbols-outlined">{{ level.icon }}</span>
           <span class="text-mobile">{{ level.text }}</span>
           <span
-            v-if="level.isPro && !can('useAdvancedTraining')"
+            v-if="userStore.isPro"
             class="pro-badge-mobile"
             >PRO</span
           >
@@ -163,7 +161,58 @@
 
   <Teleport to="body">
     <Modal>
-      <div v-html="trainingStore.geminiResult"></div>
+      <template #header>
+        <h3
+          v-if="uiStore.modalContent === 'analysis'"
+          class="title"
+        >
+          {{ $t('view.headerAnalysis') }}
+        </h3>
+        <h3
+          v-else-if="uiStore.modalContent === 'upgrade'"
+          class="title"
+        >
+          {{ $t('view.goToPro') }}
+        </h3>
+      </template>
+
+      <div
+        v-if="uiStore.modalContent === 'analysis'"
+        v-html="trainingStore.geminiResult"
+      ></div>
+      <div
+        v-else-if="uiStore.modalContent === 'upgrade'"
+        class="pro-benefits"
+      >
+        <h4 class="subtitle">{{ $t('view.unlock') }}</h4>
+        <ul>
+          <ProBenefitItem>{{ $t('profile.unlimGen') }}</ProBenefitItem>
+          <ProBenefitItem>{{ $t('profile.unlimStor') }}</ProBenefitItem>
+          <ProBenefitItem>{{ $t('profile.qualityVoice') }}</ProBenefitItem>
+          <ProBenefitItem>{{ $t('profile.allLevels') }}</ProBenefitItem>
+          <ProBenefitItem>{{ $t('profile.allModes') }}</ProBenefitItem>
+          <ProBenefitItem>{{ $t('profile.analysis') }}</ProBenefitItem>
+        </ul>
+      </div>
+
+      <template #footer>
+        <router-link
+          to="/profile"
+          @click="uiStore.hideModal()"
+        >
+          <button class="btn btn-action w-10">
+            <span class="material-symbols-outlined">details</span>
+            {{ $t('buttons.findMore') }}
+          </button>
+        </router-link>
+        <button
+          class="btn btn-common w-10"
+          @click="uiStore.hideModal()"
+        >
+          <span class="material-symbols-outlined">close</span>
+          Sulje
+        </button>
+      </template>
     </Modal>
   </Teleport>
 </template>
@@ -176,9 +225,11 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useDialogStore } from '../stores/dialogStore';
 import { useTrainingStore } from '../stores/trainingStore';
 import { useUiStore } from '../stores/uiStore';
+import { useUserStore } from '../stores/userStore';
 import { useBreakpoint } from '../composables/useBreakpoint';
 import { usePermissions } from '../composables/usePermissions';
 import DialogLayout from '../components/DialogLayout.vue';
+import ProBenefitItem from '../components/ProBenefitItem.vue';
 import Modal from '../components/Modal.vue';
 import Loader from '../components/Loader.vue';
 
@@ -189,11 +240,11 @@ const settingsStore = useSettingsStore();
 const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
 const uiStore = useUiStore();
-const { can, isButtonActive } = usePermissions();
+const userStore = useUserStore();
+const { isButtonActive, PREVIEW_LIMIT } = usePermissions();
 const { isDesktop } = useBreakpoint();
 
 const dialog = computed(() => dialogStore.currentDialog);
-
 const trainingLevels = [
   {
     name: 'level-1',
@@ -216,7 +267,6 @@ const trainingLevels = [
 onMounted(() => {
   dialogStore.fetchDialogById(props.id);
 });
-
 const handleDelete = async () => {
   const success = await dialogStore.deleteDialog(props.id);
   if (success) {
@@ -227,27 +277,31 @@ const toggleListening = () => {
   if (!dialog.value) return;
   trainingStore.togglePlayStop(dialog.value.fin.join('. '));
 };
-const handleProFeatureClick = (featureName, actionCallback) => {
+const handleProFeatureClick = (action) => {
   // 1. Если пользователь PRO, просто выполняем действие
-  if (can(featureName)) {
-    actionCallback();
+  if (userStore.isPro) {
+    action();
     return;
   }
-  // 2. Если пользователь Free, проверяем, доступен ли демо-просмотр
-  if (!settingsStore.dailyPreviewUsed) {
-    // Демо-просмотр ДОСТУПЕН
-    uiStore.showToast('Вы использовали свой бесплатный PRO-просмотр на сегодня!', 'info');
-    settingsStore.markDailyPreviewAsUsed(); // Помечаем, что он использован
-    actionCallback(); // <<-- ВЫПОЛНЯЕМ саму PRO-функцию
+  if (settingsStore.dailyPreviewCount < PREVIEW_LIMIT) {
+    settingsStore.incrementPreviewCount();
+    const previewsLeft = PREVIEW_LIMIT - settingsStore.dailyPreviewCount;
+
+    let toastMessage = `Использован PRO-доступ. Осталось: ${previewsLeft}.`;
+    if (previewsLeft === 0) {
+      toastMessage = 'Использован последний PRO-доступ на сегодня.';
+    }
+
+    uiStore.showToast(toastMessage, 'info');
+    action();
   } else {
-    // Демо-просмотр уже ИСПОЛЬЗОВАН
-    uiStore.showUpgradeModal(); // Показываем окно с предложением купить PRO
+    settingsStore.incrementPreviewCount();
+    uiStore.showUpgradeModal();
   }
 };
-// ФУНКЦИЯ ДЛЯ ПЕРЕХОДА К ТРЕНИРОВКАМ
 const goToTraining = (level) => {
   if (level.isPro) {
-    handleProFeatureClick('useAdvancedTraining', () => {
+    handleProFeatureClick(() => {
       router.push({ name: level.name, params: { id: props.id } });
     });
   } else {
@@ -256,9 +310,9 @@ const goToTraining = (level) => {
   }
 };
 const getInfo = async () => {
-  handleProFeatureClick('useDialogAnalysis', async () => {
-    uiStore.showModal('analysis');
+  handleProFeatureClick(async () => {
     await trainingStore.fetchDialogAnalysis();
+    uiStore.showModal('analysis');
   });
 };
 </script>
@@ -281,6 +335,15 @@ const getInfo = async () => {
   color: var(--t-pro);
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
+}
+.title {
+  text-align: center;
+  color: var(--t-pro);
+}
+.subtitle {
+  color: var(--text-head);
+  margin-bottom: 1rem;
+  margin-left: 2rem;
 }
 /* ============================================= */
 /* 2. СТИЛИ ДЛЯ ДЕСКТОПНОГО МАКЕТА (>= 768px)    */

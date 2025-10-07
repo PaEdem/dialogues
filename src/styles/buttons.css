@@ -72,3 +72,6 @@
 .btn-menu:hover:not(:disabled) {
   background-color: var(--y9);
 }
+.w-10 {
+  max-width: 10rem;
+}

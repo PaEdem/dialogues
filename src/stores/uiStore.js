@@ -7,6 +7,7 @@ import { useTrainingStore } from './trainingStore';
 export const useUiStore = defineStore('ui', {
   state: () => ({
     isModalActive: false,
+    modalContent: 'default',
     toasts: [],
     toastIdCounter: 0,
   }),
@@ -20,16 +21,20 @@ export const useUiStore = defineStore('ui', {
     },
   },
   actions: {
-    showModal() {
+    showModal(content = 'default') {
+      this.modalContent = content;
       this.isModalActive = true;
+    },
+    showUpgradeModal() {
+      this.showModal('upgrade');
     },
     hideModal() {
       this.isModalActive = false;
+      this.modalContent = 'default';
     },
     showToast(message, type = 'info') {
       const id = this.toastIdCounter++;
       this.toasts.push({ id, message, type });
-
       setTimeout(() => {
         this.toasts = this.toasts.filter((toast) => toast.id !== id);
       }, 5000);

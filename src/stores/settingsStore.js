@@ -7,7 +7,7 @@ export const useSettingsStore = defineStore('settings', {
     theme: 'light',
     uiLanguage: 'en',
     learningLanguage: 'Finnish',
-    dailyPreviewUsed: false,
+    dailyPreviewCount: 0,
   }),
   actions: {
     setTheme(newTheme) {
@@ -24,9 +24,13 @@ export const useSettingsStore = defineStore('settings', {
       this.learningLanguage = lang;
       localStorage.setItem('app-learning-language', lang);
     },
-    markDailyPreviewAsUsed() {
-      this.dailyPreviewUsed = true;
-      localStorage.setItem('previewUsedDate', new Date().toDateString());
+    incrementPreviewCount() {
+      this.dailyPreviewCount++;
+      const usage = {
+        count: this.dailyPreviewCount,
+        date: new Date().toDateString(),
+      };
+      localStorage.setItem('previewUsage', JSON.stringify(usage));
     },
     initSettings() {
       const savedTheme = localStorage.getItem('app-theme');
@@ -40,9 +44,14 @@ export const useSettingsStore = defineStore('settings', {
         this.setLearningLanguage(savedLearningLang);
       }
 
-      const savedPreviewDate = localStorage.getItem('previewUsedDate');
-      if (savedPreviewDate === new Date().toDateString()) {
-        this.dailyPreviewUsed = true;
+      // ЛОГИКА ЗАГРУЗКИ СЧЁТЧИКА
+      const savedPreview = JSON.parse(localStorage.getItem('previewUsage'));
+      if (savedPreview && savedPreview.date === new Date().toDateString()) {
+        // Если есть запись за сегодня, загружаем счётчик
+        this.dailyPreviewCount = savedPreview.count;
+      } else {
+        // Если новый день или нет записи, счётчик равен 0
+        this.dailyPreviewCount = 0;
       }
     },
   },
