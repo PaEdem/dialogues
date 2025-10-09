@@ -82,23 +82,15 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
+  const isLoggedIn = userStore.isLoggedIn;
 
-  if (userStore.loading) {
+  if (userStore.isLoading) {
     await userStore.initUser();
   }
 
-  const isLoggedIn = userStore.isLoggedIn;
   const requiresAuth = to.meta.requiresAuth;
 
-  // if (requiresAuth && !isLoggedIn) {
-  //   return { name: 'readme' };
-  // }
-
-  // if ((to.name === 'readme' || to.name === 'auth') && isLoggedIn) {
-  //   return { name: 'all-dialogs' };
-  // }
   if (requiresAuth && !isLoggedIn) {
-    // Неавторизованных пользователей на защищенных роутах отправляем на страницу входа
     next({ name: 'auth' });
   } else if (to.name === 'auth' && isLoggedIn) {
     // Авторизованных пользователей не пускаем на страницу входа

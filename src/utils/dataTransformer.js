@@ -96,17 +96,16 @@ export function clearAllDialogCache() {
 }
 
 /**
- * Очищает ВЕСЬ кеш, связанный с юзером.
+ * Сбрасывает кеш лимитов Free-тарифа для тестирования.
+ * Удаляет счётчики дневных генераций и PRO-просмотров.
  */
-export function clearUserDataCache() {
+export function resetFreeTierCache() {
   try {
-    // Object.keys(localStorage).forEach((key) => {
-    //   if (key.startsWith('dialog_') || key === DIALOG_LIST_KEY) {
-    //     localStorage.removeItem(key);
-    //   }
-    // });
-    console.log('Кеш очищен от данных Пользователя.');
+    localStorage.removeItem('usage'); // Счётчик генерации диалогов
+    localStorage.removeItem('previewUsage'); // Счётчик PRO-просмотров
+    console.log('Кеш лимитов Free-тарифа сброшен!');
+    alert('Счётчики Free-тарифа сброшены до нуля!');
   } catch (e) {
-    console.error('Ошибка очистки кеша:', e);
+    console.error('Ошибка при сбросе кеша Free-тарифа:', e);
   }
 }

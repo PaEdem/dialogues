@@ -70,7 +70,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useUserStore } from '../stores/userStore'; // Используем новый userStore
+import { useUserStore } from '../stores/userStore';
 import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();

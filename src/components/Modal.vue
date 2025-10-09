@@ -8,7 +8,7 @@
     >
       <div
         class="modal-container"
-        :class="{ bgAnalysis: uiStore.modalContent !== 'analysis' }"
+        :class="{ 'bg-analysis': uiStore.modalContent !== 'analysis' }"
       >
         <div
           class="modal-header"
@@ -23,7 +23,7 @@
 
         <div
           class="modal-footer"
-          :class="{ fAnalysis: uiStore.modalContent !== 'analysis' }"
+          :class="{ 'footer-analysis': uiStore.modalContent !== 'analysis' }"
           v-if="$slots.footer"
         >
           <slot name="footer"></slot>
@@ -77,7 +77,7 @@ const uiStore = useUiStore();
   flex-direction: column;
   max-height: 90vh; /* Максимальная высота */
 }
-.bgAnalysis {
+.modal-container.bg-analysis {
   max-width: 640px;
   background: var(--gradient-pro);
 }
@@ -87,7 +87,7 @@ const uiStore = useUiStore();
   flex-shrink: 0;
 }
 .modal-header .title {
-  font-size: var(-xl);
+  font-size: var(--xxl);
   color: var(--text-head);
   margin: 0;
 }
@@ -105,12 +105,14 @@ const uiStore = useUiStore();
   box-shadow: 0 -4px 8px var(--shadow);
   flex-shrink: 0;
 }
-.modal-footer.fAnalysis {
+.modal-footer.footer-analysis {
   justify-content: space-between;
 }
 /* Стили для контента, генерируемого v-html */
+.modal-body h1,
 .modal-body h3 {
-  font-size: var(--lg);
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--xl);
   color: var(--g3);
   text-align: center;
   margin: 1rem 0;

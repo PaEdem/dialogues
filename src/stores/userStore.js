@@ -20,21 +20,6 @@ export const useUserStore = defineStore('user', {
     isPro: (state) => {
       return false;
     },
-    planLimits() {
-      const limits = {
-        Free: { dailyGenerations: 2, totalDialogs: 10 },
-        PRO: { dailyGenerations: Infinity, totalDialogs: Infinity },
-      };
-      return this.isPro ? limits.PRO : limits.Free;
-    },
-    dailyGenerationsCount: () => {
-      const usageData = JSON.parse(localStorage.getItem('usage')) || { count: 0, date: new Date().toDateString() };
-      const today = new Date().toDateString();
-
-      return {
-        count: usageData.date !== today ? 0 : usageData.count,
-      };
-    },
   },
   actions: {
     initUser() {
@@ -78,15 +63,6 @@ export const useUserStore = defineStore('user', {
         console.error('Ошибка выхода:', error.code);
         throw error;
       }
-    },
-    incrementDailyUsage() {
-      const usage = JSON.parse(localStorage.getItem('usage')) || { count: 0, date: new Date().toDateString() };
-      const today = new Date().toDateString();
-
-      usage.count = usage.date !== today ? 1 : usage.count + 1;
-      usage.date = today;
-
-      localStorage.setItem('usage', JSON.stringify(usage));
     },
   },
 });

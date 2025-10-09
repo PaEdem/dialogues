@@ -3,13 +3,15 @@
   <div class="page-wrapper">
     <aside class="desktop-sidebar">
       <h1 class="sidebar-title">Dialogit</h1>
-      <router-link
-        :to="{ name: 'new-dialog' }"
+      <button
+        v-if="dialogs.length > 0"
+        @click="goToCreateDialog"
         class="btn btn-action"
+        :disabled="!canGenerate"
       >
         <span class="material-symbols-outlined">add</span>
         {{ $t('all.createNew') }}
-      </router-link>
+      </button>
       <div class="grow"></div>
       <div class="user-profile">
         <router-link
@@ -28,22 +30,22 @@
         </router-link>
       </div>
     </aside>
-
+    <!-- goToCreateDialog -->
     <header class="mobile-header">
       <h1 class="header-title">Dialogit</h1>
-      <router-link
-        :to="{ name: 'new-dialog' }"
+      <button
+        v-if="dialogs.length > 0"
+        @click="goToCreateDialog"
+        :disabled="!canGenerate"
         class="btn btn-action btn--icon-only"
-        aria-label="Luo uusi dialogi"
       >
         <span class="material-symbols-outlined">add</span>
-      </router-link>
+      </button>
     </header>
 
     <main class="content">
-      <div v-if="dialogStore.isLoading"><Loader /></div>
       <div
-        v-else-if="dialogs.length > 0"
+        v-if="dialogs.length > 0"
         class="dialogs-grid"
       >
         <div
@@ -77,7 +79,7 @@
         </template>
       </div>
       <div
-        v-else-if="!dialogStore.isLoading"
+        v-else
         class="message-container"
       >
         <p class="message-text">{{ $t('all.notDialogs') }}</p>
@@ -110,26 +112,80 @@
       </div>
     </footer>
   </div>
+
+  <Teleport to="body">
+    <Modal>
+      <template #header>
+        <h3
+          if="uiStore.modalContent === 'upgrade'"
+          class="title"
+        >
+          {{ $t('view.goToPro') }}
+        </h3>
+      </template>
+
+      <div
+        if="uiStore.modalContent === 'upgrade'"
+        class="pro-benefits"
+      >
+        <h4 class="subtitle">{{ $t('view.unlock') }}</h4>
+        <ul>
+          <li class="description">{{ $t('view.description1') }}</li>
+          <li class="description">{{ $t('view.description2') }}</li>
+          <li class="description">{{ $t('view.description3') }}</li>
+          <li class="description">{{ $t('view.description4') }}</li>
+        </ul>
+      </div>
+
+      <template #footer>
+        <router-link
+          to="/profile"
+          @click="uiStore.hideModal()"
+        >
+          <button class="btn btn-action w-10">
+            <span class="material-symbols-outlined">details</span>
+            {{ $t('buttons.findMore') }}
+          </button>
+        </router-link>
+        <button
+          class="btn btn-common w-10"
+          @click="uiStore.hideModal()"
+        >
+          <span class="material-symbols-outlined">close</span>
+          Sulje
+        </button>
+      </template>
+    </Modal>
+  </Teleport>
 </template>
 
 <script setup>
 import { computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useDialogStore } from '../stores/dialogStore';
 import { useUserStore } from '../stores/userStore';
+import { useSettingsStore } from '../stores/settingsStore';
+import { useUiStore } from '../stores/uiStore';
 import DialogCard from '../components/DialogCard.vue';
-import Loader from '../components/Loader.vue';
+import Modal from '../components/Modal.vue';
+// import Loader from '../components/Loader.vue';
+import { usePermissions } from '../composables/usePermissions';
 
+const router = useRouter();
 const dialogStore = useDialogStore();
 const userStore = useUserStore();
+const settingsStore = useSettingsStore();
+const uiStore = useUiStore();
 
-const levels = ['A1', 'A2.1', 'A2.2', 'B1.1', 'B1.2', 'B2.1', 'B2.2', 'C1.1', 'C1.2'];
+const levels = ['A1', 'A2.1', 'A2.2', 'B1.1', 'B1.2', 'B2.1', 'B2.2', 'C1.1', 'C1.2', 'C2'];
 const dialogs = computed(() => dialogStore.allDialogs);
+const { canGenerate } = usePermissions();
 
 const usage = computed(() => {
   return {
     total: {
       count: dialogStore.allDialogs.length,
-      limit: userStore.planLimits.totalDialogs,
+      limit: settingsStore.limit.totalDialogs,
     },
   };
 });
@@ -146,7 +202,20 @@ onMounted(() => {
   if (dialogStore.allDialogs.length === 0) {
     dialogStore.fetchAllDialogs();
   }
+  if (usage.value.total.count >= usage.value.total.limit) {
+    uiStore.showToast(`Достигнут лимит диалогов (${limits.totalDialogs}).`, 'info');
+  }
 });
+
+const goToCreateDialog = () => {
+  if (userStore.isPro) {
+    router.push({ name: 'new-dialog' });
+  } else if (usage.value.total.count < usage.value.total.limit) {
+    router.push({ name: 'new-dialog' });
+  } else {
+    uiStore.showUpgradeModal();
+  }
+};
 </script>
 
 <style scoped>
@@ -156,14 +225,13 @@ onMounted(() => {
 .page-wrapper {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* Fallback для старых браузеров */
+  height: 100vh;
   overflow: hidden;
   background-color: var(--bg-main);
 }
 .desktop-sidebar {
   display: none;
 }
-/* Мобильная шапка */
 .mobile-header {
   flex-shrink: 0;
   display: flex;
@@ -187,7 +255,6 @@ onMounted(() => {
 .btn--icon-only .material-symbols-outlined {
   margin-right: 0;
 }
-/* Основной контент */
 .content {
   flex: 1;
   overflow-y: auto;
@@ -206,7 +273,6 @@ onMounted(() => {
   grid-template-columns: 1fr;
   gap: 1rem;
 }
-/* Мобильный футер */
 .mobile-footer {
   flex-shrink: 0;
 }
@@ -271,8 +337,6 @@ onMounted(() => {
     height: auto;
     min-height: 100vh;
   }
-
-  /* Включаем десктопный сайдбар */
   .desktop-sidebar {
     display: flex;
     flex-direction: column;
@@ -283,7 +347,7 @@ onMounted(() => {
     border-right: 1px solid var(--border);
     gap: 1.5rem;
     height: 100vh;
-    position: sticky; /* Приклеиваем сайдбар при скролле страницы */
+    position: sticky;
     top: 0;
   }
   .sidebar-title {
@@ -302,13 +366,10 @@ onMounted(() => {
     align-items: center;
     gap: 0.5rem;
   }
-
-  /* Выключаем мобильные элементы */
   .mobile-header,
   .mobile-footer {
     display: none;
   }
-
   .content {
     padding: 2rem;
     overflow-y: visible;

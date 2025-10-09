@@ -95,19 +95,22 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 import { useDialogStore } from '../stores/dialogStore';
+import { useSettingsStore } from '../stores/settingsStore.js';
 import ProBenefitItem from '../components/ProBenefitItem.vue';
+import { resetFreeTierCache } from '../utils/dataTransformer.js';
 
 const router = useRouter();
 const userStore = useUserStore();
 const dialogStore = useDialogStore();
+const settingsStore = useSettingsStore();
 
 const user = computed(() => userStore.user);
 
 const usageStats = computed(() => {
-  const limits = userStore.planLimits;
+  const limits = settingsStore.limit;
   return {
     daily: {
-      count: userStore.dailyGenerationsCount.count,
+      count: settingsStore.dailyGenerationCount,
       limit: limits.dailyGenerations,
     },
     total: {
@@ -128,7 +131,8 @@ const handleUpgrade = () => {
   alert('PRO-versio tulossa pian!');
 };
 const handleDeleteAccount = () => {
-  alert('Tilin poistaminen ei ole vielä käytössä.');
+  resetFreeTierCache();
+  router.push({ name: 'all-dialogs' });
 };
 </script>
 

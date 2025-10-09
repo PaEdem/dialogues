@@ -3,7 +3,7 @@
   <div class="layout">
     <div class="title">{{ $t('new.createNew') }}</div>
     <form
-      @submit.prevent="handleCreateDialog"
+      @submit.prevent="CreateDialog"
       class="dialog-form"
     >
       <div class="form-group">
@@ -58,7 +58,6 @@
         <router-link
           to="/dialogs"
           class="btn btn-common"
-          aria-label="Вернуться ко всем диалогам"
         >
           <span class="material-symbols-outlined icon">cancel</span>
           {{ $t('buttons.cancel') }}
@@ -87,29 +86,51 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useTrainingStore } from '../stores/trainingStore';
+import { useSettingsStore } from '../stores/settingsStore';
+import { useUiStore } from '../stores/uiStore';
+import { useUserStore } from '../stores/userStore';
 
 const router = useRouter();
+const settingsStore = useSettingsStore();
 const trainingStore = useTrainingStore();
+const uiStore = useUiStore();
+const userStore = useUserStore();
 
 const form = ref({
   topic: '',
   words: '',
-  level: 'A1',
+  level: 'B1.1',
   replicas: 10,
 });
 const errorMessage = ref('');
 const levels = ['A1', 'A2.1', 'A2.2', 'B1.1', 'B1.2', 'B2.1', 'B2.2', 'C1.1', 'C1.2', 'C2'];
 const isFormValid = computed(() => form.value.topic.trim() !== '');
 
-const handleCreateDialog = async () => {
-  errorMessage.value = '';
-  const newDialogId = await trainingStore.generateAndCreateDialog(form.value);
-
-  if (newDialogId) {
-    router.push({ name: 'view-dialog', params: { id: newDialogId } });
-  } else {
-    errorMessage.value = 'Произошла ошибка при создании диалога. Попробуйте ещё раз.';
+const handleNewClick = (action) => {
+  if (userStore.isPro) {
+    action();
+    return;
   }
+  if (settingsStore.dailyCount.countNew < settingsStore.limit.dailyGenerations) {
+    const newLeft = settingsStore.limit.dailyGenerations - settingsStore.dailyCount.countNew + 1;
+    uiStore.showToast(`Использован PRO-доступ. Осталось генераций: ${newLeft}.`, 'info');
+    if (newLeft === 0) {
+      uiStore.showToast(`Дневной лимит генераций (${limits.dailyGenerations}) исчерпан.`, 'info');
+    }
+    action();
+  }
+};
+const CreateDialog = async () => {
+  handleNewClick(async () => {
+    errorMessage.value = '';
+    const newDialogId = await trainingStore.generateAndCreateDialog(form.value);
+    if (newDialogId) {
+      settingsStore.incrementCount('new');
+      router.push({ name: 'view-dialog', params: { id: newDialogId } });
+    } else {
+      errorMessage.value = 'Произошла ошибка при создании диалога. Попробуйте ещё раз.';
+    }
+  });
 };
 </script>
 

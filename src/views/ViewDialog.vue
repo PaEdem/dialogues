@@ -4,6 +4,7 @@
   <div v-if="isDesktop">
     <DialogLayout>
       <template #sidebar-content>
+        <!-- кнопка анализ диалога -->
         <button
           class="btn btn-menu"
           @click="getInfo"
@@ -13,20 +14,20 @@
           {{ $t('buttons.analysis') }}
           <span
             v-if="!userStore.isPro"
-            class="pro-badge"
-            >PRO</span
+            class="material-symbols-outlined pro"
+            >crown</span
           >
         </button>
-        <div class="play">
-          <button
-            class="btn btn-menu"
-            @click="toggleListening"
-          >
-            <span class="material-symbols-outlined">volume_up</span>
-            {{ $t('buttons.listen') }}
-          </button>
-        </div>
+        <!-- кнопка прослушать диалог -->
+        <button
+          class="btn btn-menu"
+          @click="toggleListening"
+        >
+          <span class="material-symbols-outlined">volume_up</span>
+          {{ $t('buttons.listen') }}
+        </button>
         <div class="grow"></div>
+        <!-- кнопки тренировок -->
         <p class="training-title">{{ $t('view.training') }}</p>
         <button
           v-for="level in trainingLevels"
@@ -36,14 +37,15 @@
           @click="goToTraining(level)"
         >
           <span class="material-symbols-outlined">{{ level.icon }}</span>
-          <span class="text-mobile">{{ level.text }}</span>
+          {{ level.text }}
           <span
             v-if="!userStore.isPro && level.isPro"
-            class="pro-badge"
-            >PRO</span
+            class="material-symbols-outlined pro"
+            >crown</span
           >
         </button>
         <div class="grow"></div>
+        <!-- кнопка удалить диалог -->
         <button
           class="btn btn-danger"
           @click="handleDelete"
@@ -52,7 +54,7 @@
           {{ $t('buttons.delDialog') }}
         </button>
       </template>
-
+      <!-- текст диалога -->
       <div
         v-if="dialog"
         class="scroll-container"
@@ -78,7 +80,6 @@
       <button
         @click="router.back()"
         class="header-btn"
-        aria-label="Назад"
       >
         <span class="material-symbols-outlined i">arrow_back_ios</span>
       </button>
@@ -118,12 +119,12 @@
           :disabled="!isButtonActive()"
         >
           <span class="material-symbols-outlined">analytics</span>
+          {{ $t('buttons.analysisM') }}
           <span
             v-if="!userStore.isPro"
-            class="pro-badge-mobile"
-            >PRO</span
+            class="material-symbols-outlined pro"
+            >crown</span
           >
-          {{ $t('buttons.analysisM') }}
         </button>
         <button
           class="btn btn-danger half"
@@ -141,23 +142,23 @@
           @click="goToTraining(level)"
         >
           <span class="material-symbols-outlined">{{ level.icon }}</span>
-          <span class="text-mobile">{{ level.text }}</span>
+          {{ level.text }}
           <span
-            v-if="userStore.isPro"
-            class="pro-badge-mobile"
-            >PRO</span
+            v-if="!userStore.isPro && level.isPro"
+            class="material-symbols-outlined pro"
+            >crown</span
           >
         </button>
       </div>
     </footer>
   </div>
 
-  <div
+  <!-- <div
     v-else
     class="loading-container"
   >
     <Loader />
-  </div>
+  </div> -->
 
   <Teleport to="body">
     <Modal>
@@ -186,16 +187,17 @@
       >
         <h4 class="subtitle">{{ $t('view.unlock') }}</h4>
         <ul>
-          <ProBenefitItem>{{ $t('profile.unlimGen') }}</ProBenefitItem>
-          <ProBenefitItem>{{ $t('profile.unlimStor') }}</ProBenefitItem>
-          <ProBenefitItem>{{ $t('profile.qualityVoice') }}</ProBenefitItem>
-          <ProBenefitItem>{{ $t('profile.allLevels') }}</ProBenefitItem>
-          <ProBenefitItem>{{ $t('profile.allModes') }}</ProBenefitItem>
-          <ProBenefitItem>{{ $t('profile.analysis') }}</ProBenefitItem>
+          <li class="description">{{ $t('view.description1') }}</li>
+          <li class="description">{{ $t('view.description2') }}</li>
+          <li class="description">{{ $t('view.description3') }}</li>
+          <li class="description">{{ $t('view.description4') }}</li>
         </ul>
       </div>
 
-      <template #footer>
+      <template
+        #footer
+        v-if="uiStore.modalContent !== 'analysis'"
+      >
         <router-link
           to="/profile"
           @click="uiStore.hideModal()"
@@ -229,9 +231,8 @@ import { useUserStore } from '../stores/userStore';
 import { useBreakpoint } from '../composables/useBreakpoint';
 import { usePermissions } from '../composables/usePermissions';
 import DialogLayout from '../components/DialogLayout.vue';
-import ProBenefitItem from '../components/ProBenefitItem.vue';
 import Modal from '../components/Modal.vue';
-import Loader from '../components/Loader.vue';
+// import Loader from '../components/Loader.vue';
 
 const { t } = useI18n();
 const props = defineProps({ id: { type: String, required: true } });
@@ -241,7 +242,7 @@ const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
 const uiStore = useUiStore();
 const userStore = useUserStore();
-const { isButtonActive, PREVIEW_LIMIT } = usePermissions();
+const { isButtonActive } = usePermissions();
 const { isDesktop } = useBreakpoint();
 
 const dialog = computed(() => dialogStore.currentDialog);
@@ -277,43 +278,39 @@ const toggleListening = () => {
   if (!dialog.value) return;
   trainingStore.togglePlayStop(dialog.value.fin.join('. '));
 };
-const handleProFeatureClick = (action) => {
-  // 1. Если пользователь PRO, просто выполняем действие
+const handleProClick = (action) => {
   if (userStore.isPro) {
     action();
     return;
   }
-  if (settingsStore.dailyPreviewCount < PREVIEW_LIMIT) {
-    settingsStore.incrementPreviewCount();
-    const previewsLeft = PREVIEW_LIMIT - settingsStore.dailyPreviewCount;
-
+  if (settingsStore.dailyPreviewCount < settingsStore.limit.useProMode) {
+    settingsStore.incrementCount('view');
+    const previewsLeft = settingsStore.limit.useProMode - settingsStore.dailyPreviewCount;
     let toastMessage = `Использован PRO-доступ. Осталось: ${previewsLeft}.`;
     if (previewsLeft === 0) {
       toastMessage = 'Использован последний PRO-доступ на сегодня.';
     }
-
     uiStore.showToast(toastMessage, 'info');
     action();
   } else {
-    settingsStore.incrementPreviewCount();
+    settingsStore.incrementCount('view');
     uiStore.showUpgradeModal();
   }
 };
-const goToTraining = (level) => {
-  if (level.isPro) {
-    handleProFeatureClick(() => {
-      router.push({ name: level.name, params: { id: props.id } });
-    });
-  } else {
-    // Для бесплатных уровней просто переходим
-    router.push({ name: level.name, params: { id: props.id } });
-  }
-};
 const getInfo = async () => {
-  handleProFeatureClick(async () => {
+  handleProClick(async () => {
     await trainingStore.fetchDialogAnalysis();
     uiStore.showModal('analysis');
   });
+};
+const goToTraining = (level) => {
+  if (level.isPro) {
+    handleProClick(() => {
+      router.push({ name: level.name, params: { id: props.id } });
+    });
+  } else {
+    router.push({ name: level.name, params: { id: props.id } });
+  }
 };
 </script>
 
@@ -327,23 +324,30 @@ const getInfo = async () => {
   align-items: center;
   height: 100vh;
 }
-.pro-badge {
-  margin-left: auto;
-  font-size: 0.7rem;
-  font-weight: 700;
-  background-color: var(--bg-pro);
-  color: var(--t-pro);
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
+.pro {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 0.35rem;
+  margin-right: 0.35rem;
+  font-size: var(--base);
+  color: var(--bg-pro);
+  background: none;
 }
 .title {
   text-align: center;
   color: var(--t-pro);
 }
 .subtitle {
+  text-align: center;
   color: var(--text-head);
   margin-bottom: 1rem;
   margin-left: 2rem;
+}
+.description {
+  text-align: center;
+  color: var(--text-base);
+  margin: 0.5rem 0;
 }
 /* ============================================= */
 /* 2. СТИЛИ ДЛЯ ДЕСКТОПНОГО МАКЕТА (>= 768px)    */
@@ -367,13 +371,6 @@ const getInfo = async () => {
   font-style: italic;
   color: var(--text-title);
   padding-left: 1rem;
-}
-.play {
-  display: flex;
-  gap: 0.5rem;
-}
-.play > :first-child {
-  flex-grow: 1;
 }
 .training-title {
   text-align: center;
@@ -495,18 +492,5 @@ const getInfo = async () => {
 }
 .text-mobile {
   font-size: var(--sm);
-}
-.pro-badge-mobile {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin-right: 0.25rem;
-  margin-top: 0.25rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  background-color: var(--bg-pro);
-  color: var(--t-pro);
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
 }
 </style>

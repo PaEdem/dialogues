@@ -1,12 +1,12 @@
 // src/stores/trainingStore.js
 import { defineStore } from 'pinia';
 import { marked } from 'marked';
-import { useUserStore } from './userStore';
+// import { useUserStore } from './userStore';
 import { useDialogStore } from './dialogStore';
 import { useUiStore } from './uiStore';
 import { compareAndFormatTexts } from '../utils/compareTexts';
 import { fetchGeminiResponse } from '../services/geminiService';
-import { usePermissions } from '../composables/usePermissions';
+// import { usePermissions } from '../composables/usePermissions';
 
 export const useTrainingStore = defineStore('training', {
   state: () => ({
@@ -183,10 +183,6 @@ export const useTrainingStore = defineStore('training', {
       this.recognition.start();
     },
     async generateAndCreateDialog(creationParams) {
-      const { can } = usePermissions();
-      if (!can('generateDialog')) {
-        return null;
-      }
       this.isLoading = true;
       try {
         const prompt = this.getPromptForNewDialog(creationParams);
@@ -197,9 +193,6 @@ export const useTrainingStore = defineStore('training', {
 
         const dialogStore = useDialogStore();
         const newDialogId = await dialogStore.createDialog(dialogData, creationParams);
-
-        const userStore = useUserStore();
-        userStore.incrementDailyUsage();
 
         return newDialogId;
       } catch (error) {

@@ -1,5 +1,6 @@
 /* src/styles/buttons.css */
 .btn {
+  position: relative;
   display: inline-flex;
   justify-content: center;
   align-items: center;

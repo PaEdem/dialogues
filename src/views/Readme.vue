@@ -32,11 +32,6 @@
   </div>
 </template>
 
-<script setup>
-import { useSettingsStore } from '../stores/settingsStore';
-const settingsStore = useSettingsStore();
-</script>
-
 <style scoped>
 .page {
   display: flex;

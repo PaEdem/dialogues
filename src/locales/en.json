@@ -83,7 +83,11 @@
     "inPro": "Dialog analysis is available in the PRO version.",
     "headerAnalysis": "Grammatical and lexical analysis.",
     "goToPro": "Upgrade to PRO",
-    "unlock": "Unlock all the features of the app!"
+    "unlock": "Unlock all the features of the app!",
+    "description1": "You've fully used your free PRO access limit for today — that's our daily gift!",
+    "description2": "To continue using all PRO features without restrictions, get a subscription.",
+    "description3": "Get unlimited access now and use them as much as you need.",
+    "description4": "Switch to a PRO subscription and get maximum benefits today!"
   },
   "new": {
     "createNew": "Create new dialog",
