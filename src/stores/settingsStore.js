@@ -6,32 +6,16 @@ export const useSettingsStore = defineStore('settings', {
   state: () => ({
     theme: 'light',
     uiLanguage: 'en',
-    learningLanguage: 'Finnish',
+    learningLanguage: 'Suomi',
     limit: {
       useProMode: 2,
       dailyGenerations: 2,
-      totalDialogs: 6,
+      totalDialogs: 4,
     },
     dailyPreviewCount: 0,
     dailyGenerationCount: 0,
+    date: new Date().toDateString(),
   }),
-  getters: {
-    dailyCount: () => {
-      const newUsage = {
-        countView: 0,
-        countNew: 0,
-        date: new Date().toDateString(),
-      };
-      const usageFromLS = JSON.parse(localStorage.getItem('usage'));
-      const today = new Date().toDateString();
-
-      if (usageFromLS.date !== today) {
-        return newUsage;
-      } else {
-        return usageFromLS;
-      }
-    },
-  },
   actions: {
     setTheme(newTheme) {
       this.theme = newTheme;
@@ -73,6 +57,10 @@ export const useSettingsStore = defineStore('settings', {
         this.dailyGenerationCount++;
         usage.countNew = this.dailyGenerationCount;
       }
+      if (type === 'total') {
+        this.dailyGenerationCount = this.limit.dailyGenerations + 1; // чтобы заблокировать создание новых диалогов
+        usage.countNew = this.dailyGenerationCount;
+      }
 
       // 3. Преобразуем измененный объект обратно в строку
       const updatedUsageJSON = JSON.stringify(usage);
@@ -84,13 +72,15 @@ export const useSettingsStore = defineStore('settings', {
     initSettings() {
       // ЗАГРУЗКИ ТЕМЫ
       const savedTheme = localStorage.getItem('app-theme');
-      this.setTheme(savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+      this.setTheme(savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark'));
       // ЗАГРУЗКИ ЯЗЫКОВ
       const savedUiLang = localStorage.getItem('app-ui-language');
-      this.setUiLanguage(savedUiLang || 'en');
+      if (savedUiLang) {
+        this.setUiLanguage(savedUiLang || 'en');
+      }
       const savedLearningLang = localStorage.getItem('app-learning-language');
       if (savedLearningLang) {
-        this.setLearningLanguage(savedLearningLang);
+        this.setLearningLanguage(savedLearningLang || 'Suomi');
       }
       // ЛОГИКА ЗАГРУЗКИ СЧЁТЧИКОВ
       const savedUsage = JSON.parse(localStorage.getItem('usage'));
@@ -102,6 +92,8 @@ export const useSettingsStore = defineStore('settings', {
         // Если новый день или нет записи, счётчик равен 0
         this.dailyPreviewCount = 0;
         this.dailyGenerationCount = 0;
+        this.date = new Date().toDateString();
+        localStorage.removeItem('usage'); // очищаем старые данные
       }
     },
   },

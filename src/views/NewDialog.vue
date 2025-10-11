@@ -3,7 +3,7 @@
   <div class="layout">
     <div class="title">{{ $t('new.createNew') }}</div>
     <form
-      @submit.prevent="CreateDialog"
+      @submit.prevent="saveDialog"
       class="dialog-form"
     >
       <div class="form-group">
@@ -111,16 +111,18 @@ const handleNewClick = (action) => {
     action();
     return;
   }
-  if (settingsStore.dailyCount.countNew < settingsStore.limit.dailyGenerations) {
-    const newLeft = settingsStore.limit.dailyGenerations - settingsStore.dailyCount.countNew + 1;
-    uiStore.showToast(`Использован PRO-доступ. Осталось генераций: ${newLeft}.`, 'info');
-    if (newLeft === 0) {
-      uiStore.showToast(`Дневной лимит генераций (${limits.dailyGenerations}) исчерпан.`, 'info');
+
+  if (settingsStore.dailyGenerationCount <= settingsStore.limit.dailyGenerations) {
+    const newLeft = settingsStore.limit.dailyGenerations - settingsStore.dailyGenerationCount - 1;
+    if (newLeft > 0) {
+      uiStore.showToast(`Использован PRO-доступ. Осталось генераций: ${newLeft}.`, 'info');
+    } else {
+      uiStore.showToast(`Дневной лимит генераций (${settingsStore.limit.dailyGenerations}) исчерпан.`, 'info');
     }
     action();
   }
 };
-const CreateDialog = async () => {
+const saveDialog = async () => {
   handleNewClick(async () => {
     errorMessage.value = '';
     const newDialogId = await trainingStore.generateAndCreateDialog(form.value);

@@ -8,7 +8,11 @@
     >
       <div
         class="modal-container"
-        :class="{ 'bg-analysis': uiStore.modalContent !== 'analysis' }"
+        :class="{
+          analysis: uiStore.modalContent === 'analysis',
+          upgrade: uiStore.modalContent === 'upgrade',
+          default: uiStore.modalContent === 'default',
+        }"
       >
         <div
           class="modal-header"
@@ -38,7 +42,7 @@
             @click="uiStore.hideModal()"
           >
             <span class="material-symbols-outlined">close</span>
-            Sulje
+            {{ $t('buttons.close') }}
           </button>
         </div>
       </div>
@@ -77,19 +81,28 @@ const uiStore = useUiStore();
   flex-direction: column;
   max-height: 90vh; /* Максимальная высота */
 }
-.modal-container.bg-analysis {
+.modal-container.default {
+  max-width: 640px;
+  background: var(--bg-main);
+}
+.modal-container.analysis {
+  max-width: 1024px;
+  background: var(--bg-main);
+}
+.modal-container.upgrade {
   max-width: 640px;
   background: var(--gradient-pro);
 }
 .modal-header {
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border);
+  /* border-bottom: 1px solid var(--border); */
   flex-shrink: 0;
 }
 .modal-header .title {
   font-size: var(--xxl);
   color: var(--text-head);
   margin: 0;
+  text-align: center;
 }
 .modal-body {
   overflow-y: auto;
@@ -102,7 +115,7 @@ const uiStore = useUiStore();
   align-items: center;
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--border);
-  box-shadow: 0 -4px 8px var(--shadow);
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
 .modal-footer.footer-analysis {
@@ -110,20 +123,24 @@ const uiStore = useUiStore();
 }
 /* Стили для контента, генерируемого v-html */
 .modal-body h1,
-.modal-body h3 {
-  font-family: 'Roboto Condensed', sans-serif;
+.modal-body h3,
+.modal-body .subtitle {
+  font-family: 'Segoe UI', 'Roboto Condensed', sans-serif;
   font-size: var(--xl);
   color: var(--g3);
   text-align: center;
-  margin: 1rem 0;
+  margin-bottom: 1rem;
 }
 .modal-body ul {
   list-style-type: none;
   padding-left: 0.5rem;
 }
 .modal-body ul li {
-  font-size: var(--base);
+  font-family: 'Segoe UI', 'Roboto Condensed', sans-serif;
+  font-size: var(--lg);
   color: var(--text-base);
+  font-weight: 600;
+  text-align: center;
   font-style: italic;
   margin-bottom: 0.25rem;
 }

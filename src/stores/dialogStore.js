@@ -89,6 +89,7 @@ export const useDialogStore = defineStore('dialogs', {
         });
         const docRef = await addDoc(collection(db, 'dialogs'), dataToSave);
         clearAllDialogCache();
+        await this.fetchAllDialogs();
         return docRef.id;
       } catch (error) {
         console.error('Ошибка сохранения диалога:', error);

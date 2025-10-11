@@ -1,4 +1,4 @@
-<!-- \\src\views\Readme.vue -->
+<!-- \\src\views\Welcome.vue -->
 <template>
   <div class="page">
     <div class="page-container">
@@ -13,6 +13,15 @@
           {{ $t('welcome.text3') }}
         </div>
         <div class="btn-container">
+          <select v-model="uiLanguage">
+            <option
+              v-for="lang in uiLanguages"
+              :key="lang.code"
+              :value="lang.code"
+            >
+              {{ lang.name }}
+            </option>
+          </select>
           <router-link
             to="/auth"
             class="btn btn-action"
@@ -31,6 +40,23 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { computed } from 'vue';
+import { useSettingsStore } from '../stores/settingsStore';
+const settingsStore = useSettingsStore();
+
+const uiLanguages = [
+  { code: 'en', name: 'English' },
+  { code: 'ru', name: 'Русский' },
+  { code: 'uk', name: 'Українська' },
+];
+
+const uiLanguage = computed({
+  get: () => settingsStore.uiLanguage,
+  set: (value) => settingsStore.setUiLanguage(value),
+});
+</script>
 
 <style scoped>
 .page {
@@ -71,14 +97,25 @@
   text-align: center;
 }
 .btn-container {
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
 }
 .image {
   width: 100%;
   height: auto;
 }
-
+select {
+  width: 150px;
+  height: 50px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--g3);
+  background-color: var(--g1);
+  font-size: var(--base);
+  color: var(--g3);
+}
 @media (min-width: 992px) {
   .page-container {
     flex-direction: row;
@@ -91,7 +128,7 @@
     align-items: flex-start;
   }
   .btn-container {
-    justify-content: end;
+    justify-content: space-between;
   }
   .page-image {
     -webkit-box-flex: auto;

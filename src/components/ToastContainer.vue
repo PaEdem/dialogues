@@ -43,6 +43,7 @@ const uiStore = useUiStore();
 }
 .toast--warning {
   background-color: var(--bg-t-warning);
+  color: var(--r3);
 }
 .toast--error {
   background-color: var(--bg-t-error);

@@ -101,10 +101,8 @@ export function clearAllDialogCache() {
  */
 export function resetFreeTierCache() {
   try {
-    localStorage.removeItem('usage'); // Счётчик генерации диалогов
-    localStorage.removeItem('previewUsage'); // Счётчик PRO-просмотров
+    localStorage.removeItem('usage');
     console.log('Кеш лимитов Free-тарифа сброшен!');
-    alert('Счётчики Free-тарифа сброшены до нуля!');
   } catch (e) {
     console.error('Ошибка при сбросе кеша Free-тарифа:', e);
   }

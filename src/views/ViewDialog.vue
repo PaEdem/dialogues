@@ -8,7 +8,7 @@
         <button
           class="btn btn-menu"
           @click="getInfo"
-          :disabled="!isButtonActive()"
+          :disabled="!canView()"
         >
           <span class="material-symbols-outlined">analytics</span>
           {{ $t('buttons.analysis') }}
@@ -33,7 +33,7 @@
           v-for="level in trainingLevels"
           :key="level.name"
           class="btn btn-action"
-          :disabled="level.isPro && !isButtonActive()"
+          :disabled="level.isPro && !canView()"
           @click="goToTraining(level)"
         >
           <span class="material-symbols-outlined">{{ level.icon }}</span>
@@ -116,7 +116,7 @@
         <button
           class="btn btn-menu mobile text-mobile"
           @click="getInfo"
-          :disabled="!isButtonActive()"
+          :disabled="!canView()"
         >
           <span class="material-symbols-outlined">analytics</span>
           {{ $t('buttons.analysisM') }}
@@ -138,7 +138,7 @@
           v-for="level in trainingLevels"
           :key="level.name"
           class="btn btn-action mobile"
-          :disabled="level.isPro && !isButtonActive()"
+          :disabled="level.isPro && !canView()"
           @click="goToTraining(level)"
         >
           <span class="material-symbols-outlined">{{ level.icon }}</span>
@@ -152,13 +152,6 @@
       </div>
     </footer>
   </div>
-
-  <!-- <div
-    v-else
-    class="loading-container"
-  >
-    <Loader />
-  </div> -->
 
   <Teleport to="body">
     <Modal>
@@ -198,6 +191,13 @@
         #footer
         v-if="uiStore.modalContent !== 'analysis'"
       >
+        <button
+          class="btn btn-common w-10"
+          @click="uiStore.hideModal()"
+        >
+          <span class="material-symbols-outlined">close</span>
+          {{ $t('buttons.close') }}
+        </button>
         <router-link
           to="/profile"
           @click="uiStore.hideModal()"
@@ -207,13 +207,6 @@
             {{ $t('buttons.findMore') }}
           </button>
         </router-link>
-        <button
-          class="btn btn-common w-10"
-          @click="uiStore.hideModal()"
-        >
-          <span class="material-symbols-outlined">close</span>
-          Sulje
-        </button>
       </template>
     </Modal>
   </Teleport>
@@ -232,7 +225,6 @@ import { useBreakpoint } from '../composables/useBreakpoint';
 import { usePermissions } from '../composables/usePermissions';
 import DialogLayout from '../components/DialogLayout.vue';
 import Modal from '../components/Modal.vue';
-// import Loader from '../components/Loader.vue';
 
 const { t } = useI18n();
 const props = defineProps({ id: { type: String, required: true } });
@@ -242,7 +234,7 @@ const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
 const uiStore = useUiStore();
 const userStore = useUserStore();
-const { isButtonActive } = usePermissions();
+const { canView } = usePermissions();
 const { isDesktop } = useBreakpoint();
 
 const dialog = computed(() => dialogStore.currentDialog);
@@ -290,7 +282,7 @@ const handleProClick = (action) => {
     if (previewsLeft === 0) {
       toastMessage = 'Использован последний PRO-доступ на сегодня.';
     }
-    uiStore.showToast(toastMessage, 'info');
+    uiStore.showToast(toastMessage, 'warning');
     action();
   } else {
     settingsStore.incrementCount('view');

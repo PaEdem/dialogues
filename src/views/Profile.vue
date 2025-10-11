@@ -38,12 +38,8 @@
           <p class="usage-info">
             {{ $t('profile.yourSubscr') }}<strong>{{ userStore.isPro ? 'PRO' : 'Free' }}</strong>
           </p>
-          <p class="usage-info">
-            {{ $t('profile.genToday') }} {{ usageStats.daily.count }} / {{ usageStats.daily.limit }}
-          </p>
-          <p class="usage-info">
-            {{ $t('profile.savedDialog') }} {{ usageStats.total.count }} / {{ usageStats.total.limit }}
-          </p>
+          <p class="usage-info">{{ $t('profile.genToday') }} {{ usage.daily.count }} / {{ usage.daily.limit }}</p>
+          <p class="usage-info">{{ $t('profile.savedDialog') }} {{ usage.total.count }} / {{ usage.total.limit }}</p>
         </div>
         <div class="pro-card">
           <div class="pro-header">
@@ -106,16 +102,15 @@ const settingsStore = useSettingsStore();
 
 const user = computed(() => userStore.user);
 
-const usageStats = computed(() => {
-  const limits = settingsStore.limit;
+const usage = computed(() => {
   return {
-    daily: {
-      count: settingsStore.dailyGenerationCount,
-      limit: limits.dailyGenerations,
-    },
     total: {
       count: dialogStore.allDialogs.length,
-      limit: limits.totalDialogs,
+      limit: settingsStore.limit.totalDialogs,
+    },
+    daily: {
+      count: settingsStore.dailyGenerationCount,
+      limit: settingsStore.limit.dailyGenerations,
     },
   };
 });

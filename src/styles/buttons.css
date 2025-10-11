@@ -4,6 +4,7 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  min-width: 150px;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
@@ -41,13 +42,12 @@
 }
 .btn-common {
   width: 100%;
-  background: var(--y9);
+  background: var(--y8);
   color: var(--y0);
   border-color: var(--bb);
 }
 .btn-common:hover:not(:disabled) {
   background-color: var(--y5);
-  color: var(--y7);
 }
 .btn-danger {
   width: 100%;
@@ -65,13 +65,14 @@
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  background-color: var(--bg-main);
+  background-color: var(--y0);
   color: var(--text-head);
   font-size: var(--base);
   border: 1px solid var(--bb);
 }
 .btn-menu:hover:not(:disabled) {
-  background-color: var(--y9);
+  background-color: var(--bb);
+  color: var(--y0);
 }
 .w-10 {
   max-width: 10rem;

@@ -1,40 +1,50 @@
 // src/composables/usePermissions.js
-import { computed } from 'vue';
 import { useUserStore } from '../stores/userStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useDialogStore } from '../stores/dialogStore';
-import { useUiStore } from '../stores/uiStore';
 
 export function usePermissions() {
   const userStore = useUserStore();
   const settingsStore = useSettingsStore();
   const dialogStore = useDialogStore();
-  const uiStore = useUiStore();
 
-  // для блокировки кнопки NEW DIALOG
-  const canGenerate = computed(() => {
-    if (userStore.isPro) return true;
-    const limit = settingsStore.limit;
-    const dailyCount = settingsStore.dailyCount.countNew;
-    const totalCount = dialogStore.allDialogs.length;
-    return dailyCount <= limit.dailyGenerations && totalCount <= limit.totalDialogs;
-  });
-
-  const can = () => {
+  // Достигнут ли лимит на создание новых диалогов
+  const canNew = () => {
     if (userStore.isPro) {
       return true;
     } else {
-      return false;
+      const dailyCount = settingsStore.dailyGenerationCount;
+      return dailyCount <= settingsStore.limit.dailyGenerations;
     }
   };
 
-  const isButtonActive = () => {
-    if (!userStore.isPro) {
-      return settingsStore.dailyCount.countView <= settingsStore.limit.useProMode;
-    } else {
+  // Достигнут ли общий лимит диалогов
+  const canTotal = () => {
+    if (userStore.isPro) {
       return true;
+    } else {
+      const totalCount = dialogStore.allDialogs.length;
+      return totalCount <= settingsStore.limit.totalDialogs;
     }
   };
 
-  return { can, canGenerate, isButtonActive };
+  // Можно ли создавать новые диалоги (учитывая оба лимита)
+  const canGenerate = () => {
+    if (userStore.isPro) {
+      return true;
+    } else {
+      return canNew() && canTotal();
+    }
+  };
+
+  // для блокировки кнопок VIEW
+  const canView = () => {
+    if (userStore.isPro) {
+      return true;
+    } else {
+      return settingsStore.dailyPreviewCount <= settingsStore.limit.useProMode;
+    }
+  };
+
+  return { canNew, canTotal, canView, canGenerate };
 }

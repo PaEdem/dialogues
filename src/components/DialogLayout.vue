@@ -9,7 +9,6 @@
         <router-link
           to="/dialogs"
           class="btn btn-common"
-          aria-label="Вернуться ко всем диалогам"
         >
           <span class="material-symbols-outlined">arrow_back_ios</span>
           {{ $t('buttons.dialogList') }}

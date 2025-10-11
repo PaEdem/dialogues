@@ -1,7 +1,7 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '../stores/userStore.js';
-import Readme from '../views/Readme.vue';
+import Welcome from '../views/Welcome.vue';
 import Auth from '../components/Auth.vue';
 import AllDialogs from '../views/AllDialogs.vue';
 import Profile from '../views/Profile.vue';
@@ -16,8 +16,8 @@ import Level_4 from '../views/Level_4.vue';
 const routes = [
   {
     path: '/',
-    name: 'readme',
-    component: Readme,
+    name: 'welcome',
+    component: Welcome,
   },
   {
     path: '/auth',

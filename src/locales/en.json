@@ -33,7 +33,12 @@
     "translation": "Translate",
     "cancel": "Cancel",
     "save": "Save",
-    "findMore": "Find out more"
+    "findMore": "Find out more",
+    "close": "Close",
+    "reDialog": "Repeat the dialogue",
+    "reLine": "Repeat the line",
+    "nextLine": "Next line",
+    "endPractice": "End practice"
   },
   "welcome": {
     "title": "European Languages with AI",

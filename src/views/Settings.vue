@@ -73,9 +73,9 @@
         <h2 class="group-title">
           {{ $t('settings.voiceSettings') }}
           <span
-            v-if="!can('useCloudTTS')"
-            class="pro-badge"
-            >PRO</span
+            v-if="!userStore.isPro"
+            class="material-symbols-outlined pro"
+            >crown</span
           >
         </h2>
         <div class="setting-item">
@@ -83,7 +83,7 @@
           <select
             id="voice-select"
             v-model="selectedVoice"
-            :disabled="!can('useCloudTTS')"
+            :disabled="!userStore.isPro"
           >
             <option value="default">{{ $t('settings.defaultVoice') }}</option>
           </select>
@@ -98,7 +98,7 @@
               max="1.5"
               step="0.1"
               v-model="speechRate"
-              :disabled="!can('useCloudTTS')"
+              :disabled="!userStore.isPro"
             />
             <span>{{ speechRate }}x</span>
           </div>
@@ -107,7 +107,7 @@
           <label>{{ $t('settings.preListening') }}</label>
           <button
             class="btn btn-common btn-auto"
-            :disabled="!can('useCloudTTS')"
+            @click="togglePlayTest"
           >
             <span class="material-symbols-outlined">play_circle</span>
             {{ $t('settings.test') }}
@@ -130,11 +130,11 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useSettingsStore } from '../stores/settingsStore';
-import { usePermissions } from '../composables/usePermissions';
+import { useUserStore } from '../stores/userStore';
 import { useRouter } from 'vue-router';
 
 const settingsStore = useSettingsStore();
-const { can } = usePermissions();
+const userStore = useUserStore();
 const router = useRouter();
 
 const uiLanguages = [
@@ -177,6 +177,10 @@ const learningLanguage = computed({
 
 const selectedVoice = ref('default');
 const speechRate = ref(1.0);
+
+const togglePlayTest = () => {
+  console.log('PLAY / STOP профессиональная озвучка');
+};
 
 const goBack = () => {
   router.back();
@@ -223,6 +227,12 @@ const goBack = () => {
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
 }
+.group-title .pro {
+  font-size: 1rem;
+  color: var(--bg-pro);
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
 .setting-item {
   display: flex;
   justify-content: space-between;
@@ -245,6 +255,7 @@ select {
   border-radius: 8px;
   background-color: var(--bg-group);
   padding: 0.25rem;
+  gap: 0.35rem;
 }
 .theme-switcher button {
   display: flex;

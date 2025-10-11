@@ -7,7 +7,7 @@
         v-if="dialogs.length > 0"
         @click="goToCreateDialog"
         class="btn btn-action"
-        :disabled="!canGenerate"
+        :disabled="!canGenerate()"
       >
         <span class="material-symbols-outlined">add</span>
         {{ $t('all.createNew') }}
@@ -36,7 +36,7 @@
       <button
         v-if="dialogs.length > 0"
         @click="goToCreateDialog"
-        :disabled="!canGenerate"
+        :disabled="!canGenerate()"
         class="btn btn-action btn--icon-only"
       >
         <span class="material-symbols-outlined">add</span>
@@ -168,7 +168,6 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useUiStore } from '../stores/uiStore';
 import DialogCard from '../components/DialogCard.vue';
 import Modal from '../components/Modal.vue';
-// import Loader from '../components/Loader.vue';
 import { usePermissions } from '../composables/usePermissions';
 
 const router = useRouter();
@@ -179,13 +178,17 @@ const uiStore = useUiStore();
 
 const levels = ['A1', 'A2.1', 'A2.2', 'B1.1', 'B1.2', 'B2.1', 'B2.2', 'C1.1', 'C1.2', 'C2'];
 const dialogs = computed(() => dialogStore.allDialogs);
-const { canGenerate } = usePermissions();
+const { canNew, canGenerate } = usePermissions();
 
 const usage = computed(() => {
   return {
     total: {
       count: dialogStore.allDialogs.length,
       limit: settingsStore.limit.totalDialogs,
+    },
+    daily: {
+      count: settingsStore.dailyGenerationCount,
+      limit: settingsStore.limit.dailyGenerations,
     },
   };
 });
@@ -203,16 +206,28 @@ onMounted(() => {
     dialogStore.fetchAllDialogs();
   }
   if (usage.value.total.count >= usage.value.total.limit) {
-    uiStore.showToast(`Достигнут лимит диалогов (${limits.totalDialogs}).`, 'info');
+    uiStore.showToast(`Достигнут лимит диалогов (${settingsStore.limit.totalDialogs}).`, 'warning');
   }
 });
 
 const goToCreateDialog = () => {
+  // для про можно всегда
   if (userStore.isPro) {
     router.push({ name: 'new-dialog' });
-  } else if (usage.value.total.count < usage.value.total.limit) {
+  }
+  // для бесплатных проверяем оба лимита и жестко проверяем общий лимит
+  else if (canGenerate() && usage.value.total.count < usage.value.total.limit) {
     router.push({ name: 'new-dialog' });
-  } else {
+  }
+  // если нельзя генерировать
+  else if (!canNew()) {
+    // делаем инкремент и показываем модалку
+    settingsStore.incrementCount('new');
+    uiStore.showUpgradeModal();
+  }
+  // если достигнут общий лимит диалогов
+  else {
+    settingsStore.incrementCount('total');
     uiStore.showUpgradeModal();
   }
 };
@@ -320,11 +335,11 @@ const goToCreateDialog = () => {
   appearance: none;
 }
 .usage-progress::-webkit-progress-bar {
-  background-color: var(--bg-group);
+  background-color: var(--y3);
   border-radius: 4px;
 }
 .usage-progress::-webkit-progress-value {
-  background-color: var(--y5);
+  background-color: var(--bb);
   border-radius: 4px;
   transition: width 0.3s ease;
 }

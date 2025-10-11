@@ -4,11 +4,12 @@
     <template #sidebar-content>
       <TrainingSidebar
         :dialogId="props.id"
-        description="Финский текст, русский перевод и финская речь. Учи построчно."
+        slogan="Учите диалоги пошагово!"
+        description="Слушай реплику, читай оригинал и перевод. Шаг за шагом. Повторяй фразу или весь диалог в любой момент."
       >
         <template #extra-controls>
           <button
-            class="btn-control mic off"
+            class="btn btn-menu"
             disabled
           >
             <span class="material-symbols-outlined icon">mic_off</span>
@@ -45,16 +46,8 @@
         <h3 class="title">Harjoitus on ohi</h3>
       </template>
 
-      <div class="end-of-level-message">
+      <div class="end-message">
         <p>Hyvää työtä!</p>
-        <button
-          @click="
-            // trainingStore.repeatLevel();
-            uiStore.hideModal()
-          "
-        >
-          Aloita alusta
-        </button>
       </div>
     </Modal>
   </Teleport>
@@ -64,7 +57,6 @@
 import { computed, onMounted } from 'vue';
 import { useDialogStore } from '../stores/dialogStore';
 import { useTrainingStore } from '../stores/trainingStore';
-// import { useUiStore } from '../stores/uiStore';
 import DialogLayout from '../components/DialogLayout.vue';
 import TrainingSidebar from '../components/TrainingSidebar.vue';
 import Modal from '../components/Modal.vue';
@@ -72,14 +64,12 @@ import Modal from '../components/Modal.vue';
 const props = defineProps({ id: { type: String, required: true } });
 const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
-// const uiStore = useUiStore();
 
 const lineIndex = computed(() => trainingStore.currentLineIndex);
 const dialog = computed(() => dialogStore.currentDialog);
 
 const visibleLines = computed(() => {
   if (!dialog.value) return { fin: [], rus: [] };
-  // +1 чтобы показать текущую строчку
   return {
     fin: dialog.value.fin.slice(0, lineIndex.value + 1),
     rus: dialog.value.rus.slice(0, lineIndex.value + 1),
@@ -88,14 +78,11 @@ const visibleLines = computed(() => {
 
 onMounted(async () => {
   await dialogStore.fetchDialogById(props.id);
-  // Запускаем тренировку только после того, как диалог точно загружен
   if (dialogStore.currentDialog) {
     trainingStore.startLevel();
   }
 });
 </script>
-
-<!-- <style scoped></style> -->
 
 <style scoped>
 .dialog-text-container {
@@ -111,20 +98,25 @@ onMounted(async () => {
   padding: 0 1rem;
 }
 .text {
-  font-size: var(--font-size-base);
+  font-size: var(--text-base);
   padding-bottom: 0.75rem;
   margin-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border);
   line-height: 1.6;
 }
 .finnish {
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: var(--text-head);
 }
 .russian {
   font-style: italic;
-  color: var(--color-text-secondary);
+  color: var(--text-title);
 }
+.end-message {
+  font-size: 1.25rem;
+  text-align: center;
+}
+
 @media (min-width: 768px) {
   .dialog-text-container {
     flex-direction: row; /* На десктопе - рядом */
