@@ -5,16 +5,14 @@
     v-if="dialog"
   >
     <aside class="sidebar">
-      <div class="buttons-wrapper">
-        <router-link
-          to="/dialogs"
-          class="btn btn-common"
-        >
-          <span class="material-symbols-outlined">arrow_back_ios</span>
-          {{ $t('buttons.dialogList') }}
-        </router-link>
-      </div>
-
+      <router-link
+        to="/dialogs"
+        class="btn btn-common"
+      >
+        <span class="material-symbols-outlined">arrow_back_ios</span>
+        {{ $t('buttons.dialogList') }}
+      </router-link>
+      <div class="grow"></div>
       <slot name="sidebar-content"></slot>
     </aside>
 
@@ -41,10 +39,11 @@ const dialog = computed(() => dialogStore.currentDialog);
 }
 .sidebar {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: var(--y-05) var(--x-10);
   border-bottom: 1px solid var(--border);
   background-color: var(--bg-side);
   flex-shrink: 0;
+  overflow-y: auto;
 }
 .dialog-title-wrapper {
   display: flex;
@@ -54,10 +53,10 @@ const dialog = computed(() => dialogStore.currentDialog);
 .back-link {
   color: var(--text-title);
   text-decoration: none;
-  margin-right: 0.5rem;
+  margin-right: var(--x-05);
 }
 .dialog-title {
-  font-size: 1.1rem;
+  font-size: var(--lg);
   font-weight: 700;
   color: var(--text-head);
   flex-grow: 1;
@@ -65,7 +64,7 @@ const dialog = computed(() => dialogStore.currentDialog);
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: var(--y-10) var(--x-10);
   min-height: 0;
 }
 .loading-container {
@@ -79,28 +78,27 @@ const dialog = computed(() => dialogStore.currentDialog);
 @media (min-width: 768px) {
   .dialog-layout {
     flex-direction: row;
+    height: 100vh;
+    overflow-y: auto;
   }
   .sidebar {
     width: 320px;
-    height: 100%;
+    min-height: 100%;
     border-bottom: none;
     border-right: 1px solid var(--border);
-    padding: 1.5rem;
+    padding: var(--y-15) var(--x-15);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-  }
-  .buttons-wrapper {
-    margin-bottom: 2rem;
+    gap: var(--y-05);
   }
   .content {
-    padding: 2rem;
+    padding: var(--y-20) var(--x-20);
   }
   .dialog-title {
-    font-size: 1.4rem;
+    font-size: var(--xxl);
   }
   .dialog-title-wrapper {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--y-15);
   }
 }
 </style>

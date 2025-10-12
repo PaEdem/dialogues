@@ -252,7 +252,7 @@ const goToCreateDialog = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: var(--y-05) var(--x-10);
   background-color: var(--bg-side);
   border-bottom: 1px solid var(--border);
 }
@@ -263,8 +263,9 @@ const goToCreateDialog = () => {
   color: var(--text-head);
 }
 .btn--icon-only {
-  min-width: 42px;
-  padding: 0.5rem;
+  min-width: var(--y-25);
+  height: var(--y-25);
+  padding: 0;
   border-radius: 50%;
   line-height: 1;
 }
@@ -273,21 +274,21 @@ const goToCreateDialog = () => {
 }
 main.content {
   flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
+  overflow: hidden;
+  padding: var(--x-10);
 }
 .level-title {
   font-size: var(--sm);
   font-weight: 700;
   color: var(--text-title);
   text-transform: uppercase;
-  margin: 0.75rem 0;
+  margin: var(--y-05) 0;
   border-bottom: 1px solid var(--border);
 }
 .dialogs-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: var(--y-10);
 }
 .mobile-footer {
   flex-shrink: 0;
@@ -302,9 +303,9 @@ main.content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: var(--y-05) var(--x-10);
   color: var(--text-head);
-  font-size: 0.7rem;
+  font-size: var(--sm);
 }
 .message-container {
   display: flex;
@@ -316,18 +317,18 @@ main.content {
   font-size: var(--base);
   font-weight: 700;
   color: var(--text-head);
-  margin-top: 5rem;
-  margin-bottom: 2rem;
+  margin-top: var(--y-60);
+  margin-bottom: var(--x-20);
 }
 .usage-indicator {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--y-05);
 }
 .usage-text {
   display: flex;
   justify-content: space-between;
   font-size: var(--sm);
   color: var(--text-title);
-  margin-bottom: -0.5rem;
+  margin-bottom: calc(0px - var(--y-05));
 }
 .usage-progress {
   width: 100%;
@@ -358,37 +359,33 @@ main.content {
     flex-direction: column;
     width: 280px;
     flex-shrink: 0;
-    padding: 2rem 1.5rem;
+    padding: var(--y-20) var(--x-15);
     background: var(--bg-side);
     border-right: 1px solid var(--border);
-    gap: 1.5rem;
-    height: 100vh;
-    position: sticky;
-    top: 0;
+    gap: var(--y-15);
   }
   .sidebar-title {
-    font-size: var(-xxl);
+    font-size: var(--xxl);
     color: var(--text-head);
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: var(--y-10);
   }
   .user-profile {
     margin-top: auto;
-    padding-top: 1rem;
+    padding-top: var(--y-10);
     border-top: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--x-05);
   }
   .mobile-header,
   .mobile-footer {
     display: none;
   }
   .content {
-    padding: 2rem;
-    overflow-y: visible;
+    padding: var(--y-20) var(--x-20);
   }
   .dialogs-list {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

@@ -28,11 +28,10 @@
         </button>
         <div class="grow"></div>
         <!-- кнопки тренировок -->
-        <p class="training-title">{{ $t('view.training') }}</p>
         <button
           v-for="level in trainingLevels"
           :key="level.name"
-          class="btn btn-action"
+          class="btn btn-action btn-action-sidebar"
           :disabled="level.isPro && !canView()"
           @click="goToTraining(level)"
         >
@@ -127,7 +126,7 @@
           >
         </button>
         <button
-          class="btn btn-danger half"
+          class="btn btn-danger btn-half"
           @click="handleDelete"
         >
           <span class="material-symbols-outlined">delete</span>
@@ -137,7 +136,7 @@
         <button
           v-for="level in trainingLevels"
           :key="level.name"
-          class="btn btn-action mobile"
+          class="btn btn-action btn-action-sidebar mobile"
           :disabled="level.isPro && !canView()"
           @click="goToTraining(level)"
         >
@@ -320,9 +319,9 @@ const goToTraining = (level) => {
   position: absolute;
   top: 0;
   right: 0;
-  margin-top: 0.35rem;
-  margin-right: 0.35rem;
-  font-size: var(--base);
+  margin-top: var(--y-05);
+  margin-right: var(--y-05);
+  font-size: var(--xl);
   color: var(--bg-pro);
   background: none;
 }
@@ -333,44 +332,39 @@ const goToTraining = (level) => {
 .subtitle {
   text-align: center;
   color: var(--text-head);
-  margin-bottom: 1rem;
-  margin-left: 2rem;
+  margin-bottom: var(--y-10);
+  margin-left: var(--x-20);
 }
 .description {
   text-align: center;
   color: var(--text-base);
-  margin: 0.5rem 0;
+  margin: var(--y-05) 0;
+}
+.btn-action-sidebar {
+  background-color: var(--g0);
 }
 /* ============================================= */
 /* 2. СТИЛИ ДЛЯ ДЕСКТОПНОГО МАКЕТА (>= 768px)    */
 /* ============================================= */
 .scroll-container {
-  padding: 1rem 0;
+  padding: var(--y-10) 0;
 }
 .dialog-line {
-  padding-bottom: 0.75rem;
-  margin-bottom: 0.75rem;
+  padding-bottom: var(--y-05);
+  margin-bottom: var(--y-05);
   border-bottom: 1px solid var(--border);
 }
 .finnish-text {
-  font-size: var(--lg);
-  font-weight: 500;
+  font-size: var(--xl);
+  font-weight: 600;
   color: var(--text-head);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--y-05);
 }
 .russian-text {
-  font-size: var(--base);
+  font-size: var(--xl);
   font-style: italic;
   color: var(--text-title);
-  padding-left: 1rem;
-}
-.training-title {
-  text-align: center;
-  color: var(--text-base);
-  margin: 1rem 0 0.5rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  font-size: var(--sm);
+  padding-left: var(--x-20);
 }
 /* ============================================= */
 /* 3. СТИЛИ ДЛЯ МОБИЛЬНОГО МАКЕТА (< 768px)      */
@@ -384,7 +378,7 @@ const goToTraining = (level) => {
 .header {
   display: flex;
   align-items: center;
-  padding: 0.75rem;
+  padding: var(--y-05) var(--x-05);
   background-color: var(--bg-side);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
@@ -392,45 +386,49 @@ const goToTraining = (level) => {
 .header-btn {
   background: none;
   color: var(--text-head);
-  width: 40px;
+  width: var(--y-25);
+  height: var(--y-25);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .header-btn .i {
-  font-size: 40px;
+  font-size: var(--y-25);
+  margin-left: var(--x-20);
 }
 .header-title {
   flex-grow: 1;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--y-05);
 }
 .header-title h1 {
-  font-size: var(--lg);
+  font-size: var(--xl);
   font-weight: 700;
   color: var(--text-head);
-  line-height: 1.2;
+  line-height: 1;
 }
 .badge {
-  font-size: var(--xs);
+  font-size: var(--sm);
   font-weight: 700;
-  padding: 0.1rem 0.4rem;
-  display: inline-block;
-  margin-left: 0.5rem;
 }
 .content {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: var(--y-10) var(--x-15);
 }
 .chat-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--y-05);
 }
 .message-bubble {
   color: var(--text-head);
-  padding: 0.75rem 1rem;
-  border-radius: 1.75rem;
+  padding: var(--y-05) var(--x-15);
+  border-radius: 1rem;
   max-width: 80%;
   border: 1px solid var(--bb);
 }
@@ -445,27 +443,36 @@ const goToTraining = (level) => {
   align-self: flex-end;
 }
 .finnish-text-mobile {
-  font-size: var(--base);
+  font-size: var(--xl);
+  font-weight: 600;
 }
 .russian-text-mobile {
-  font-size: var(--sm);
-  margin-top: 0.25rem;
+  font-size: var(--xl);
+  font-style: italic;
+  text-align: right;
+  margin-top: var(--y-05);
 }
-.actions-grid > .btn.half {
-  padding: 0.75rem;
-  flex: 0 1 50px;
+.actions-grid {
+  display: flex;
+  gap: var(--x-10);
+}
+.actions-grid > .btn-half {
+  padding: var(--y-05) var(--x-20);
+  min-width: 0;
+  max-width: var(--x-30);
+  flex: 0 1 var(--x-20);
 }
 .actions-footer {
   flex-shrink: 0;
-  padding: 1rem;
+  padding: var(--y-10) var(--x-15);
   background-color: var(--bg-side);
   border-top: 1px solid var(--border);
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 .actions-grid {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: var(--x-15);
+  margin-bottom: var(--y-10);
 }
 .actions-grid > .btn {
   flex: 1;
@@ -473,16 +480,14 @@ const goToTraining = (level) => {
 .trainings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: var(--x-15);
 }
 .btn.btn-action.mobile,
 .actions-grid .btn.btn-menu.mobile {
   position: relative;
 }
 .actions-grid .btn.btn-menu.text-mobile {
-  gap: 0.5rem;
-}
-.text-mobile {
-  font-size: var(--sm);
+  font-size: var(--lg);
+  gap: var(--x-10);
 }
 </style>

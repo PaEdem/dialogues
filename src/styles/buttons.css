@@ -77,3 +77,6 @@
 .w-10 {
   max-width: var(--x-100);
 }
+.w-5 {
+  max-width: var(--x-60);
+}

@@ -29,7 +29,7 @@
   --y-10: clamp(0.5rem, 1.389vh + 0.35rem, 1rem);
   --y-15: clamp(1rem, 1.389vh + 0.85rem, 1.5rem);
   --y-20: clamp(1.5rem, 1.389vh + 1.35rem, 2rem);
-  --y-25: clamp(2rem, 2.222vh + 1rem, 2.5rem);
+  --y-25: clamp(2rem, 5vh - 0.25rem, 3.125rem);
   --y-30: clamp(2rem, 4.167vh + 1.625rem, 3.5rem);
   --y-60: clamp(4rem, 8.333vh + 3.333rem, 7rem);
   --y-100: clamp(7.5rem, 13.889vh + 5.125rem, 12.5rem);
@@ -49,6 +49,7 @@
   --bg-t-success: #8f8;
   --bg-t-warning: #ff6;
   --bg-t-error: #f66;
+  --g0: #c0ddc5;
   --g1: #a9f4b7;
   --g2: #7ee790;
   --g3: #20602c;
@@ -73,7 +74,7 @@
   --bg-chat-l: var(--w3);
   --bg-chat-r: var(--w4);
   --text-head: var(--y7);
-  --text-title: var(--y5);
+  --text-title: var(--y8);
   --text-base: var(--y8);
   --text-accent: var(--y0);
   --border: var(--y10);
