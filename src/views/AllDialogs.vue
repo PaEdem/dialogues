@@ -193,6 +193,8 @@ const usage = computed(() => {
   };
 });
 
+const viewToast = computed(() => uiStore.viewCounter);
+
 const groupedDialogs = computed(() => {
   const groups = {};
   levels.forEach((level) => {
@@ -206,7 +208,10 @@ onMounted(() => {
     dialogStore.fetchAllDialogs();
   }
   if (usage.value.total.count >= usage.value.total.limit) {
-    uiStore.showToast(`Достигнут лимит диалогов (${settingsStore.limit.totalDialogs}).`, 'warning');
+    if (viewToast.value < 2) {
+      uiStore.viewCounter++;
+      uiStore.showToast(`Достигнут лимит диалогов (${settingsStore.limit.totalDialogs}).`, 'warning');
+    }
   }
 });
 

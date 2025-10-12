@@ -137,33 +137,32 @@ function getFriendlyErrorMessage(errorCode) {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 1rem;
+  padding: var(--y-10) var(--x-10);
 }
 .form-card {
   width: 100%;
   max-width: 420px;
   background: var(--bg-card);
-  padding: 2rem 1.5rem;
+  padding: var(--y-20) var(--x-15);
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 }
 .title {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--y-20);
   font-size: var(--xxl);
 }
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--y-15);
 }
-
 input,
 select {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: var(--y-05) var(--x-10);
   margin: 1rem auto;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: var(--base);
+  border-radius: 4px;
+  font-size: var(--lg);
 }
 input:focus,
 select:focus {
@@ -172,11 +171,11 @@ select:focus {
 .submit-wrap {
   display: flex;
   justify-content: flex-end;
-  margin-top: 2rem;
+  margin-top: var(--y-20);
 }
 .error-message {
   color: var(--r3);
-  margin-bottom: 1rem;
+  margin-bottom: var(--y-10);
   font-weight: 500;
   text-align: center;
 }
@@ -185,10 +184,9 @@ select:focus {
   align-items: center;
   text-align: center;
   color: var(--text-title);
-  margin: 1.5rem 0;
+  margin: var(--y-15) 0;
   font-size: var(--base);
 }
-
 .divider::before,
 .divider::after {
   content: '';
@@ -196,24 +194,22 @@ select:focus {
   border-bottom: 1px solid var(--border);
 }
 .divider:not(:empty)::before {
-  margin-right: 1em;
+  margin-right: var(--x-10);
 }
 .divider:not(:empty)::after {
-  margin-left: 1em;
+  margin-left: var(--x-10);
 }
-
 .toggle-mode {
-  margin-top: 2rem;
+  margin-top: var(--y-20);
   font-size: var(--base);
   color: var(--text-title);
   text-align: center;
 }
-
 .toggle-link {
   background: none;
   border: none;
   padding: 0;
-  margin-left: 0.25rem;
+  margin-left: var(--x-50);
   font-size: var(--base);
   font-weight: 500;
   color: var(--head);

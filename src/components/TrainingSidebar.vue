@@ -59,21 +59,22 @@ const trainingStore = useTrainingStore();
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  gap: 2rem;
+  gap: var(--y-20);
 }
 .readme {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--y-05);
 }
 .slogan {
-  font-size: var(--base);
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--xl);
   color: var(--g3);
   font-weight: bold;
   text-align: center;
 }
 .description {
-  font-size: var(--sm);
+  font-size: var(--lg);
   font-style: italic;
   color: var(--text-head);
   text-align: center;
@@ -81,14 +82,9 @@ const trainingStore = useTrainingStore();
 }
 .controls {
   display: grid;
-  /* Для мобильных - 2 колонки */
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-.grow {
-  flex-grow: 1;
-}
-/* Для планшетов делаем сетку 3x2, если есть 5-6 кнопок */
 @media (min-width: 768px) {
   .controls {
     grid-template-columns: 1fr;

@@ -10,6 +10,7 @@ export const useUiStore = defineStore('ui', {
     modalContent: 'default',
     toasts: [],
     toastIdCounter: 0,
+    viewCounter: 0,
   }),
   getters: {
     isAppLoading() {

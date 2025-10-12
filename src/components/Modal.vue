@@ -65,7 +65,7 @@ const uiStore = useUiStore();
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: var(--y-10) var(--x-10);
   transition: opacity 0.3s ease;
 }
 .modal-container {
@@ -94,26 +94,25 @@ const uiStore = useUiStore();
   background: var(--gradient-pro);
 }
 .modal-header {
-  padding: 1rem 1.5rem;
-  /* border-bottom: 1px solid var(--border); */
+  padding: var(--y-10) var(--x-15);
   flex-shrink: 0;
 }
 .modal-header .title {
-  font-size: var(--xxl);
+  font-size: var(--xxxl);
   color: var(--text-head);
   margin: 0;
   text-align: center;
 }
 .modal-body {
   overflow-y: auto;
-  padding: 1.5rem;
+  padding: var(--y-15) var(--x-15);
   flex-grow: 1;
 }
 .modal-footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: var(--y-10) var(--x-15);
   border-top: 1px solid var(--border);
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
@@ -125,24 +124,24 @@ const uiStore = useUiStore();
 .modal-body h1,
 .modal-body h3,
 .modal-body .subtitle {
-  font-family: 'Segoe UI', 'Roboto Condensed', sans-serif;
-  font-size: var(--xl);
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--xxl);
   color: var(--g3);
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--y-10);
 }
 .modal-body ul {
   list-style-type: none;
-  padding-left: 0.5rem;
+  padding-left: var(--x-05);
 }
 .modal-body ul li {
   font-family: 'Segoe UI', 'Roboto Condensed', sans-serif;
-  font-size: var(--lg);
+  font-size: var(--xl);
   color: var(--text-base);
   font-weight: 600;
   text-align: center;
   font-style: italic;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--y-05);
 }
 .modal-body li code,
 .modal-body li strong code {
@@ -156,7 +155,7 @@ const uiStore = useUiStore();
   color: var(--r3);
 }
 .modal-info ul li ul li {
-  padding-left: 1rem;
+  padding-left: var(--x-10);
 }
 .modal-enter-from,
 .modal-leave-to {

@@ -20,16 +20,16 @@ const uiStore = useUiStore();
 <style scoped>
 .toast-container {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: var(--y-10);
+  right: var(--x-10);
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--y-05);
 }
 .toast {
-  padding: 0.75rem 1.25rem;
-  border-radius: 6px;
+  padding: var(--y-10) var(--x-15);
+  border-radius: 4px;
   color: var(--text-head);
   font-weight: 500;
   box-shadow: 0 4px 12px var(--shadow);

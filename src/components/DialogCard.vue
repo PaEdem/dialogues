@@ -30,7 +30,7 @@ const props = defineProps({
   background-color: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 0.5rem 1.25rem;
+  padding: var(--y-05) var(--x-15);
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
@@ -48,17 +48,17 @@ const props = defineProps({
   color: var(--text-head);
   font-size: var(--xl);
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--y-05);
 }
 .card-info {
   display: flex;
   justify-content: space-between;
-  font-size: var(--sm);
+  font-size: var(--base);
   color: var(--text-title);
   margin-top: auto;
 }
 .levelClass {
-  font-size: var(--sm);
+  font-size: var(--base);
   color: var(--text-title);
   font-weight: 600;
 }

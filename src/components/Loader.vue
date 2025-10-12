@@ -126,7 +126,7 @@
   --size: 360px;
   --_radius: calc(var(--size) / 2 - 44px);
   font-family: 'Open Sans', sans-serif;
-  font-size: 1rem;
+  font-size: var(--xl);
 }
 
 .tagcloud-wrapper,
