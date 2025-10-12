@@ -4,12 +4,12 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  min-width: 150px;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
+  min-width: var(--x-100);
+  gap: var(--x-05);
+  padding: var(--y-05) var(--x-05);
+  border-radius: 4px;
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: var(--base);
+  font-size: var(--xl);
   font-weight: 500;
   text-transform: uppercase;
   white-space: nowrap;
@@ -29,7 +29,7 @@
   cursor: not-allowed;
 }
 .icon {
-  width: 24px;
+  width: var(--xl);
   aspect-ratio: 1/1;
 }
 .btn-action {
@@ -61,13 +61,13 @@
 .btn-menu {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--y-10);
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  padding: var(--y-05) var(--x-10);
+  border-radius: 4px;
   background-color: var(--y0);
   color: var(--text-head);
-  font-size: var(--base);
+  font-size: var(--lg);
   border: 1px solid var(--bb);
 }
 .btn-menu:hover:not(:disabled) {
@@ -75,5 +75,5 @@
   color: var(--y0);
 }
 .w-10 {
-  max-width: 10rem;
+  max-width: var(--x-100);
 }

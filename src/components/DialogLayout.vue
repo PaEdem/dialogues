@@ -66,6 +66,7 @@ const dialog = computed(() => dialogStore.currentDialog);
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
+  min-height: 0;
 }
 .loading-container {
   display: flex;

@@ -38,7 +38,7 @@
           <p class="usage-info">
             {{ $t('profile.yourSubscr') }}<strong>{{ userStore.isPro ? 'PRO' : 'Free' }}</strong>
           </p>
-          <p class="usage-info">{{ $t('profile.genToday') }} {{ usage.daily.count }} / {{ usage.daily.limit }}</p>
+          <p class="usage-info">{{ $t('profile.genToday') }} {{ dialogsCreatedToday }} / {{ usage.daily.limit }}</p>
           <p class="usage-info">{{ $t('profile.savedDialog') }} {{ usage.total.count }} / {{ usage.total.limit }}</p>
         </div>
         <div class="pro-card">
@@ -115,6 +115,17 @@ const usage = computed(() => {
   };
 });
 
+const dialogsCreatedToday = computed(() => {
+  const todayString = new Date().toDateString();
+  return dialogStore.allDialogs.filter((dialog) => {
+    if (!dialog.createdAt || typeof dialog.createdAt.seconds !== 'number') {
+      return false;
+    }
+    const dialogDate = new Date(dialog.createdAt.seconds * 1000);
+    return dialogDate.toDateString() === todayString;
+  }).length;
+});
+
 const goBack = () => {
   router.back();
 };
@@ -137,6 +148,7 @@ const handleDeleteAccount = () => {
   max-width: 800px;
   margin: 0 auto;
   padding: 1rem;
+  min-height: 0;
 }
 .page-header {
   display: flex;

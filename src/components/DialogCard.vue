@@ -30,7 +30,7 @@ const props = defineProps({
   background-color: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 1rem 1.25rem;
+  padding: 0.5rem 1.25rem;
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
@@ -43,7 +43,6 @@ const props = defineProps({
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: 0.5rem;
 }
 .card-title {
   color: var(--text-head);

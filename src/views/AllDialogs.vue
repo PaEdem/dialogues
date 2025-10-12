@@ -263,6 +263,7 @@ const goToCreateDialog = () => {
   color: var(--text-head);
 }
 .btn--icon-only {
+  min-width: 42px;
   padding: 0.5rem;
   border-radius: 50%;
   line-height: 1;
@@ -270,7 +271,7 @@ const goToCreateDialog = () => {
 .btn--icon-only .material-symbols-outlined {
   margin-right: 0;
 }
-.content {
+main.content {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
@@ -319,14 +320,14 @@ const goToCreateDialog = () => {
   margin-bottom: 2rem;
 }
 .usage-indicator {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 .usage-text {
   display: flex;
   justify-content: space-between;
   font-size: var(--sm);
   color: var(--text-title);
-  margin-bottom: 0.5rem;
+  margin-bottom: -0.5rem;
 }
 .usage-progress {
   width: 100%;

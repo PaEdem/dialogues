@@ -18,7 +18,7 @@
   --r1: #ecc9c6;
   --r2: #f07f75;
   --r3: #602420;
-  --y0: hsl(40, 27%, 98%);
+  --y0: #fbfaf9;
   --y1: #faf8f5;
   --y2: #f2eee9;
   --y3: #e8e1d9;
@@ -40,13 +40,6 @@
   --text-base: var(--y8);
   --text-accent: var(--y0);
   --border: var(--y10);
-  --xs: 0.75rem; /* 12px */
-  --sm: 0.875rem; /* 14px */
-  --base: 1rem; /* 16px */
-  --lg: 1.125rem; /* 18px */
-  --xl: 1.25rem; /* 20px */
-  --xxl: 1.5rem; /* 24px */
-  --xxxl: 1.875rem; /* 30px */
 }
 
 html[data-theme='dark'] {

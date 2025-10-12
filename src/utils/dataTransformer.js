@@ -24,11 +24,12 @@ const DIALOG_LIST_KEY = 'dialogsList';
  */
 export function saveDialogsListToCache(dialogs) {
   try {
-    const lightweightList = dialogs.map(({ id, title, level, fin }) => ({
+    const lightweightList = dialogs.map(({ id, title, level, fin, createdAt }) => ({
       id,
       title,
       level,
       replicasCount: fin.length,
+      createdAt,
     }));
     localStorage.setItem(DIALOG_LIST_KEY, JSON.stringify(lightweightList));
   } catch (e) {
