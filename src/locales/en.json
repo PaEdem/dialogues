@@ -38,7 +38,8 @@
     "reDialog": "Repeat the dialogue",
     "reLine": "Repeat the line",
     "nextLine": "Next line",
-    "endPractice": "End practice"
+    "endPractice": "End practice",
+    "mic": "Microphone"
   },
   "welcome": {
     "title": "European Languages with AI",
@@ -100,5 +101,20 @@
     "wordsPlaceholder": "word-1, word-2, word-3 ...",
     "level": "Difficulty level",
     "lines": "Number of lines"
+  },
+  "modal": {
+    "title": "Dialogue completed.",
+    "text": "Great job! You can listen to it, analyze it, or start the training again."
+  },
+  "level1": {
+    "slogan": "Learn dialogues step by step!",
+    "description": "Listen to the line, read the original and translation. Step by step. Repeat the phrase or the entire dialogue at any time.",
+    "descriptionMobile": "Listen, read, and repeat step by step."
+  },
+  "level2": {
+    "slogan": "Speak boldly and correctly!",
+    "description": "Check your pronunciation and fix mistakes. Move through the dialogue step by step, repeating its parts for perfect mastery.",
+    "descriptionMobile": "Speak boldly and correctly! Check your pronunciation and fix mistakes.",
+    "info": "'Microphone': say the line. Press again to check for errors."
   }
 }

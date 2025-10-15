@@ -4,8 +4,9 @@
     <header class="page-header">
       <h1 class="page-title">{{ $t('settings.title') }}</h1>
       <button
+        v-if="!isDesktop"
         @click="goBack"
-        class="btn btn-action mobile-only btn-auto"
+        class="btn btn-action mobile btn-auto"
       >
         {{ $t('buttons.done') }}
       </button>
@@ -96,7 +97,7 @@
               type="range"
               min="0.5"
               max="1.5"
-              step="0.1"
+              step="0.05"
               v-model="speechRate"
               :disabled="!userStore.isPro"
             />
@@ -106,7 +107,7 @@
         <div class="setting-item">
           <label>{{ $t('settings.preListening') }}</label>
           <button
-            class="btn btn-common btn-auto"
+            class="btn btn-common mobile btn-auto"
             @click="togglePlayTest"
           >
             <span class="material-symbols-outlined">play_circle</span>
@@ -119,7 +120,7 @@
     <footer class="page-footer desktop-only">
       <button
         @click="goBack"
-        class="btn btn-action btn-desktop-auto"
+        class="btn btn-action w-10"
       >
         {{ $t('buttons.done') }}
       </button>
@@ -132,10 +133,13 @@ import { ref, computed } from 'vue';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useUserStore } from '../stores/userStore';
 import { useRouter } from 'vue-router';
+import { useBreakpoint } from '../composables/useBreakpoint';
 
 const settingsStore = useSettingsStore();
 const userStore = useUserStore();
 const router = useRouter();
+
+const { isDesktop } = useBreakpoint();
 
 const uiLanguages = [
   { code: 'en', name: 'English' },
@@ -189,7 +193,7 @@ const goBack = () => {
 
 <style scoped>
 .settings-page {
-  padding: 1rem;
+  padding: var(--y-20) var(--x-20);
   max-width: 800px;
   margin: 0 auto;
 }
@@ -197,10 +201,10 @@ const goBack = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--y-10);
 }
 .page-title {
-  font-size: var(--xxl);
+  font-size: var(--xxxl);
   font-family: 'Roboto Condensed', sans-serif;
   color: var(--text-head);
   margin: 0;
@@ -208,43 +212,45 @@ const goBack = () => {
 .desktop-only {
   display: none;
 }
-.mobile-only {
+/* .mobile-only {
   display: inline-flex;
-}
+} */
 .settings-content {
   display: flex;
   flex-direction: column;
 }
 .settings-group {
-  padding: 1rem 0;
+  padding: var(--y-05) 0;
 }
 .group-title {
-  font-size: var(--sm);
+  font-size: var(--lg);
   font-weight: 700;
   color: var(--text-base);
   text-align: center;
   text-transform: uppercase;
-  padding-bottom: 0.5rem;
+  padding-bottom: 4px;
   border-bottom: 1px solid var(--border);
 }
 .group-title .pro {
-  font-size: 1rem;
+  font-size: var(--xxl);
   color: var(--bg-pro);
   vertical-align: middle;
-  margin-left: 0.5rem;
+  margin-left: var(--x-05);
 }
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 3.5rem;
+  height: var(--y-30);
+  margin-top: var(--y-05);
 }
 .setting-item label {
-  font-size: var(--lg);
+  font-size: var(--xl);
   color: var(--text-title);
 }
 select {
-  padding: 0.5rem 1rem;
+  max-width: 240px;
+  padding: var(--y-05) var(--x-15);
   border-radius: 6px;
   border: 1px solid var(--border);
   background-color: var(--bg-group);
@@ -254,16 +260,16 @@ select {
   display: flex;
   border-radius: 8px;
   background-color: var(--bg-group);
-  padding: 0.25rem;
-  gap: 0.35rem;
+  padding: 4px;
+  gap: var(--x-05);
 }
 .theme-switcher button {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  gap: var(--x-05);
+  padding: var(--y-05) var(--x-10);
   border-radius: 6px;
-  font-size: var(--base);
+  font-size: var(--lg);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
@@ -275,20 +281,20 @@ select {
 .slider-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 8px;
 }
 .slider-container span {
-  font-size: var(--sm);
+  font-size: var(--base);
   color: var(--text-base);
-  min-width: 30px;
+  min-width: var(--x-20);
 }
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
-  width: 150px;
-  height: 8px;
+  width: var(--x-100);
+  height: var(--y-05);
   background: var(--bg-group);
-  border-radius: 5px;
+  border-radius: 4px;
   border: 1px solid var(--border);
 }
 input[type='range']::-webkit-slider-thumb {
@@ -325,7 +331,7 @@ input[type='range']::-moz-range-thumb {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    padding: 2rem;
+    padding: var(--y-20) var(--x-20);
   }
   .mobile-only {
     display: none;
@@ -336,17 +342,14 @@ input[type='range']::-moz-range-thumb {
   .settings-content {
     flex-grow: 1;
     overflow-y: auto;
-    padding-right: 1rem;
+    padding-right: var(--x-10);
   }
   .page-footer {
     flex-shrink: 0;
     display: flex;
     justify-content: center;
-    padding-top: 1.5rem;
+    padding-top: var(--y-15);
     border-top: 1px solid var(--border);
-  }
-  .btn-desktop-auto {
-    width: 30%;
   }
 }
 </style>

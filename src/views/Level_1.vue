@@ -1,62 +1,113 @@
 <!-- src\views\Level_1.vue -->
 <template>
-  <DialogLayout>
-    <template #sidebar-content>
+  <div v-if="isDesktop">
+    <DialogLayout>
+      <template #sidebar-content>
+        <TrainingSidebar
+          :dialogId="props.id"
+          :slogan="$t('level1.slogan')"
+          :description="$t('level1.description')"
+        >
+          <template #extra-controls>
+            <button
+              class="btn btn-control"
+              disabled
+            >
+              <span class="material-symbols-outlined icon">mic_off</span>
+              <span class="btn-text">{{ $t('buttons.mic') }}</span>
+            </button>
+          </template>
+        </TrainingSidebar>
+      </template>
+
+      <div
+        v-if="dialog"
+        class="dialog-text-container-desktop"
+        ref="desktopContent"
+      >
+        <div
+          v-for="(line, index) in visibleLines.fin"
+          :key="index"
+          class="message-bubble-desktop fade-in"
+          :class="index % 2 === 0 ? 'left' : 'right'"
+        >
+          <p class="finnish-text">{{ line }}</p>
+          <p class="russian-text">{{ visibleLines.rus[index] }}</p>
+        </div>
+      </div>
+    </DialogLayout>
+  </div>
+
+  <div
+    v-else-if="dialog"
+    class="page-container"
+  >
+    <header class="header">
+      <router-link
+        to="/dialogs"
+        class="header-btn"
+      >
+        <span class="material-symbols-outlined i">arrow_back_ios</span>
+      </router-link>
+      <div class="header-title">
+        <!-- <h1>{{ dialog.title }}</h1>
+        <span class="badge">{{ dialog.level }}</span> -->
+        <p class="description-mobile">{{ $t('level1.descriptionMobile') }}</p>
+      </div>
+    </header>
+
+    <main
+      class="content"
+      ref="mobileContent"
+    >
+      <div class="chat-container">
+        <div
+          v-for="(line, index) in visibleLines.fin"
+          :key="index"
+          class="message-bubble fade-in"
+          :class="index % 2 === 0 ? 'left' : 'right'"
+        >
+          <p class="finnish-text-mobile">{{ line }}</p>
+          <p class="russian-text-mobile">{{ visibleLines.rus[index] }}</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="actions-footer">
       <TrainingSidebar
         :dialogId="props.id"
-        slogan="Учите диалоги пошагово!"
-        description="Слушай реплику, читай оригинал и перевод. Шаг за шагом. Повторяй фразу или весь диалог в любой момент."
+        :description="$t('level1.description_mobile')"
       >
         <template #extra-controls>
           <button
-            class="btn btn-menu"
+            class="btn btn-control-mobile"
             disabled
           >
             <span class="material-symbols-outlined icon">mic_off</span>
-            Микрофон OFF
           </button>
         </template>
       </TrainingSidebar>
-    </template>
+    </footer>
+  </div>
 
-    <div class="dialog-text-container">
-      <div class="panel">
-        <p
-          class="finnish text"
-          v-for="(line, index) in visibleLines.fin"
-          :key="`fin-${index}`"
-        >
-          {{ line }}
-        </p>
-      </div>
-      <div class="panel">
-        <p
-          class="russian text"
-          v-for="(line, index) in visibleLines.rus"
-          :key="`rus-${index}`"
-        >
-          {{ line }}
-        </p>
-      </div>
-    </div>
-  </DialogLayout>
   <Teleport to="body">
     <Modal>
       <template #header>
-        <h3 class="title">Harjoitus on ohi</h3>
+        <h3 class="title">{{ $t('modal.title') }}</h3>
       </template>
 
       <div class="end-message">
-        <p>Hyvää työtä!</p>
+        <p>{{ $t('modal.text') }}</p>
       </div>
     </Modal>
   </Teleport>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useDialogStore } from '../stores/dialogStore';
 import { useTrainingStore } from '../stores/trainingStore';
+import { useBreakpoint } from '../composables/useBreakpoint';
 import DialogLayout from '../components/DialogLayout.vue';
 import TrainingSidebar from '../components/TrainingSidebar.vue';
 import Modal from '../components/Modal.vue';
@@ -64,9 +115,25 @@ import Modal from '../components/Modal.vue';
 const props = defineProps({ id: { type: String, required: true } });
 const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
+const { isDesktop } = useBreakpoint();
 
 const lineIndex = computed(() => trainingStore.currentLineIndex);
 const dialog = computed(() => dialogStore.currentDialog);
+
+// ✨ ЛОГИКА АВТОСКРОЛЛА
+const mobileContent = ref(null);
+const desktopContent = ref(null);
+
+watch(lineIndex, () => {
+  // Даём Vue время отрисовать новую реплику
+  setTimeout(() => {
+    const container = isDesktop.value ? desktopContent.value : mobileContent.value;
+    if (container) {
+      // Плавно скроллим до самого низа контейнера
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
+  }, 100);
+});
 
 const visibleLines = computed(() => {
   if (!dialog.value) return { fin: [], rus: [] };
@@ -77,53 +144,154 @@ const visibleLines = computed(() => {
 });
 
 onMounted(async () => {
+  trainingStore.setCurrentTrainingType('level-1');
   await dialogStore.fetchDialogById(props.id);
   if (dialogStore.currentDialog) {
     trainingStore.startLevel();
   }
 });
+
+// При уходе со страницы останавливаем озвучку
+onUnmounted(() => {
+  trainingStore.stopSpeech();
+});
 </script>
 
 <style scoped>
-.dialog-text-container {
+/* ======================== ДЕСКТОП ======================== */
+.dialog-text-container-desktop {
   display: flex;
-  flex-direction: column; /* На мобильных колонки друг под другом */
-  width: 100%;
+  flex-direction: column;
+  width: 90%;
   height: 100%;
-  gap: 1rem;
-}
-.panel {
-  flex: 1;
+  gap: var(--y-10);
+  margin: 0 auto;
+  padding-right: 0.5rem;
   overflow-y: auto;
-  padding: 0 1rem;
 }
-.text {
-  font-size: var(--text-base);
-  padding-bottom: 0.75rem;
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border);
-  line-height: 1.6;
-}
-.finnish {
-  font-weight: 500;
+.message-bubble-desktop {
   color: var(--text-head);
+  padding: var(--y-10) var(--x-20);
+  border-radius: var(--y-20);
+  max-width: 80%;
+  border: 1px solid var(--bb);
 }
-.russian {
+.message-bubble-desktop.left {
+  background-color: var(--bg-chat-l);
+  border-bottom-left-radius: 2px;
+  align-self: flex-start;
+}
+.message-bubble-desktop.right {
+  background-color: var(--bg-chat-r);
+  border-bottom-right-radius: 2px;
+  align-self: flex-end;
+}
+.finnish-text {
+  font-size: var(--xl);
+  font-weight: 600;
+}
+.russian-text {
+  font-size: var(--xl);
   font-style: italic;
-  color: var(--text-title);
+  text-align: right;
+  margin-top: var(--y-05);
 }
+
+/* ======================== МОБИЛЬНЫЙ ======================== */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.header {
+  display: flex;
+  align-items: center;
+  padding: var(--y-05) var(--x-05);
+  background-color: var(--bg-side);
+  border-bottom: 1px solid var(--bb);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+.header-btn {
+  background: none;
+  color: var(--text-head);
+  width: var(--y-25);
+  height: var(--y-25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header-btn .i {
+  font-size: var(--y-25);
+  margin-left: var(--x-20);
+}
+.header-title {
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--y-05);
+}
+.description-mobile {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--xl);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--r3);
+  text-align: center;
+}
+.content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  scroll-behavior: smooth;
+}
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--y-05);
+}
+.message-bubble {
+  color: var(--text-head);
+  padding: var(--y-05) var(--x-15);
+  border-radius: 1rem;
+  max-width: 80%;
+  border: 1px solid var(--bb);
+}
+.message-bubble.left {
+  background-color: var(--bg-chat-l);
+  border-bottom-left-radius: 2px;
+  align-self: flex-start;
+}
+.message-bubble.right {
+  background-color: var(--bg-chat-r);
+  border-bottom-right-radius: 2px;
+  align-self: flex-end;
+}
+.finnish-text-mobile {
+  font-size: var(--xl);
+  font-weight: 600;
+}
+.russian-text-mobile {
+  font-size: var(--xl);
+  font-style: italic;
+  text-align: right;
+  margin-top: var(--y-05);
+}
+.actions-footer {
+  flex-shrink: 0;
+  padding: 1rem;
+  background-color: var(--y10);
+  border-top: 1px solid var(--bb);
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+}
+/* .no-mobile {
+  display: none;
+} */
 .end-message {
   font-size: 1.25rem;
   text-align: center;
-}
-
-@media (min-width: 768px) {
-  .dialog-text-container {
-    flex-direction: row; /* На десктопе - рядом */
-    gap: 2rem;
-  }
-  .panel {
-    padding: 0;
-  }
 }
 </style>

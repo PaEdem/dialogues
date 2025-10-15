@@ -9,8 +9,14 @@
       href="/fi.svg"
     />
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    />
+
+    <link
       rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
     />
     <meta
       name="viewport"
@@ -31,19 +37,17 @@
         overflow: hidden;
       }
       .tagcloud-wrapper {
-        --size: 360px;
+        --size: 320px;
         --_radius: calc(var(--size) / 2 - 44px);
         font-family: 'Open Sans', sans-serif;
         font-size: 1rem;
       }
-
       .tagcloud-wrapper,
       .tagcloud-rotation,
       .tagcloud-tags {
         width: var(--size);
         aspect-ratio: 1 / 1;
       }
-
       .tagcloud-wrapper .tagcloud-rotation {
         position: absolute;
         left: 50%;
@@ -62,7 +66,7 @@
         transform: translate(-50%, -50%);
         list-style-type: none;
         transform-style: inherit;
-        animation: tagcloud-rotation 10s normal linear infinite running;
+        animation: tagcloud-rotation 8s normal linear infinite running;
       }
 
       @keyframes tagcloud-rotation {
@@ -93,9 +97,9 @@
         align-items: center;
         justify-content: center;
         position: absolute;
-        transition: opacity 100ms ease-out;
+        transition: opacity 80ms ease-out;
         transform: translate3d(var(--_final-x), var(--_final-y), var(--_final-z));
-        animation: tagcloud-tag-rotation 10s normal linear infinite running;
+        animation: tagcloud-tag-rotation 8s normal linear infinite running;
       }
 
       @keyframes tagcloud-tag-rotation {

@@ -1,6 +1,9 @@
 <!-- src\views\AllDialogs.vue -->
 <template>
-  <div class="page-wrapper">
+  <div
+    v-if="dialogs && !uiStore.loading"
+    class="page-wrapper"
+  >
     <aside class="desktop-sidebar">
       <h1 class="sidebar-title">Dialogit</h1>
       <button
@@ -259,7 +262,7 @@ const goToCreateDialog = () => {
   align-items: center;
   padding: var(--y-05) var(--x-10);
   background-color: var(--bg-side);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--bb);
 }
 .header-title {
   font-family: 'Roboto Condensed', sans-serif;
@@ -302,7 +305,7 @@ main.content {
   display: flex;
   justify-content: space-around;
   background-color: var(--bg-side);
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--bb);
 }
 .tab-item {
   display: flex;

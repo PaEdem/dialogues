@@ -11,97 +11,97 @@
             class="tagcloud-tag"
             style="--index: 1"
           >
-            <div><span>dialogit</span></div>
+            <div><span>water</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 2"
           >
-            <div><span>diyaloglar</span></div>
+            <div><span>livre</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 3"
           >
-            <div><span>bann dialog</span></div>
+            <div><span>blume</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 4"
           >
-            <div><span>dialogues</span></div>
+            <div><span>praia</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 5"
           >
-            <div><span>vuoropuhelut</span></div>
+            <div><span>fiets</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 6"
           >
-            <div><span>dialoghi</span></div>
+            <div><span>ptak</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 7"
           >
-            <div><span>диалоги</span></div>
+            <div><span>strom</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 8"
           >
-            <div><span>dijalozi</span></div>
+            <div><span>asztal</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 9"
           >
-            <div><span>izingxoxo</span></div>
+            <div><span>tuli</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 10"
           >
-            <div><span>dielegs</span></div>
+            <div><span>fjell</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 11"
           >
-            <div><span>pärbeszedek</span></div>
+            <div><span>havet</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 12"
           >
-            <div><span>nga korero</span></div>
+            <div><span>cerul</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 13"
           >
-            <div><span>dialöga</span></div>
+            <div><span>riba</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 14"
           >
-            <div><span>cömhraidhean</span></div>
+            <div><span>domov</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 15"
           >
-            <div><span>wada hadal</span></div>
+            <div><span>casa</span></div>
           </li>
           <li
             class="tagcloud-tag"
             style="--index: 16"
           >
-            <div><span>діалоги</span></div>
+            <div><span>поле</span></div>
           </li>
         </ul>
       </div>
@@ -123,19 +123,17 @@
   overflow: hidden;
 }
 .tagcloud-wrapper {
-  --size: 360px;
+  --size: 320px;
   --_radius: calc(var(--size) / 2 - 44px);
   font-family: 'Open Sans', sans-serif;
   font-size: var(--xl);
 }
-
 .tagcloud-wrapper,
 .tagcloud-rotation,
 .tagcloud-tags {
   width: var(--size);
   aspect-ratio: 1 / 1;
 }
-
 .tagcloud-wrapper .tagcloud-rotation {
   position: absolute;
   left: 50%;
@@ -143,10 +141,9 @@
   transform: translate(-50%, -50%);
   transform-style: preserve-3d;
   perspective: calc(var(--size) * 2);
-  background: radial-gradient(rgba(var(--bg-card), 0.75) 15%, rgba(var(--bg-card), 0) 65%);
+  background: radial-gradient(rgba(242, 238, 233, 0.75), 15%, rgba(242, 238, 233, 0) 65%);
   border-radius: 50%;
 }
-
 .tagcloud-wrapper .tagcloud-tags {
   position: absolute;
   left: 50%;
@@ -154,9 +151,8 @@
   transform: translate(-50%, -50%);
   list-style-type: none;
   transform-style: inherit;
-  animation: tagcloud-rotation 10s normal linear infinite running;
+  animation: tagcloud-rotation 7s normal linear infinite running;
 }
-
 @keyframes tagcloud-rotation {
   from {
     transform: translate(-50%, -50%) rotateX(0deg);
@@ -165,7 +161,6 @@
     transform: translate(-50%, -50%) rotateX(360deg);
   }
 }
-
 .tagcloud-wrapper .tagcloud-tag {
   --_phi: acos(calc(-1 + (2 * var(--index)) / var(--num-elements)));
   --_theta: calc(sqrt(calc(var(--num-elements) * 3.1415926535)) * var(--_phi));
@@ -185,11 +180,10 @@
   align-items: center;
   justify-content: center;
   position: absolute;
-  transition: opacity 100ms ease-out;
+  transition: opacity 70ms ease-out;
   transform: translate3d(var(--_final-x), var(--_final-y), var(--_final-z));
-  animation: tagcloud-tag-rotation 10s normal linear infinite running;
+  animation: tagcloud-tag-rotation 7s normal linear infinite running;
 }
-
 @keyframes tagcloud-tag-rotation {
   from {
     transform: translate3d(var(--_final-x), var(--_final-y), var(--_final-z)) rotateX(360deg);
@@ -198,7 +192,6 @@
     transform: translate3d(var(--_final-x), var(--_final-y), var(--_final-z)) rotateX(0deg);
   }
 }
-
 .tagcloud-wrapper .tagcloud-tag div {
   transform: rotateZ(0deg);
 }

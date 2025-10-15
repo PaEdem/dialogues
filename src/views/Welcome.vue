@@ -27,7 +27,7 @@
           </select>
           <router-link
             to="/auth"
-            class="btn btn-action"
+            class="btn btn-menu w-10"
           >
             <span class="material-symbols-outlined">account_circle</span>
             {{ $t('buttons.done') }}
@@ -67,7 +67,7 @@ const uiLanguage = computed({
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: var(--x-20);
+  padding: var(--x-30);
   background-color: var(--bg-card);
 }
 .page-container {
@@ -104,6 +104,7 @@ const uiLanguage = computed({
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: var(--x-10);
 }
 .image {
   width: 100%;
@@ -114,8 +115,8 @@ select {
   height: var(--y-25);
   padding: var(--y-05) var(--x-10);
   border-radius: 4px;
-  border: 1px solid var(--g3);
-  background-color: var(--g1);
+  border: 1px solid var(--bb);
+  background-color: var(--y0);
   font-size: var(--lg);
   color: var(--text-head);
 }

@@ -1,155 +1,160 @@
 <!-- \\src\views\ViewDialog.vue -->
 <template>
-  <!-- FOR DESKTOP -->
-  <div v-if="isDesktop">
-    <DialogLayout>
-      <template #sidebar-content>
-        <!-- кнопка анализ диалога -->
-        <button
-          class="btn btn-menu"
-          @click="getInfo"
-          :disabled="!canView()"
-        >
-          <span class="material-symbols-outlined">analytics</span>
-          {{ $t('buttons.analysis') }}
-          <span
-            v-if="!userStore.isPro"
-            class="material-symbols-outlined pro"
-            >crown</span
+  <div v-if="dialog && !uiStore.loading">
+    <!-- FOR DESKTOP -->
+    <div v-if="isDesktop">
+      <DialogLayout>
+        <template #sidebar-content>
+          <div class="grow"></div>
+          <div class="dialog-info">
+            <h2 class="dialog-info-title">{{ dialog?.title }}</h2>
+            <span class="dialog-info-level">{{ dialog?.level }}</span>
+          </div>
+          <!-- кнопка анализ диалога -->
+          <button
+            class="btn btn-menu"
+            @click="getInfo"
+            :disabled="!canView()"
           >
-        </button>
-        <!-- кнопка прослушать диалог -->
-        <button
-          class="btn btn-menu"
-          @click="toggleListening"
-        >
-          <span class="material-symbols-outlined">volume_up</span>
-          {{ $t('buttons.listen') }}
-        </button>
-        <div class="grow"></div>
-        <!-- кнопки тренировок -->
-        <button
-          v-for="level in trainingLevels"
-          :key="level.name"
-          class="btn btn-action btn-action-sidebar"
-          :disabled="level.isPro && !canView()"
-          @click="goToTraining(level)"
-        >
-          <span class="material-symbols-outlined">{{ level.icon }}</span>
-          {{ level.text }}
-          <span
-            v-if="!userStore.isPro && level.isPro"
-            class="material-symbols-outlined pro"
-            >crown</span
+            <span class="material-symbols-outlined">analytics</span>
+            {{ $t('buttons.analysis') }}
+            <span
+              v-if="!userStore.isPro"
+              class="material-symbols-outlined pro"
+              >crown</span
+            >
+          </button>
+          <!-- кнопка прослушать диалог -->
+          <button
+            class="btn btn-menu"
+            @click="toggleListening"
           >
-        </button>
-        <div class="grow"></div>
-        <!-- кнопка удалить диалог -->
-        <button
-          class="btn btn-danger"
-          @click="handleDelete"
-        >
-          <span class="material-symbols-outlined">delete</span>
-          {{ $t('buttons.delDialog') }}
-        </button>
-      </template>
-      <!-- текст диалога -->
-      <div
-        v-if="dialog"
-        class="scroll-container"
-      >
+            <span class="material-symbols-outlined">volume_up</span>
+            {{ $t('buttons.listen') }}
+          </button>
+          <div class="grow"></div>
+          <!-- кнопки тренировок -->
+          <button
+            v-for="level in trainingLevels"
+            :key="level.name"
+            class="btn btn-action btn-action-sidebar"
+            :disabled="level.isPro && !canView()"
+            @click="goToTraining(level)"
+          >
+            <span class="material-symbols-outlined">{{ level.icon }}</span>
+            {{ level.text }}
+            <span
+              v-if="!userStore.isPro && level.isPro"
+              class="material-symbols-outlined pro"
+              >crown</span
+            >
+          </button>
+          <div class="grow"></div>
+          <!-- кнопка удалить диалог -->
+          <button
+            class="btn btn-danger"
+            @click="handleDelete"
+          >
+            <span class="material-symbols-outlined">delete</span>
+            {{ $t('buttons.delDialog') }}
+          </button>
+        </template>
+        <!-- текст диалога -->
         <div
-          v-for="(fin, index) in dialog.fin"
-          :key="index"
-          class="dialog-line"
+          v-if="dialog"
+          class="scroll-container"
         >
-          <p class="finnish-text">{{ fin }}</p>
-          <p class="russian-text">{{ dialog.rus[index] }}</p>
-        </div>
-      </div>
-    </DialogLayout>
-  </div>
-
-  <!-- FOR MOBILE -->
-  <div
-    v-else-if="dialog"
-    class="page-container"
-  >
-    <header class="header">
-      <button
-        @click="router.back()"
-        class="header-btn"
-      >
-        <span class="material-symbols-outlined i">arrow_back_ios</span>
-      </button>
-      <div class="header-title">
-        <h1>{{ dialog.title }}</h1>
-        <span class="badge">{{ dialog.level }}</span>
-      </div>
-      <div style="width: 40px"></div>
-    </header>
-
-    <main class="content">
-      <div class="chat-container">
-        <div
-          v-for="(line, index) in dialog.fin"
-          :key="index"
-          class="message-bubble"
-          :class="index % 2 === 0 ? 'left' : 'right'"
-        >
-          <p class="finnish-text-mobile">{{ line }}</p>
-          <p class="russian-text-mobile">{{ dialog.rus[index] }}</p>
-        </div>
-      </div>
-    </main>
-
-    <footer class="actions-footer">
-      <div class="actions-grid">
-        <button
-          class="btn btn-menu text-mobile"
-          @click="toggleListening"
-        >
-          <span class="material-symbols-outlined">volume_up</span>
-          {{ $t('buttons.listenM') }}
-        </button>
-        <button
-          class="btn btn-menu mobile text-mobile"
-          @click="getInfo"
-          :disabled="!canView()"
-        >
-          <span class="material-symbols-outlined">analytics</span>
-          {{ $t('buttons.analysisM') }}
-          <span
-            v-if="!userStore.isPro"
-            class="material-symbols-outlined pro"
-            >crown</span
+          <div
+            v-for="(fin, index) in dialog.fin"
+            :key="index"
+            class="dialog-line"
           >
-        </button>
+            <p class="finnish-text">{{ fin }}</p>
+            <p class="russian-text">{{ dialog.rus[index] }}</p>
+          </div>
+        </div>
+      </DialogLayout>
+    </div>
+
+    <!-- FOR MOBILE -->
+    <div
+      v-else
+      class="page-container"
+    >
+      <header class="header">
         <button
-          class="btn btn-danger btn-half"
-          @click="handleDelete"
+          @click="router.back()"
+          class="header-btn"
         >
-          <span class="material-symbols-outlined">delete</span>
+          <span class="material-symbols-outlined i">arrow_back_ios</span>
         </button>
-      </div>
-      <div class="trainings-grid">
-        <button
-          v-for="level in trainingLevels"
-          :key="level.name"
-          class="btn btn-action btn-action-sidebar mobile"
-          :disabled="level.isPro && !canView()"
-          @click="goToTraining(level)"
-        >
-          <span class="material-symbols-outlined">{{ level.icon }}</span>
-          {{ level.text }}
-          <span
-            v-if="!userStore.isPro && level.isPro"
-            class="material-symbols-outlined pro"
-            >crown</span
+        <div class="header-title">
+          <h1>{{ dialog.title }}</h1>
+          <span class="badge">{{ dialog.level }}</span>
+        </div>
+      </header>
+      <main class="content">
+        <div class="chat-container">
+          <div
+            v-for="(line, index) in dialog.fin"
+            :key="index"
+            class="message-bubble"
+            :class="index % 2 === 0 ? 'left' : 'right'"
           >
-        </button>
-      </div>
-    </footer>
+            <p class="finnish-text-mobile">{{ line }}</p>
+            <p class="russian-text-mobile">{{ dialog.rus[index] }}</p>
+          </div>
+        </div>
+      </main>
+      <footer class="actions-footer">
+        <div class="actions-grid">
+          <button
+            class="btn mobile btn-danger btn-half"
+            @click="handleDelete"
+          >
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+
+          <button
+            class="btn btn-menu mobile text-mobile"
+            @click="getInfo"
+            :disabled="!canView()"
+          >
+            <span class="material-symbols-outlined">analytics</span>
+            {{ $t('buttons.analysisM') }}
+            <span
+              v-if="!userStore.isPro"
+              class="material-symbols-outlined pro"
+              >crown</span
+            >
+          </button>
+          <button
+            class="btn btn-menu mobile text-mobile"
+            @click="toggleListening"
+          >
+            <span class="material-symbols-outlined">volume_up</span>
+            {{ $t('buttons.listenM') }}
+          </button>
+        </div>
+        <div class="trainings-grid">
+          <button
+            v-for="level in trainingLevels"
+            :key="level.name"
+            class="btn btn-action btn-action-sidebar mobile"
+            :disabled="level.isPro && !canView()"
+            @click="goToTraining(level)"
+          >
+            <span class="material-symbols-outlined">{{ level.icon }}</span>
+            {{ level.text }}
+            <span
+              v-if="!userStore.isPro && level.isPro"
+              class="material-symbols-outlined pro"
+              >crown</span
+            >
+          </button>
+        </div>
+      </footer>
+    </div>
   </div>
 
   <Teleport to="body">
@@ -349,6 +354,20 @@ const goToTraining = (level) => {
 .scroll-container {
   padding: var(--y-10) 0;
 }
+.dialog-info {
+  text-align: center;
+  margin-bottom: var(--y-20);
+}
+.dialog-info-title {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--xxl);
+  font-weight: 700;
+  color: var(--g3);
+}
+.dialog-info-level {
+  font-size: var(--lg);
+  color: var(--text-head);
+}
 .dialog-line {
   padding-bottom: var(--y-05);
   margin-bottom: var(--y-05);
@@ -380,7 +399,7 @@ const goToTraining = (level) => {
   align-items: center;
   padding: var(--y-05) var(--x-05);
   background-color: var(--bg-side);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--bb);
   flex-shrink: 0;
 }
 .header-btn {
@@ -457,7 +476,8 @@ const goToTraining = (level) => {
   gap: var(--x-10);
 }
 .actions-grid > .btn-half {
-  padding: var(--y-05) var(--x-20);
+  padding-left: var(--x-20);
+  padding-right: var(--x-20);
   min-width: 0;
   max-width: var(--x-30);
   flex: 0 1 var(--x-20);
@@ -466,7 +486,7 @@ const goToTraining = (level) => {
   flex-shrink: 0;
   padding: var(--y-10) var(--x-15);
   background-color: var(--bg-side);
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--bb);
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 .actions-grid {

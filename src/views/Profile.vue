@@ -1,17 +1,16 @@
 <!--\\src\views\Profile.vue -->
 <template>
   <div class="profile-page">
-    <header class="page-header">
-      <h1 class="page-title">{{ $t('profile.title') }}</h1>
-      <button
-        @click="goBack"
-        class="btn btn-action btn-ok"
-      >
-        {{ $t('buttons.done') }}
-      </button>
-    </header>
-
     <main class="profile-content">
+      <header class="page-header">
+        <h1 class="page-title">{{ $t('profile.title') }}</h1>
+        <button
+          @click="goBack"
+          class="btn btn-action mobile"
+        >
+          {{ $t('buttons.done') }}
+        </button>
+      </header>
       <section class="profile-group user-info">
         <img
           v-if="user?.photoURL"
@@ -41,7 +40,10 @@
           <p class="usage-info">{{ $t('profile.genToday') }} {{ dialogsCreatedToday }} / {{ usage.daily.limit }}</p>
           <p class="usage-info">{{ $t('profile.savedDialog') }} {{ usage.total.count }} / {{ usage.total.limit }}</p>
         </div>
-        <div class="pro-card">
+        <div
+          class="pro-card"
+          v-if="!userStore.isPro"
+        >
           <div class="pro-header">
             <span class="material-symbols-outlined">rocket_launch</span>
             <h2>{{ $t('profile.upgrade') }}</h2>
@@ -62,23 +64,23 @@
           </button>
         </div>
       </section>
-
+      <div class="grow"></div>
       <section class="profile-group">
         <h3 class="group-title">{{ $t('profile.accountMenag') }}</h3>
         <div class="actions-list">
           <button
-            class="btn btn-danger"
-            @click="handleLogout"
-          >
-            <span class="material-symbols-outlined">logout</span>
-            {{ $t('buttons.logOut') }}
-          </button>
-          <button
-            class="btn btn-danger"
+            class="btn btn-danger mobile"
             @click="handleDeleteAccount"
           >
             <span class="material-symbols-outlined">delete_forever</span>
             {{ $t('buttons.delete') }}
+          </button>
+          <button
+            class="btn btn-danger mobile"
+            @click="handleLogout"
+          >
+            <span class="material-symbols-outlined">logout</span>
+            {{ $t('buttons.logOut') }}
           </button>
         </div>
       </section>
@@ -145,16 +147,19 @@ const handleDeleteAccount = () => {
 <style scoped>
 /* 1. Стили для МОБИЛЬНЫХ (по умолчанию) */
 .profile-page {
+  display: flex;
+  flex-direction: column;
   max-width: 800px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: var(--y-10) var(--x-15);
   min-height: 0;
+  height: 100vh;
 }
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--y-10);
 }
 .page-title {
   font-size: var(--xxxl);
@@ -162,27 +167,34 @@ const handleDeleteAccount = () => {
   color: var(--text-head);
   margin: 0;
 }
+.profile-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--y-05);
+}
 .profile-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--y-15);
 }
 .group-title {
   font-size: var(--sm);
   font-weight: 700;
   color: var(--text-base);
   text-transform: uppercase;
-  padding-bottom: 0.5rem;
+  padding-bottom: var(--y-05);
   border-bottom: 1px solid var(--border);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--y-05);
 }
 .user-info {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: var(--x-15);
 }
 .avatar,
 .avatar-placeholder {
-  width: 48px;
-  height: 48px;
+  width: var(--x-30);
+  height: var(--x-30);
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -195,38 +207,38 @@ const handleDeleteAccount = () => {
   border: 1px solid var(--border);
 }
 .avatar-placeholder .material-symbols-outlined {
-  font-size: 32px;
+  font-size: var(--xl);
   color: var(--text-base);
 }
 .user-name {
-  font-size: var(--xl); /* Уменьшаем для мобильных */
+  font-size: var(--xl);
   font-weight: 700;
   color: var(--text-head);
 }
 .user-email {
-  font-size: var(--sm); /* Уменьшаем для мобильных */
+  font-size: var(--lg);
   color: var(--text-title);
-  word-break: break-all; /* Перенос длинных email */
+  word-break: break-all;
 }
 .current-plan-card {
   background-color: var(--bg-group);
-  padding: 1rem 1.5rem;
+  padding: var(--y-10) var(--x-15);
   border-radius: 8px;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--y-15);
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
 }
 .plan-info p {
   color: var(--text-title);
-  font-size: var(--base);
+  font-size: var(--lg);
 }
 .plan-info strong {
   color: var(--text-head);
   font-weight: 700;
 }
 .usage-info {
-  font-size: var(--sm) !important;
+  font-size: var(--lg);
   color: var(--text-title);
 }
 
@@ -235,7 +247,7 @@ const handleDeleteAccount = () => {
   background: var(--gradient-pro);
   color: var(--t-pro);
   border-radius: 12px;
-  padding: 1rem;
+  padding: var(--y-10) var(--x-15);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -245,8 +257,8 @@ const handleDeleteAccount = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: var(--x-10);
+  margin-bottom: var(--y-15);
 }
 .pro-header h2 {
   font-size: var(--xl);
@@ -257,48 +269,45 @@ const handleDeleteAccount = () => {
   padding: 0;
   text-align: left;
   display: inline-block;
-  margin: 0 1rem;
-  margin-bottom: 2rem;
+  margin: 0 var(--x-10);
+  margin-bottom: var(--y-20);
 }
 .btn-pro {
   font-size: var(--lg);
-  padding: 0.8rem;
-  margin: 0 1rem;
+  padding: var(--y-10) var(--x-15);
+  margin: 0 var(--x-30);
+  font-size: var(--xl);
 }
-.btn-ok {
-  width: auto;
-  padding-left: 2rem;
-  padding-right: 2.5rem;
-}
+
 .actions-list {
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  gap: 1rem;
-  margin-top: 1rem;
+  justify-content: center;
+  gap: var(--y-10);
+  margin-top: var(--y-10);
 }
 
 /* 2. Улучшения для ДЕСКТОПОВ */
 @media (min-width: 768px) {
   .profile-page {
-    padding: 2rem; /* Увеличиваем отступы */
+    padding: var(--y-20) var(--x-20);
   }
   .avatar,
   .avatar-placeholder {
-    width: 64px;
-    height: 64px;
+    width: var(--y-30);
+    height: var(--y-30);
   }
   .user-name {
     font-size: var(--xxl);
   }
   .user-email {
-    font-size: var(--base);
+    font-size: var(--lg);
   }
   .pro-card {
-    padding: 2rem;
+    padding: var(--y-20) var(--x-20);
   }
   .pro-header h2 {
-    font-size: var(--xxl);
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: var(--xxxl);
   }
   .actions-list {
     flex-direction: row;

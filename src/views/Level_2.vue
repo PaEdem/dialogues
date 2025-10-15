@@ -1,82 +1,142 @@
 <!-- src\views\Level_2.vue -->
 <template>
-  <DialogLayout>
-    <template #sidebar-content>
-      <TrainingSidebar
-        :dialogId="props.id"
-        description='Финский текст, русский перевод и финская речь. Жми "Microphone" и говори. Повторно нажами на "Microphone" и проверь произношение.'
-        :mic-button="true"
-      >
-        <template #extra-controls>
-          <button
-            class="btn-control mic"
-            @click="trainingStore.toggleSpeechRecognition()"
-            :class="{ active: trainingStore.isMicActive }"
-            aria-label="Записать произношение"
-          >
-            <span class="material-symbols-outlined icon">{{ trainingStore.isMicActive ? 'mic' : 'mic_off' }}</span>
-            Микрофон {{ trainingStore.isMicActive ? 'ON' : 'OFF' }}
-          </button>
-        </template>
-      </TrainingSidebar>
-    </template>
+  <div v-if="isDesktop">
+    <DialogLayout>
+      <template #sidebar-content>
+        <TrainingSidebar
+          :dialogId="props.id"
+          :slogan="$t('level2.slogan')"
+          :description="$t('level2.description')"
+          :mic-button="true"
+        >
+          <template #extra-controls>
+            <button
+              class="btn btn-control mic"
+              @click="trainingStore.toggleSpeechRecognition()"
+              :class="{ active: trainingStore.isMicActive }"
+            >
+              <span class="material-symbols-outlined icon">{{ trainingStore.isMicActive ? 'mic' : 'mic_off' }}</span>
+              <span class="btn-text">{{ $t('buttons.mic') }}</span>
+            </button>
+          </template>
+        </TrainingSidebar>
+      </template>
 
-    <div class="content-wrapper">
-      <div class="dialog-text-container">
-        <div class="panel">
-          <p
-            class="finnish text"
+      <div class="content-wrapper">
+        <div
+          class="dialog-text-container-desktop"
+          ref="desktopContent"
+        >
+          <div
             v-for="(line, index) in visibleLines.fin"
-            :key="`fin-${index}`"
+            :key="index"
+            class="message-bubble-desktop fade-in"
+            :class="index % 2 === 0 ? 'left' : 'right'"
           >
-            {{ line }}
-          </p>
+            <p class="finnish-text">{{ line }}</p>
+            <p class="russian-text">{{ visibleLines.rus[index] }}</p>
+          </div>
         </div>
-        <div class="panel">
+        <div class="divider"></div>
+        <div class="recognized-text-container">
           <p
-            class="russian text"
-            v-for="(line, index) in visibleLines.rus"
-            :key="`rus-${index}`"
+            v-if="trainingStore.formattedRecognitionText"
+            class="recognized-text"
+            v-html="trainingStore.formattedRecognitionText"
+          ></p>
+          <p
+            v-else
+            class="placeholder-text"
           >
-            {{ line }}
+            {{ $t('level2.info') }}
           </p>
         </div>
       </div>
-      <div class="recognized-text-container">
+    </DialogLayout>
+  </div>
+
+  <div
+    v-else-if="dialog"
+    class="page-container"
+  >
+    <header class="header">
+      <router-link
+        to="/dialogs"
+        class="header-btn"
+      >
+        <span class="material-symbols-outlined i">arrow_back_ios</span>
+      </router-link>
+      <div class="header-title">
+        <p class="description-mobile">{{ $t('level2.descriptionMobile') }}</p>
+      </div>
+    </header>
+
+    <main
+      class="content"
+      ref="mobileContent"
+    >
+      <div class="chat-container">
+        <div
+          v-for="(line, index) in visibleLines.fin"
+          :key="index"
+          class="message-bubble fade-in"
+          :class="index % 2 === 0 ? 'left' : 'right'"
+        >
+          <p class="finnish-text-mobile">{{ line }}</p>
+          <p class="russian-text-mobile">{{ visibleLines.rus[index] }}</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="actions-footer">
+      <div class="recognized-text-container-mobile">
         <p
           v-if="trainingStore.formattedRecognitionText"
-          class="recognized-text"
+          class="recognized-text-mobile"
           v-html="trainingStore.formattedRecognitionText"
         ></p>
         <p
           v-else
-          class="placeholder-text"
+          class="placeholder-text-mobile"
         >
-          Нажмите на "Микрофон", чтобы проверить произношение...
+          {{ $t('level2.info') }}
         </p>
       </div>
-    </div>
-  </DialogLayout>
+      <TrainingSidebar
+        :dialogId="props.id"
+        :description="$t('level2.description_mobile')"
+      >
+        <template #extra-controls>
+          <button
+            class="btn btn-control-mobile mic"
+            @click="trainingStore.toggleSpeechRecognition()"
+            :class="{ active: trainingStore.isMicActive }"
+          >
+            <span class="material-symbols-outlined icon">{{ trainingStore.isMicActive ? 'mic' : 'mic_off' }}</span>
+          </button>
+        </template>
+      </TrainingSidebar>
+    </footer>
+  </div>
 
   <Teleport to="body">
     <Modal>
-      <div class="ohi">
-        <h3 class="ohi-title">Harjoitus on ohi</h3>
-        <div class="ohi-message">
-          Hyvää työtä! Voit aloittaa alusta tai valita toisen harjoituksen.<br />
-          <br />
-          Отличная работа! Можете начать заново или выбрать другую тренировку.
-        </div>
+      <template #header>
+        <h3 class="title">{{ $t('modal.title') }}</h3>
+      </template>
+
+      <div class="end-message">
+        <p>{{ $t('modal.text') }}</p>
       </div>
     </Modal>
   </Teleport>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useDialogStore } from '../stores/dialogStore';
 import { useTrainingStore } from '../stores/trainingStore';
-import { useUiStore } from '../stores/uiStore';
+import { useBreakpoint } from '../composables/useBreakpoint';
 import DialogLayout from '../components/DialogLayout.vue';
 import TrainingSidebar from '../components/TrainingSidebar.vue';
 import Modal from '../components/Modal.vue';
@@ -84,10 +144,23 @@ import Modal from '../components/Modal.vue';
 const props = defineProps({ id: { type: String, required: true } });
 const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
-const uiStore = useUiStore();
+const { isDesktop } = useBreakpoint();
 
 const lineIndex = computed(() => trainingStore.currentLineIndex);
 const dialog = computed(() => dialogStore.currentDialog);
+
+// ✨ ЛОГИКА АВТОСКРОЛЛА
+const mobileContent = ref(null);
+const desktopContent = ref(null);
+
+watch(lineIndex, () => {
+  setTimeout(() => {
+    const container = isDesktop.value ? desktopContent.value : mobileContent.value;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
+  }, 100);
+});
 
 const visibleLines = computed(() => {
   if (!dialog.value) return { fin: [], rus: [] };
@@ -104,35 +177,11 @@ onMounted(async () => {
     trainingStore.startLevel();
   }
 });
-</script>
 
-<!-- <style scoped>
-.content-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.recognized-text-container {
-  height: 80px; /* Фиксированная высота */
-  flex-shrink: 0; /* Не сжиматься */
-  padding: 1rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top: 2px solid var(--tiffany-70);
-}
-.recognized-text {
-  font-size: var(--subtitle);
-  font-weight: 500;
-  color: var(--tiffany-20);
-  text-align: center;
-}
-.placeholder-text {
-  font-size: var(--subtext);
-  font-style: italic;
-  color: var(--grey-50);
-}
-</style> -->
+onUnmounted(() => {
+  trainingStore.stopSpeech();
+});
+</script>
 
 <style scoped>
 .content-wrapper {
@@ -140,35 +189,44 @@ onMounted(async () => {
   flex-direction: column;
   height: 100%;
 }
-.dialog-text-container {
-  /* Эта часть идентична Level_1 */
+/* ======================== ДЕСКТОП ======================== */
+.dialog-text-container-desktop {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  width: 90%;
+  height: 100%;
+  gap: var(--y-10);
+  margin: 0 auto;
+  padding-right: 0.5rem;
   overflow-y: auto;
-  gap: 1rem;
-  padding: 1rem;
 }
-.panel {
-  flex: 1;
+.message-bubble-desktop {
+  color: var(--text-head);
+  padding: var(--y-10) var(--x-20);
+  border-radius: var(--y-20);
+  max-width: 80%;
+  border: 1px solid var(--bb);
 }
-.text {
-  font-size: var(--font-size-base);
-  padding-bottom: 0.75rem;
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border);
-  line-height: 1.6;
+.message-bubble-desktop.left {
+  background-color: var(--bg-chat-l);
+  border-bottom-left-radius: 2px;
+  align-self: flex-start;
 }
-.finnish {
-  font-weight: 500;
-  color: var(--color-text-primary);
+.message-bubble-desktop.right {
+  background-color: var(--bg-chat-r);
+  border-bottom-right-radius: 2px;
+  align-self: flex-end;
 }
-.russian {
+.finnish-text {
+  font-size: var(--xl);
+  font-weight: 600;
+}
+.russian-text {
+  font-size: var(--xl);
   font-style: italic;
-  color: var(--color-text-secondary);
+  text-align: right;
+  margin-top: var(--y-05);
 }
-
-/* Уникальная нижняя плашка */
 .recognized-text-container {
   height: 90px;
   flex-shrink: 0;
@@ -177,26 +235,120 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   text-align: center;
-  border-top: 1px solid var(--color-border);
-  background-color: var(--color-bg-sidebar);
 }
 .recognized-text,
-.gemini-result,
 .placeholder-text {
-  font-size: var(--font-size-lg);
-  font-weight: 500;
-  color: var(--color-text-primary);
-}
-.placeholder-text,
-.gemini-result {
+  font-size: var(--lg);
   font-style: italic;
-  color: var(--color-text-secondary);
+  color: var(--text-base);
 }
-@media (min-width: 768px) {
-  .dialog-text-container {
-    flex-direction: row;
-    padding: 0;
-    gap: 2rem;
-  }
+/* ======================== МОБИЛЬНЫЙ ======================== */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.header {
+  display: flex;
+  align-items: center;
+  padding: var(--y-05) var(--x-05);
+  background-color: var(--bg-side);
+  border-bottom: 1px solid var(--bb);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+.header-btn {
+  background: none;
+  color: var(--text-head);
+  width: var(--y-25);
+  height: var(--y-25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header-btn .i {
+  font-size: var(--y-25);
+  margin-left: var(--x-20);
+}
+.header-title {
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--y-05);
+}
+.description-mobile {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--xl);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--r3);
+  text-align: center;
+}
+.content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  scroll-behavior: smooth;
+}
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--y-05);
+}
+.message-bubble {
+  color: var(--text-head);
+  padding: var(--y-05) var(--x-15);
+  border-radius: 1rem;
+  max-width: 80%;
+  border: 1px solid var(--bb);
+}
+.message-bubble.left {
+  background-color: var(--bg-chat-l);
+  border-bottom-left-radius: 2px;
+  align-self: flex-start;
+}
+.message-bubble.right {
+  background-color: var(--bg-chat-r);
+  border-bottom-right-radius: 2px;
+  align-self: flex-end;
+}
+.finnish-text-mobile {
+  font-size: var(--xl);
+  font-weight: 600;
+}
+.russian-text-mobile {
+  font-size: var(--xl);
+  font-style: italic;
+  text-align: right;
+  margin-top: var(--y-05);
+}
+.actions-footer {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  background-color: var(--y10);
+  border-top: 1px solid var(--bb);
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+}
+.recognized-text-container-mobile {
+  height: 60px;
+  flex-shrink: 0;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.recognized-text-mobile,
+.placeholder-text-mobile {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--xl);
+  color: var(--text-head);
+}
+.end-message {
+  font-size: 1.25rem;
+  text-align: center;
 }
 </style>

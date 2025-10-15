@@ -13,7 +13,7 @@ export const useUiStore = defineStore('ui', {
     viewCounter: 0,
   }),
   getters: {
-    isAppLoading() {
+    loading() {
       const dialogStore = useDialogStore();
       const userStore = useUserStore();
       const trainingStore = useTrainingStore();

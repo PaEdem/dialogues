@@ -7,12 +7,11 @@
     <aside class="sidebar">
       <router-link
         to="/dialogs"
-        class="btn btn-common"
+        class="btn btn-common back-link"
       >
         <span class="material-symbols-outlined">arrow_back_ios</span>
         {{ $t('buttons.dialogList') }}
       </router-link>
-      <div class="grow"></div>
       <slot name="sidebar-content"></slot>
     </aside>
 
@@ -51,9 +50,7 @@ const dialog = computed(() => dialogStore.currentDialog);
   text-align: center;
 }
 .back-link {
-  color: var(--text-title);
-  text-decoration: none;
-  margin-right: var(--x-05);
+  margin-bottom: var(--y-10);
 }
 .dialog-title {
   font-size: var(--lg);
@@ -93,6 +90,7 @@ const dialog = computed(() => dialogStore.currentDialog);
   }
   .content {
     padding: var(--y-20) var(--x-20);
+    overflow-y: auto;
   }
   .dialog-title {
     font-size: var(--xxl);

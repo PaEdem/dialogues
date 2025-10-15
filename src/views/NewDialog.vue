@@ -57,13 +57,13 @@
       <div class="submit-wrap">
         <router-link
           to="/dialogs"
-          class="btn btn-common"
+          class="btn btn-common w-10"
         >
           <span class="material-symbols-outlined icon">cancel</span>
           {{ $t('buttons.cancel') }}
         </router-link>
         <button
-          class="btn btn-action width"
+          class="btn btn-action w-10"
           type="submit"
           :disabled="!isFormValid || trainingStore.isLoading"
         >
@@ -143,7 +143,7 @@ const saveDialog = async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 1rem;
+  padding: var(--y-10) var(--x-10);
 }
 .dialog-form {
   display: flex;
@@ -151,42 +151,42 @@ const saveDialog = async () => {
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 420px;
-  padding: 2rem 1.5rem;
-  border-radius: 8px;
+  max-width: 640px;
+  padding: var(--y-20) var(--x-15);
+  border-radius: 4px;
   background: var(--bg-group);
   box-shadow: 0 4px 15px var(--shadow);
 }
 .title {
   text-align: center;
-  margin-bottom: 2rem;
-  font-size: var(--xxl);
+  margin-bottom: var(--y-20);
+  font-size: var(--xxxl);
 }
 .form-group {
   width: 100%;
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--y-15);
 }
 label {
   display: block;
-  margin-bottom: 0.25rem;
-  font-size: var(--sm);
+  margin-bottom: 4px;
+  font-size: var(--lg);
   font-weight: 500;
   color: var(--text-title);
 }
 input,
 select {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: var(--y-05) var(--x-10);
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: var(--font-base);
 }
 textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: var(--y-05) var(--x-10);
   border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: var(--sm);
+  font-size: var(--lg);
   font-family: inherit;
   resize: vertical;
 }
@@ -205,16 +205,17 @@ textarea:focus::placeholder {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 2rem;
-  gap: 2rem;
-}
-.submit-wrap .width {
-  width: 100%;
+  margin-top: var(--y-20);
+  gap: var(--x-05);
 }
 .error-message {
   color: var(--r3);
-  margin-bottom: 1rem;
+  margin-bottom: var(--y-10);
   font-weight: 500;
   text-align: center;
+}
+.btn.btn-common.w-10,
+.btn.btn-action.w-10 {
+  max-width: var(--x-100);
 }
 </style>

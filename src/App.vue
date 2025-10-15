@@ -14,8 +14,10 @@ import { computed } from 'vue';
 import { useUiStore } from './stores/uiStore';
 import ToastContainer from './components/ToastContainer.vue';
 import Loader from './components/Loader.vue';
+
 const uiStore = useUiStore();
-const isLoading = computed(() => uiStore.isAppLoading);
+
+const isLoading = computed(() => uiStore.loading);
 </script>
 
 <style scoped>
