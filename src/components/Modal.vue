@@ -120,6 +120,10 @@ const uiStore = useUiStore();
 .modal-footer.footer-analysis {
   justify-content: space-between;
 }
+.end-message {
+  font-size: var(--md);
+  text-align: center;
+}
 /* Стили для контента, генерируемого v-html */
 .modal-body h1,
 .modal-body h3,

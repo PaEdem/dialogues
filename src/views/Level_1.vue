@@ -285,8 +285,8 @@ onUnmounted(() => {
   border-top: 1px solid var(--bb);
   box-shadow: 0 -4px 8px var(--shadow);
 }
-.end-message {
+/* .end-message {
   font-size: var(--md);
   text-align: center;
-}
+} */
 </style>

@@ -1,5 +1,5 @@
 <!-- src\views\Level_4.vue -->
-<template>
+<!-- <template>
   <DialogLayout>
     <template #sidebar-content>
       <TrainingSidebar
@@ -49,9 +49,118 @@
       </div>
     </Modal>
   </Teleport>
+</template> -->
+
+<template>
+  <div v-if="isDesktop">
+    <DialogLayout>
+      <template #sidebar-content>
+        <TrainingSidebar
+          :dialogId="props.id"
+          :slogan="$t('level4.slogan')"
+          :description="$t('level4.description')"
+        >
+          <template #extra-controls>
+            <button
+              class="btn btn-control"
+              disabled
+            >
+              <span class="material-symbols-outlined icon">mic_off</span>
+              <span class="btn-text">{{ $t('buttons.mic') }}</span>
+            </button>
+          </template>
+        </TrainingSidebar>
+      </template>
+
+      <div
+        v-if="dialog"
+        class="quiz-content"
+      >
+        <div class="options-container">
+          <button
+            v-for="(option, index) in trainingStore.currentQuizOptions"
+            :key="`${trainingStore.currentLineIndex}-${index}`"
+            class="btn btn-quiz"
+            @click="handleAnswer(option)"
+            :class="{
+              correct: answerStatus[option.text] === 'correct',
+              incorrect: answerStatus[option.text] === 'incorrect',
+            }"
+            :disabled="answerStatus[option.text] === 'incorrect' || isAnswered"
+          >
+            {{ option.text }}
+          </button>
+        </div>
+      </div>
+    </DialogLayout>
+  </div>
+
+  <div
+    v-else-if="dialog"
+    class="page-container"
+  >
+    <header class="header">
+      <router-link
+        to="/dialogs"
+        class="header-btn"
+      >
+        <span class="material-symbols-outlined i">arrow_back_ios</span>
+      </router-link>
+      <div class="header-title">
+        <p class="description-mobile">{{ $t('level4.descriptionMobile') }}</p>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="options-container">
+        <button
+          v-for="(option, index) in trainingStore.currentQuizOptions"
+          :key="`${trainingStore.currentLineIndex}-${index}`"
+          class="btn btn-quiz"
+          @click="handleAnswer(option)"
+          :class="{
+            correct: answerStatus[option.text] === 'correct',
+            incorrect: answerStatus[option.text] === 'incorrect',
+          }"
+          :disabled="answerStatus[option.text] === 'incorrect' || isAnswered"
+        >
+          <span class="text-quiz">{{ option.text }}</span>
+        </button>
+      </div>
+    </main>
+
+    <footer class="actions-footer">
+      <TrainingSidebar
+        :dialogId="props.id"
+        :description="$t('level4.descriptionMobile')"
+      >
+        <template #extra-controls>
+          <button
+            class="btn btn-control mobile"
+            disabled
+          >
+            <span class="material-symbols-outlined icon">mic_off</span>
+          </button>
+        </template>
+      </TrainingSidebar>
+    </footer>
+  </div>
+
+  <Teleport to="body">
+    <Modal>
+      <template #header>
+        <h3 class="title">
+          {{ $t('modal.title') }}
+        </h3>
+      </template>
+      <div class="end-message">
+        <p>{{ $t('modal.text') }}</p>
+      </div>
+    </Modal>
+  </Teleport>
 </template>
 
-<script setup>
+<!-- <script setup>
 import { ref, watch, onMounted } from 'vue';
 import { useDialogStore } from '../stores/dialogStore';
 import { useTrainingStore } from '../stores/trainingStore';
@@ -96,119 +205,198 @@ onMounted(async () => {
     trainingStore.startLevel();
   }
 });
+</script> -->
+
+<script setup>
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useDialogStore } from '../stores/dialogStore';
+import { useTrainingStore } from '../stores/trainingStore';
+import { useUiStore } from '../stores/uiStore';
+import { useBreakpoint } from '../composables/useBreakpoint';
+import DialogLayout from '../components/DialogLayout.vue';
+import TrainingSidebar from '../components/TrainingSidebar.vue';
+import Modal from '../components/Modal.vue';
+
+const props = defineProps({ id: { type: String, required: true } });
+const dialogStore = useDialogStore();
+const trainingStore = useTrainingStore();
+const uiStore = useUiStore();
+const { isDesktop } = useBreakpoint();
+const { t } = useI18n();
+
+const dialog = computed(() => dialogStore.currentDialog);
+
+// Локальное состояние для квиза
+const answerStatus = ref({});
+const isAnswered = ref(false);
+
+watch(
+  () => trainingStore.currentLineIndex,
+  () => {
+    answerStatus.value = {};
+    isAnswered.value = false;
+  }
+);
+
+const handleAnswer = (option) => {
+  if (isAnswered.value) return;
+
+  if (option.correct) {
+    isAnswered.value = true;
+    answerStatus.value[option.text] = 'correct';
+    setTimeout(() => {
+      trainingStore.nextLine();
+    }, 1000);
+  } else {
+    answerStatus.value[option.text] = 'incorrect';
+    trainingStore.playCurrentLineAudio();
+  }
+};
+
+onMounted(async () => {
+  trainingStore.setCurrentTrainingType('level-4');
+  await dialogStore.fetchDialogById(props.id);
+  if (dialogStore.currentDialog) {
+    trainingStore.startLevel();
+  }
+});
+
+onUnmounted(() => {
+  trainingStore.stopSpeech();
+});
 </script>
 
-<!-- <style scoped>
-/* Оставляем только уникальные стили */
-.quiz-content {
+<style scoped>
+/* ======================== ОБЩИЕ СТИЛИ КВИЗА ======================== */
+.quiz-content,
+.content {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
 }
-.options-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  width: 90%;
-  max-width: 960px;
-}
 .btn-quiz {
+  min-width: 240px;
+  max-width: 480px;
   font-family: 'Roboto Condensed', sans-serif;
-  height: 160px; /* Фиксированная высота для единообразия */
-  padding: 1rem;
+  white-space: normal;
+  word-break: break-word;
+  padding: 16px;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
-  font-weight: 400;
+  flex-wrap: wrap;
+  font-weight: 500;
   text-align: center;
+  text-transform: none;
   cursor: pointer;
-  background: var(--winkle-80);
-  color: var(--winkle-20);
-  border-radius: 1rem;
-  border: 1px solid var(--winkle-70);
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+  background-color: var(--bg-side);
+  color: var(--text-head);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease-in-out;
 }
 .btn-quiz:not(:disabled):hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
-  border-color: var(--winkle-30);
+  box-shadow: 0 4px 8px var(--shadow);
+  border-color: var(--bb);
 }
 .btn-quiz.correct {
-  background-color: var(--tiffany-60);
-  color: var(--tiffany-20);
-  border-color: var(--tiffany-10);
-  transform: scale(1.05);
+  background-color: var(--g1);
+  color: var(--g3);
+  border-color: var(--g3);
+  transform: scale(1.025);
+  opacity: 1;
 }
 .btn-quiz.incorrect {
-  background-color: var(--red-80);
-  color: var(--red-20);
-  border-color: var(--red-70);
+  background-color: var(--r1);
+  color: var(--r3);
+  border-color: var(--r3);
   opacity: 0.8;
   cursor: not-allowed;
 }
-</style> -->
 
-<style scoped>
-/* 1. Стили для МОБИЛЬНЫХ (по умолчанию) */
-.quiz-content {
+/* ======================== МОБИЛЬНЫЙ ======================== */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.header {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: var(--bg-side);
+  border-bottom: 1px solid var(--bb);
+  box-shadow: 0 4px 8px var(--shadow);
+  flex-shrink: 0;
+}
+.header-btn {
+  background: none;
+  color: var(--text-head);
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
-  padding: 1rem;
+}
+.header-btn .i {
+  font-size: 40px;
+  margin-left: 32px;
+}
+.header-title {
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.description-mobile {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--md);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--g3);
+  text-align: center;
+}
+.content {
+  padding: 32px;
 }
 .options-container {
   display: grid;
-  grid-template-columns: 1fr; /* Одна колонка */
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 16px;
   width: 100%;
-  max-width: 500px;
 }
 .btn-quiz {
-  /* Используем базовый класс .btn, но переопределяем некоторые стили */
-  height: 90px;
-  padding: 1rem;
-  font-size: var(--font-size-lg);
-  font-weight: 500;
-  text-transform: none; /* Убираем uppercase */
-  background-color: var(--color-bg-main);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
+  min-height: 80px;
+  font-size: var(--md);
 }
-.btn-quiz:not(:disabled):hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-.btn-quiz.correct {
-  background-color: var(--tiffany-60); /* Используем яркие цвета для статусов */
-  color: var(--tiffany-10);
-  border-color: var(--tiffany-60);
-}
-.btn-quiz.incorrect {
-  background-color: var(--red-90);
-  color: var(--color-danger);
-  border-color: var(--red-80);
-  opacity: 0.8;
-  cursor: not-allowed;
+.actions-footer {
+  flex-shrink: 0;
+  padding: 16px;
+  background-color: var(--y10);
+  border-top: 1px solid var(--bb);
+  box-shadow: 0 -4px 8px var(--shadow);
 }
 
-/* 2. Улучшения для ПЛАНШЕТОВ И БОЛЬШЕ */
+/* ======================== ДЕСКТОП ======================== */
 @media (min-width: 768px) {
   .quiz-content {
-    padding: 2rem;
+    padding: 32px;
   }
   .options-container {
-    grid-template-columns: 1fr 1fr; /* Две колонки */
-    gap: 2rem;
-    max-width: 960px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1024px;
   }
   .btn-quiz {
-    height: 120px;
-    font-size: var(--font-size-xl);
+    min-height: 120px;
+    font-size: var(--md);
   }
 }
 </style>
