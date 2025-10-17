@@ -12,19 +12,20 @@
       </p>
 
       <form @submit.prevent="handleSubmit">
-        <input
-          type="email"
-          v-model="email"
-          :placeholder="$t('auth.email')"
-          required
-        />
-        <input
-          type="password"
-          v-model="password"
-          :placeholder="$t('auth.pass')"
-          required
-        />
-
+        <div class="inputs">
+          <input
+            type="email"
+            v-model="email"
+            :placeholder="$t('auth.email')"
+            required
+          />
+          <input
+            type="password"
+            v-model="password"
+            :placeholder="$t('auth.pass')"
+            required
+          />
+        </div>
         <button
           type="submit"
           class="btn btn-common"
@@ -137,32 +138,36 @@ function getFriendlyErrorMessage(errorCode) {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: var(--y-10) var(--x-10);
+  padding: 16px;
 }
 .form-card {
   width: 100%;
   max-width: 420px;
   background: var(--bg-card);
-  padding: var(--y-20) var(--x-15);
+  padding: 32px 24px;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 12px var(--shadow);
 }
 .title {
   text-align: center;
-  margin-bottom: var(--y-20);
+  margin-bottom: 32px;
   font-size: var(--xxl);
 }
 .form-group {
-  margin-bottom: var(--y-15);
+  margin-bottom: 24px;
+}
+.inputs {
+  width: 100%;
+  margin-bottom: 24px;
 }
 input,
 select {
   width: 100%;
-  padding: var(--y-05) var(--x-10);
+  padding: 12px;
   margin: 1rem auto;
   border: 1px solid var(--border);
   border-radius: 4px;
-  font-size: var(--lg);
+  font-size: var(--md);
 }
 input:focus,
 select:focus {
@@ -171,11 +176,11 @@ select:focus {
 .submit-wrap {
   display: flex;
   justify-content: flex-end;
-  margin-top: var(--y-20);
+  margin-top: 32px;
 }
 .error-message {
   color: var(--r3);
-  margin-bottom: var(--y-10);
+  margin-bottom: 16px;
   font-weight: 500;
   text-align: center;
 }
@@ -184,7 +189,7 @@ select:focus {
   align-items: center;
   text-align: center;
   color: var(--text-title);
-  margin: var(--y-15) 0;
+  margin: 24px 0;
   font-size: var(--base);
 }
 .divider::before,
@@ -194,13 +199,13 @@ select:focus {
   border-bottom: 1px solid var(--border);
 }
 .divider:not(:empty)::before {
-  margin-right: var(--x-10);
+  margin-right: 16px;
 }
 .divider:not(:empty)::after {
-  margin-left: var(--x-10);
+  margin-left: 16px;
 }
 .toggle-mode {
-  margin-top: var(--y-20);
+  margin-top: 32px;
   font-size: var(--base);
   color: var(--text-title);
   text-align: center;
@@ -209,7 +214,7 @@ select:focus {
   background: none;
   border: none;
   padding: 0;
-  margin-left: var(--x-50);
+  margin-left: 8px;
   font-size: var(--base);
   font-weight: 500;
   color: var(--head);

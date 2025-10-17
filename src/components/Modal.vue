@@ -38,7 +38,7 @@
           class="modal-footer"
         >
           <button
-            class="btn btn-common w-10"
+            class="btn btn-common w-150"
             @click="uiStore.hideModal()"
           >
             <span class="material-symbols-outlined">close</span>
@@ -65,7 +65,7 @@ const uiStore = useUiStore();
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--y-10) var(--x-10);
+  padding: 16px;
   transition: opacity 0.3s ease;
 }
 .modal-container {
@@ -94,25 +94,25 @@ const uiStore = useUiStore();
   background: var(--gradient-pro);
 }
 .modal-header {
-  padding: var(--y-10) var(--x-15);
+  padding: 16px 0;
   flex-shrink: 0;
 }
 .modal-header .title {
-  font-size: var(--xxxl);
+  font-size: var(--xxl);
   color: var(--text-head);
   margin: 0;
   text-align: center;
 }
 .modal-body {
   overflow-y: auto;
-  padding: var(--y-15) var(--x-15);
+  padding: 24px;
   flex-grow: 1;
 }
 .modal-footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--y-10) var(--x-15);
+  padding: 16px 0;
   border-top: 1px solid var(--border);
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
@@ -128,11 +128,11 @@ const uiStore = useUiStore();
   font-size: var(--xxl);
   color: var(--g3);
   text-align: center;
-  margin-bottom: var(--y-10);
+  margin-bottom: 16px;
 }
 .modal-body ul {
   list-style-type: none;
-  padding-left: var(--x-05);
+  padding-left: 8px;
 }
 .modal-body ul li {
   font-family: 'Segoe UI', 'Roboto Condensed', sans-serif;
@@ -141,7 +141,7 @@ const uiStore = useUiStore();
   font-weight: 600;
   text-align: center;
   font-style: italic;
-  margin-bottom: var(--y-05);
+  margin-bottom: 8px;
 }
 .modal-body li code,
 .modal-body li strong code {
@@ -155,7 +155,7 @@ const uiStore = useUiStore();
   color: var(--r3);
 }
 .modal-info ul li ul li {
-  padding-left: var(--x-10);
+  padding-left: 16px;
 }
 .modal-enter-from,
 .modal-leave-to {

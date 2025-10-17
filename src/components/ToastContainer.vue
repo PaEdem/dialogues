@@ -20,15 +20,15 @@ const uiStore = useUiStore();
 <style scoped>
 .toast-container {
   position: fixed;
-  top: var(--y-10);
-  right: var(--x-10);
+  top: 8px;
+  right: 8px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: var(--y-05);
+  gap: 8px;
 }
 .toast {
-  padding: var(--y-10) var(--x-15);
+  padding: 16px 24px;
   border-radius: 4px;
   color: var(--text-head);
   font-weight: 500;
@@ -48,14 +48,12 @@ const uiStore = useUiStore();
 .toast--error {
   background-color: var(--bg-t-error);
 }
-
-/* Анимации */
 .toast-enter-from,
 .toast-leave-to {
   opacity: 0;
   transform: translateX(100%);
 }
 .toast-leave-active {
-  position: absolute; /* Чтобы элементы под ним плавно подтягивались */
+  position: absolute;
 }
 </style>

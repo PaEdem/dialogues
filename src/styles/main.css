@@ -42,7 +42,7 @@ body {
 .grow {
   flex-grow: 1;
 }
-.divider {
+.div {
   width: 70%;
   margin: 0 auto;
   border-bottom: 1px solid var(--border);

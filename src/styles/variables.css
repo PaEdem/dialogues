@@ -1,81 +1,37 @@
 /* //src/styles/variables.css */
 :root {
-  /* ======================================== */
-  /* 1. Font Size (Viewports: 576px / 1920px) */
-  /* ======================================== */
-  --xs: clamp(0.5rem, 0.238vw + 0.364rem, 0.75rem);
-  --sm: clamp(0.625rem, 0.238vw + 0.489rem, 0.875rem);
-  --base: clamp(0.625rem, 0.446vw + 0.364rem, 1rem);
-  --lg: clamp(0.875rem, 0.238vw + 0.739rem, 1.125rem);
-  --xl: clamp(1rem, 0.238vw + 0.864rem, 1.25rem);
-  --xxl: clamp(1.25rem, 0.238vw + 1.114rem, 1.5rem);
-  --xxxl: clamp(1.5rem, 0.595vw + 1.182rem, 2rem);
-
-  /* ================================================= */
-  /* 2. Horizontal Spacing (Viewports: 576px / 1920px) */
-  /* ================================================= */
-  --x-05: clamp(0.25rem, 0.238vw + 0.114rem, 0.5rem);
-  --x-10: clamp(0.5rem, 0.476vw + 0.327rem, 1rem);
-  --x-15: clamp(1rem, 0.476vw + 0.827rem, 1.5rem);
-  --x-20: clamp(1.5rem, 0.476vw + 1.327rem, 2rem);
-  --x-30: clamp(2.5rem, 0.833vw + 2.194rem, 3.5rem);
-  --x-60: clamp(5rem, 1.905vw + 3.931rem, 7rem);
-  --x-100: clamp(9rem, 2.857vw + 7.971rem, 12rem);
-
-  /* =============================================== */
-  /* 3. Vertical Spacing (Viewports: 720px / 1080px) */
-  /* =============================================== */
-  --y-05: clamp(0.25rem, 0.694vh + 0.175rem, 0.5rem);
-  --y-10: clamp(0.5rem, 1.389vh + 0.35rem, 1rem);
-  --y-15: clamp(1rem, 1.389vh + 0.85rem, 1.5rem);
-  --y-20: clamp(1.5rem, 1.389vh + 1.35rem, 2rem);
-  --y-25: clamp(2rem, 5vh - 0.25rem, 3.125rem);
-  --y-30: clamp(2rem, 4.167vh + 1.625rem, 3.5rem);
-  --y-60: clamp(4rem, 8.333vh + 3.333rem, 7rem);
-  --y-100: clamp(7.5rem, 13.889vh + 5.125rem, 12.5rem);
-
-  /* =============================================== */
-  /* 4. Colors, backgrounds, borders, shadows        */
-  /* =============================================== */
-  --shadow: rgba(0, 0, 0, 0.2);
-  --gradient-pro: linear-gradient(hsl(40, 50%, 50%) 0%, hsl(40, 50%, 75%) 100%);
-  --w1: hsl(0, 0%, 95%);
-  --w2: hsl(0, 0%, 40%);
-  --w3: hsl(200, 75%, 95%);
-  --w4: hsl(60, 85%, 95%);
-  --t-pro: #142952;
-  --bg-pro: rgb(239, 163, 11);
-  --bg-t-info: #8ff;
-  --bg-t-success: #8f8;
-  --bg-t-warning: #ff6;
-  --bg-t-error: #f66;
-  --g0: hsl(130, 40%, 81%);
-  --g1: hsl(131, 77%, 81%);
-  --g2: #7ee790;
-  --g3: #20602c;
-  --r1: #ecc9c6;
-  --r2: #f07f75;
-  --r3: #602420;
-  --y0: #fbfaf9;
-  --y1: rgb(250, 248, 245);
-  --y2: rgb(242, 238, 233);
-  --y3: #e8e1d9;
-  --y5: #7e7567;
-  --y6: #ece7df;
-  --y7: #2e271f;
-  --y8: #594e40;
-  --y9: #988c81;
-  --y10: #d6cec2;
-  --bb: #544e45;
-  --bg-main: var(--y1);
-  --bg-side: var(--y3);
-  --bg-card: var(--y2);
-  --bg-group: var(--y6);
-  --bg-chat-l: var(--w3);
-  --bg-chat-r: var(--w4);
-  --text-head: var(--y7);
-  --text-title: var(--y8);
-  --text-base: var(--y8);
-  --text-accent: var(--y0);
-  --border: var(--y10);
+  --xxs: 10px;
+  --xs: 12px;
+  --sm: 14px;
+  --md: 16px;
+  --lg: 18px;
+  --xl: 20px;
+  --xxl: 24px;
+  --xxxl: 32px;
+}
+/* (tablets, 768px and up) */
+@media (min-width: 768px) {
+  :root {
+    --xxs: 12px;
+    --xs: 14px;
+    --sm: 16px;
+    --md: 18px;
+    --lg: 20px;
+    --xl: 24px;
+    --xxl: 28px;
+    --xxxl: 32px;
+  }
+}
+/* (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  :root {
+    --xxs: 14px;
+    --xs: 16px;
+    --sm: 18px;
+    --md: 20px;
+    --lg: 24px;
+    --xl: 28px;
+    --xxl: 32px;
+    --xxxl: 36px;
+  }
 }

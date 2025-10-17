@@ -12,6 +12,12 @@ import {
   clearAllDialogCache,
 } from '../utils/dataTransformer';
 
+const getDefaultState = () => ({
+  allDialogs: [],
+  currentDialog: null,
+  isLoading: false,
+});
+
 export const useDialogStore = defineStore('dialogs', {
   state: () => ({
     allDialogs: [],
@@ -19,6 +25,9 @@ export const useDialogStore = defineStore('dialogs', {
     isLoading: false,
   }),
   actions: {
+    $reset() {
+      Object.assign(this, getDefaultState());
+    },
     async fetchAllDialogs() {
       this.isLoading = true;
       try {

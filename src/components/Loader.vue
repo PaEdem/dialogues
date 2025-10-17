@@ -126,7 +126,7 @@
   --size: 320px;
   --_radius: calc(var(--size) / 2 - 44px);
   font-family: 'Open Sans', sans-serif;
-  font-size: var(--xl);
+  font-size: var(--sm);
 }
 .tagcloud-wrapper,
 .tagcloud-rotation,

@@ -37,7 +37,7 @@
             <p class="russian-text">{{ visibleLines.rus[index] }}</p>
           </div>
         </div>
-        <div class="divider"></div>
+        <div class="div"></div>
         <div class="recognized-text-container">
           <p
             v-if="trainingStore.formattedRecognitionText"

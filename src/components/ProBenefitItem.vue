@@ -9,10 +9,10 @@
 .benefit-item {
   display: flex;
   align-items: center;
-  gap: var(--y-10);
-  font-size: var(--xl);
+  gap: 16px;
+  font-size: var(--md);
   color: var(--text-head);
-  margin-bottom: var(--y-05);
+  margin-bottom: 8px;
 }
 .icon {
   color: var(--g3);

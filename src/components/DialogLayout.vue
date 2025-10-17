@@ -7,6 +7,7 @@
     <aside class="sidebar">
       <router-link
         to="/dialogs"
+        name="all-dialogs"
         class="btn btn-common back-link"
       >
         <span class="material-symbols-outlined">arrow_back_ios</span>
@@ -38,37 +39,20 @@ const dialog = computed(() => dialogStore.currentDialog);
 }
 .sidebar {
   width: 100%;
-  padding: var(--y-05) var(--x-10);
+  padding: 8px 16px;
   border-bottom: 1px solid var(--border);
   background-color: var(--bg-side);
   flex-shrink: 0;
   overflow-y: auto;
 }
-.dialog-title-wrapper {
-  display: flex;
-  align-items: center;
-  text-align: center;
-}
 .back-link {
-  margin-bottom: var(--y-10);
-}
-.dialog-title {
-  font-size: var(--lg);
-  font-weight: 700;
-  color: var(--text-head);
-  flex-grow: 1;
+  margin-bottom: 16px;
 }
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: var(--y-10) var(--x-10);
+  padding: 16px;
   min-height: 0;
-}
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
 /* 2. Улучшения для ПЛАНШЕТОВ И БОЛЬШЕ */
@@ -83,20 +67,14 @@ const dialog = computed(() => dialogStore.currentDialog);
     min-height: 100%;
     border-bottom: none;
     border-right: 1px solid var(--border);
-    padding: var(--y-15) var(--x-15);
+    padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: var(--y-05);
+    gap: 8px;
   }
   .content {
-    padding: var(--y-20) var(--x-20);
+    padding: 32px;
     overflow-y: auto;
-  }
-  .dialog-title {
-    font-size: var(--xxl);
-  }
-  .dialog-title-wrapper {
-    margin-bottom: var(--y-15);
   }
 }
 </style>

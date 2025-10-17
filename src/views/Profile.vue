@@ -6,8 +6,10 @@
         <h1 class="page-title">{{ $t('profile.title') }}</h1>
         <button
           @click="goBack"
-          class="btn btn-action mobile"
+          class="btn btn-action"
+          :class="isDesktop ? 'w-250' : 'mobile'"
         >
+          <span class="material-symbols-outlined">check</span>
           {{ $t('buttons.done') }}
         </button>
       </header>
@@ -57,9 +59,11 @@
             <ProBenefitItem>{{ $t('profile.analysis') }}</ProBenefitItem>
           </ul>
           <button
-            class="btn btn-action btn-pro"
+            class="btn btn-action"
+            :class="isDesktop ? 'w-250' : 'mobile'"
             @click="handleUpgrade"
           >
+            <span class="material-symbols-outlined">rocket_launch</span>
             {{ $t('buttons.startFree') }}
           </button>
         </div>
@@ -69,14 +73,16 @@
         <h3 class="group-title">{{ $t('profile.accountMenag') }}</h3>
         <div class="actions-list">
           <button
-            class="btn btn-danger mobile"
+            class="btn btn-danger"
+            :class="isDesktop ? 'w-250' : 'mobile'"
             @click="handleDeleteAccount"
           >
             <span class="material-symbols-outlined">delete_forever</span>
             {{ $t('buttons.delete') }}
           </button>
           <button
-            class="btn btn-danger mobile"
+            class="btn btn-danger"
+            :class="isDesktop ? 'w-250' : 'mobile'"
             @click="handleLogout"
           >
             <span class="material-symbols-outlined">logout</span>
@@ -95,7 +101,8 @@ import { useUserStore } from '../stores/userStore';
 import { useDialogStore } from '../stores/dialogStore';
 import { useSettingsStore } from '../stores/settingsStore.js';
 import ProBenefitItem from '../components/ProBenefitItem.vue';
-import { resetFreeTierCache } from '../utils/dataTransformer.js';
+import { useBreakpoint } from '../composables/useBreakpoint.js';
+import { resetFreeTierCache, clearAllDialogCache } from '../utils/dataTransformer.js';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -103,6 +110,8 @@ const dialogStore = useDialogStore();
 const settingsStore = useSettingsStore();
 
 const user = computed(() => userStore.user);
+
+const { isDesktop } = useBreakpoint();
 
 const usage = computed(() => {
   return {
@@ -133,6 +142,8 @@ const goBack = () => {
 };
 const handleLogout = async () => {
   await userStore.logout();
+  clearAllDialogCache();
+  dialogStore.$reset();
   router.push({ name: 'auth' });
 };
 const handleUpgrade = () => {
@@ -151,18 +162,19 @@ const handleDeleteAccount = () => {
   flex-direction: column;
   max-width: 800px;
   margin: 0 auto;
-  padding: var(--y-10) var(--x-15);
+  padding: 16px;
   min-height: 0;
   height: 100vh;
+  overflow-y: auto;
 }
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--y-10);
+  margin-bottom: 16px;
 }
 .page-title {
-  font-size: var(--xxxl);
+  font-size: var(--xxl);
   font-family: 'Roboto Condensed', sans-serif;
   color: var(--text-head);
   margin: 0;
@@ -172,29 +184,30 @@ const handleDeleteAccount = () => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--y-05);
+  gap: 8px;
 }
 .profile-group {
-  margin-bottom: var(--y-15);
+  margin-bottom: 16px;
 }
 .group-title {
+  font-family: 'Roboto Condensed', sans-serif;
   font-size: var(--sm);
   font-weight: 700;
   color: var(--text-base);
   text-transform: uppercase;
-  padding-bottom: var(--y-05);
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
-  margin-bottom: var(--y-05);
+  margin-bottom: 8px;
 }
 .user-info {
   display: flex;
   align-items: center;
-  gap: var(--x-15);
+  gap: 16px;
 }
 .avatar,
 .avatar-placeholder {
-  width: var(--x-30);
-  height: var(--x-30);
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -207,61 +220,56 @@ const handleDeleteAccount = () => {
   border: 1px solid var(--border);
 }
 .avatar-placeholder .material-symbols-outlined {
-  font-size: var(--xl);
+  font-size: var(--xxxl);
   color: var(--text-base);
 }
 .user-name {
-  font-size: var(--xl);
+  font-size: var(--md);
   font-weight: 700;
   color: var(--text-head);
 }
 .user-email {
-  font-size: var(--lg);
+  font-size: var(--sm);
   color: var(--text-title);
   word-break: break-all;
 }
 .current-plan-card {
   background-color: var(--bg-group);
-  padding: var(--y-10) var(--x-15);
+  padding: 16px;
   border-radius: 8px;
-  margin-bottom: var(--y-15);
+  margin-bottom: 16px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
-.plan-info p {
+.usage-info {
+  font-size: var(--md);
   color: var(--text-title);
-  font-size: var(--lg);
 }
-.plan-info strong {
+.usage-info strong {
   color: var(--text-head);
   font-weight: 700;
 }
-.usage-info {
-  font-size: var(--lg);
-  color: var(--text-title);
-}
-
 /* Карточка PRO */
 .pro-card {
   background: var(--gradient-pro);
   color: var(--t-pro);
   border-radius: 12px;
-  padding: var(--y-10) var(--x-15);
+  padding: 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
+  align-items: center;
   box-shadow: 0 10px 20px var(--shadow);
 }
 .pro-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: var(--x-10);
-  margin-bottom: var(--y-15);
+  gap: 16px;
+  margin-bottom: 16px;
 }
 .pro-header h2 {
-  font-size: var(--xl);
+  font-size: var(--lg);
   font-weight: 700;
 }
 .benefits-list {
@@ -269,48 +277,45 @@ const handleDeleteAccount = () => {
   padding: 0;
   text-align: left;
   display: inline-block;
-  margin: 0 var(--x-10);
-  margin-bottom: var(--y-20);
+  margin: 0 8px;
+  margin-bottom: 16px;
 }
-.btn-pro {
-  font-size: var(--lg);
-  padding: var(--y-10) var(--x-15);
-  margin: 0 var(--x-30);
-  font-size: var(--xl);
-}
-
 .actions-list {
   display: flex;
   justify-content: center;
-  gap: var(--y-10);
-  margin-top: var(--y-10);
+  gap: 16px;
+  margin-top: 16px;
 }
 
 /* 2. Улучшения для ДЕСКТОПОВ */
 @media (min-width: 768px) {
   .profile-page {
-    padding: var(--y-20) var(--x-20);
+    padding: 32px 0;
   }
   .avatar,
   .avatar-placeholder {
-    width: var(--y-30);
-    height: var(--y-30);
+    width: 60px;
+    height: 60px;
   }
   .user-name {
-    font-size: var(--xxl);
+    font-size: var(--md);
   }
   .user-email {
-    font-size: var(--lg);
+    font-size: var(--sm);
+  }
+  .usage-info {
+    font-size: var(--sm);
   }
   .pro-card {
-    padding: var(--y-20) var(--x-20);
+    font-size: var(--md);
   }
   .pro-header h2 {
     font-family: 'Roboto Condensed', sans-serif;
-    font-size: var(--xxxl);
+    font-size: var(--xxl);
   }
   .actions-list {
     flex-direction: row;
+    gap: 32px;
   }
 }
 </style>

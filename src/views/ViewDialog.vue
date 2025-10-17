@@ -37,7 +37,7 @@
           <button
             v-for="level in trainingLevels"
             :key="level.name"
-            class="btn btn-action btn-action-sidebar"
+            class="btn btn-menu"
             :disabled="level.isPro && !canView()"
             @click="goToTraining(level)"
           >
@@ -82,12 +82,13 @@
       class="page-container"
     >
       <header class="header">
-        <button
-          @click="router.back()"
+        <router-link
+          to="/dialogs"
+          name="all-dialogs"
           class="header-btn"
         >
           <span class="material-symbols-outlined i">arrow_back_ios</span>
-        </button>
+        </router-link>
         <div class="header-title">
           <h1>{{ dialog.title }}</h1>
           <span class="badge">{{ dialog.level }}</span>
@@ -109,14 +110,14 @@
       <footer class="actions-footer">
         <div class="actions-grid">
           <button
-            class="btn mobile btn-danger btn-half"
+            class="btn btn-danger mobile w-50"
             @click="handleDelete"
           >
             <span class="material-symbols-outlined">delete</span>
           </button>
 
           <button
-            class="btn btn-menu mobile text-mobile"
+            class="btn btn-menu mobile"
             @click="getInfo"
             :disabled="!canView()"
           >
@@ -129,7 +130,7 @@
             >
           </button>
           <button
-            class="btn btn-menu mobile text-mobile"
+            class="btn btn-menu mobile"
             @click="toggleListening"
           >
             <span class="material-symbols-outlined">volume_up</span>
@@ -140,7 +141,7 @@
           <button
             v-for="level in trainingLevels"
             :key="level.name"
-            class="btn btn-action btn-action-sidebar mobile"
+            class="btn btn-menu mobile w-100p"
             :disabled="level.isPro && !canView()"
             @click="goToTraining(level)"
           >
@@ -195,22 +196,24 @@
         #footer
         v-if="uiStore.modalContent !== 'analysis'"
       >
-        <button
-          class="btn btn-common w-10"
-          @click="uiStore.hideModal()"
-        >
-          <span class="material-symbols-outlined">close</span>
-          {{ $t('buttons.close') }}
-        </button>
-        <router-link
-          to="/profile"
-          @click="uiStore.hideModal()"
-        >
-          <button class="btn btn-action w-10">
-            <span class="material-symbols-outlined">details</span>
-            {{ $t('buttons.findMore') }}
+        <div class="buttons">
+          <button
+            class="btn btn-common w-150"
+            @click="uiStore.hideModal()"
+          >
+            <span class="material-symbols-outlined">close</span>
+            {{ $t('buttons.close') }}
           </button>
-        </router-link>
+          <router-link
+            to="/profile"
+            @click="uiStore.hideModal()"
+          >
+            <button class="btn btn-action w-150">
+              <span class="material-symbols-outlined">details</span>
+              {{ $t('buttons.findMore') }}
+            </button>
+          </router-link>
+        </div>
       </template>
     </Modal>
   </Teleport>
@@ -314,76 +317,75 @@ const goToTraining = (level) => {
 /* ============================================= */
 /* 1. ОБЩИЕ СТИЛИ (для обеих версий)             */
 /* ============================================= */
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 .pro {
   position: absolute;
   top: 0;
   right: 0;
-  margin-top: var(--y-05);
-  margin-right: var(--y-05);
-  font-size: var(--xl);
+  margin-top: 8px;
+  margin-right: 8px;
+  font-size: var(--lg);
   color: var(--bg-pro);
   background: none;
 }
 .title {
+  font-size: var(--xxl);
   text-align: center;
   color: var(--t-pro);
 }
 .subtitle {
+  font-size: var(--xl);
   text-align: center;
   color: var(--text-head);
-  margin-bottom: var(--y-10);
-  margin-left: var(--x-20);
+  margin-bottom: 16px;
 }
 .description {
+  font-size: var(--md);
   text-align: center;
   color: var(--text-base);
-  margin: var(--y-05) 0;
+  margin: 8px 0;
 }
-.btn-action-sidebar {
-  background-color: var(--g0);
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
 }
 /* ============================================= */
 /* 2. СТИЛИ ДЛЯ ДЕСКТОПНОГО МАКЕТА (>= 768px)    */
 /* ============================================= */
 .scroll-container {
-  padding: var(--y-10) 0;
+  padding: 16px 0;
 }
 .dialog-info {
   text-align: center;
-  margin-bottom: var(--y-20);
+  margin-bottom: 32px;
 }
 .dialog-info-title {
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: var(--xxl);
+  font-size: var(--lg);
   font-weight: 700;
   color: var(--g3);
 }
 .dialog-info-level {
-  font-size: var(--lg);
+  font-size: var(--md);
   color: var(--text-head);
 }
 .dialog-line {
-  padding-bottom: var(--y-05);
-  margin-bottom: var(--y-05);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
   border-bottom: 1px solid var(--border);
 }
 .finnish-text {
-  font-size: var(--xl);
+  font-size: var(--md);
   font-weight: 600;
   color: var(--text-head);
-  margin-bottom: var(--y-05);
+  margin-bottom: 8px;
 }
 .russian-text {
-  font-size: var(--xl);
+  font-size: var(--sm);
   font-style: italic;
   color: var(--text-title);
-  padding-left: var(--x-20);
+  padding-left: 32px;
 }
 /* ============================================= */
 /* 3. СТИЛИ ДЛЯ МОБИЛЬНОГО МАКЕТА (< 768px)      */
@@ -397,7 +399,7 @@ const goToTraining = (level) => {
 .header {
   display: flex;
   align-items: center;
-  padding: var(--y-05) var(--x-05);
+  padding: 8px;
   background-color: var(--bg-side);
   border-bottom: 1px solid var(--bb);
   flex-shrink: 0;
@@ -405,15 +407,15 @@ const goToTraining = (level) => {
 .header-btn {
   background: none;
   color: var(--text-head);
-  width: var(--y-25);
-  height: var(--y-25);
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .header-btn .i {
-  font-size: var(--y-25);
-  margin-left: var(--x-20);
+  font-size: 40px;
+  margin-left: 32px;
 }
 .header-title {
   flex-grow: 1;
@@ -422,31 +424,31 @@ const goToTraining = (level) => {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: var(--y-05);
+  gap: 4px;
 }
 .header-title h1 {
-  font-size: var(--xl);
+  font-size: var(--md);
   font-weight: 700;
   color: var(--text-head);
   line-height: 1;
 }
 .badge {
   font-size: var(--sm);
-  font-weight: 700;
+  font-weight: 600;
 }
 .content {
   flex-grow: 1;
   overflow-y: auto;
-  padding: var(--y-10) var(--x-15);
+  padding: 8px 16px;
 }
 .chat-container {
   display: flex;
   flex-direction: column;
-  gap: var(--y-05);
+  gap: 8px;
 }
 .message-bubble {
   color: var(--text-head);
-  padding: var(--y-05) var(--x-15);
+  padding: 8px 16px;
   border-radius: 1rem;
   max-width: 80%;
   border: 1px solid var(--bb);
@@ -462,52 +464,30 @@ const goToTraining = (level) => {
   align-self: flex-end;
 }
 .finnish-text-mobile {
-  font-size: var(--xl);
+  font-size: var(--md);
   font-weight: 600;
 }
 .russian-text-mobile {
-  font-size: var(--xl);
+  font-size: var(--md);
   font-style: italic;
   text-align: right;
-  margin-top: var(--y-05);
-}
-.actions-grid {
-  display: flex;
-  gap: var(--x-10);
-}
-.actions-grid > .btn-half {
-  padding-left: var(--x-20);
-  padding-right: var(--x-20);
-  min-width: 0;
-  max-width: var(--x-30);
-  flex: 0 1 var(--x-20);
+  margin-top: 8px;
 }
 .actions-footer {
   flex-shrink: 0;
-  padding: var(--y-10) var(--x-15);
+  padding: 16px;
   background-color: var(--bg-side);
   border-top: 1px solid var(--bb);
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 .actions-grid {
   display: flex;
-  gap: var(--x-15);
-  margin-bottom: var(--y-10);
-}
-.actions-grid > .btn {
-  flex: 1;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 .trainings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--x-15);
-}
-.btn.btn-action.mobile,
-.actions-grid .btn.btn-menu.mobile {
-  position: relative;
-}
-.actions-grid .btn.btn-menu.text-mobile {
-  font-size: var(--lg);
-  gap: var(--x-10);
+  gap: 16px;
 }
 </style>

@@ -14,6 +14,7 @@
         </div>
         <div class="btn-container">
           <select
+            class="w-150"
             name="uiLanguage"
             v-model="uiLanguage"
           >
@@ -27,7 +28,7 @@
           </select>
           <router-link
             to="/auth"
-            class="btn btn-menu w-10"
+            class="btn btn-menu w-150"
           >
             <span class="material-symbols-outlined">account_circle</span>
             {{ $t('buttons.done') }}
@@ -67,7 +68,7 @@ const uiLanguage = computed({
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: var(--x-30);
+  padding: 32px;
   background-color: var(--bg-card);
 }
 .page-container {
@@ -76,16 +77,16 @@ const uiLanguage = computed({
   display: flex;
   flex-direction: column;
   text-align: center;
-  gap: var(--x-20);
+  gap: 32px;
 }
 .page-info-title {
   font-size: var(--xxxl);
-  line-height: 1.2;
-  margin: var(--y-15) 0;
+  line-height: 1;
+  margin: 20px 0;
   color: var(--text-head);
 }
 .page-info-subtitle {
-  font-size: var(--xl);
+  font-size: var(--lg);
   color: var(--text-title);
   font-weight: 700;
   text-transform: uppercase;
@@ -93,10 +94,10 @@ const uiLanguage = computed({
   text-align: right;
 }
 .page-info-text {
-  font-size: var(--lg);
+  font-size: var(--sm);
   line-height: 1.6;
   color: var(--text-title);
-  margin-bottom: var(--y-20);
+  margin-bottom: 32px;
   text-align: center;
 }
 .btn-container {
@@ -104,20 +105,19 @@ const uiLanguage = computed({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: var(--x-10);
+  gap: 16px;
 }
 .image {
   width: 100%;
   height: auto;
 }
 select {
-  width: var(--x-100);
-  height: var(--y-25);
-  padding: var(--y-05) var(--x-10);
+  height: 50px;
+  padding: 8px;
   border-radius: 4px;
   border: 1px solid var(--bb);
   background-color: var(--y0);
-  font-size: var(--lg);
+  font-size: var(--md);
   color: var(--text-head);
 }
 @media (min-width: 992px) {
@@ -139,7 +139,7 @@ select {
     -ms-flex: auto;
     flex: auto;
     width: 200px;
-    margin: var(--x-10);
+    margin: 16px;
   }
 }
 </style>

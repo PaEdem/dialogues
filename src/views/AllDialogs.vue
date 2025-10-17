@@ -33,7 +33,7 @@
         </router-link>
       </div>
     </aside>
-    <!-- goToCreateDialog -->
+    <!-- | -->
     <header class="mobile-header">
       <h1 class="header-title">Dialogit</h1>
       <button
@@ -70,7 +70,7 @@
           :key="level"
         >
           <div v-if="groupedDialogs[level].length > 0">
-            <h2 class="level-title">{{ level }}</h2>
+            <div class="level-title">{{ level }}</div>
             <div class="dialogs-list">
               <DialogCard
                 v-for="dialog in groupedDialogs[level]"
@@ -89,6 +89,7 @@
         <router-link
           :to="{ name: 'new-dialog' }"
           class="btn btn-action"
+          :class="!isDesktop ? 'mobile' : 'w-250'"
         >
           <span class="material-symbols-outlined">add</span>
           {{ $t('all.createFirst') }}
@@ -171,6 +172,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useUiStore } from '../stores/uiStore';
 import DialogCard from '../components/DialogCard.vue';
 import Modal from '../components/Modal.vue';
+import { useBreakpoint } from '../composables/useBreakpoint';
 import { usePermissions } from '../composables/usePermissions';
 
 const router = useRouter();
@@ -178,6 +180,8 @@ const dialogStore = useDialogStore();
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
 const uiStore = useUiStore();
+
+const { isDesktop } = useBreakpoint();
 
 const levels = ['A1', 'A2.1', 'A2.2', 'B1.1', 'B1.2', 'B2.1', 'B2.2', 'C1.1', 'C1.2', 'C2'];
 const dialogs = computed(() => dialogStore.allDialogs);
@@ -210,7 +214,7 @@ onMounted(() => {
   if (dialogStore.allDialogs.length === 0) {
     dialogStore.fetchAllDialogs();
   }
-  if (usage.value.total.count >= usage.value.total.limit) {
+  if (!userStore.isPro && usage.value.total.count >= usage.value.total.limit) {
     if (viewToast.value < 2) {
       uiStore.viewCounter++;
       uiStore.showToast(`Достигнут лимит диалогов (${settingsStore.limit.totalDialogs}).`, 'warning');
@@ -260,7 +264,7 @@ const goToCreateDialog = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--y-05) var(--x-10);
+  padding: 12px 16px;
   background-color: var(--bg-side);
   border-bottom: 1px solid var(--bb);
 }
@@ -271,32 +275,29 @@ const goToCreateDialog = () => {
   color: var(--text-head);
 }
 .btn--icon-only {
-  min-width: var(--y-25);
-  height: var(--y-25);
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
   padding: 0;
   border-radius: 50%;
-  line-height: 1;
 }
-.btn--icon-only .material-symbols-outlined {
-  margin-right: 0;
-}
-main.content {
+.content {
   flex: 1;
-  overflow: hidden;
-  padding: var(--x-10);
+  overflow: auto;
+  padding: 16px;
 }
 .level-title {
-  font-size: var(--sm);
-  font-weight: 700;
+  font-size: var(--xxs);
   color: var(--text-title);
   text-transform: uppercase;
-  margin: var(--y-05) 0;
+  padding-left: 8px;
+  margin: 8px 0;
   border-bottom: 1px solid var(--border);
 }
 .dialogs-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--y-10);
+  gap: 16px;
 }
 .mobile-footer {
   flex-shrink: 0;
@@ -311,32 +312,32 @@ main.content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--y-05) var(--x-10);
+  padding: 8px 16px;
   color: var(--text-head);
-  font-size: var(--sm);
+  font-size: var(--xxs);
 }
 .message-container {
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 .message-text {
-  font-size: var(--base);
+  font-size: var(--md);
   font-weight: 700;
   color: var(--text-head);
-  margin-top: var(--y-60);
-  margin-bottom: var(--x-20);
+  margin-bottom: 32px;
 }
 .usage-indicator {
-  margin-bottom: var(--y-05);
+  margin-bottom: 8px;
 }
 .usage-text {
   display: flex;
   justify-content: space-between;
-  font-size: var(--sm);
+  font-size: var(--xxs);
   color: var(--text-title);
-  margin-bottom: calc(0px - var(--y-05));
+  margin-bottom: -8px;
 }
 .usage-progress {
   width: 100%;
@@ -367,33 +368,33 @@ main.content {
     flex-direction: column;
     width: 280px;
     flex-shrink: 0;
-    padding: var(--y-20) var(--x-15);
+    padding: 24px;
     background: var(--bg-side);
     border-right: 1px solid var(--border);
-    gap: var(--y-15);
+    gap: 16px;
   }
   .sidebar-title {
     font-size: var(--xxl);
     color: var(--text-head);
     text-align: center;
-    margin-bottom: var(--y-10);
+    margin-bottom: 16px;
   }
   .user-profile {
     margin-top: auto;
-    padding-top: var(--y-10);
+    padding-top: 16px;
     border-top: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: var(--x-05);
+    gap: 16px;
   }
   .mobile-header,
   .mobile-footer {
     display: none;
   }
   .content {
-    padding: var(--y-20) var(--x-20);
+    padding: 32px;
   }
   .dialogs-list {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

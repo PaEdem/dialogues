@@ -6,8 +6,9 @@
       <button
         v-if="!isDesktop"
         @click="goBack"
-        class="btn btn-action mobile btn-auto"
+        class="btn btn-action mobile"
       >
+        <span class="material-symbols-outlined">check</span>
         {{ $t('buttons.done') }}
       </button>
     </header>
@@ -107,7 +108,7 @@
         <div class="setting-item">
           <label>{{ $t('settings.preListening') }}</label>
           <button
-            class="btn btn-common mobile btn-auto"
+            class="btn btn-common mobile"
             @click="togglePlayTest"
           >
             <span class="material-symbols-outlined">play_circle</span>
@@ -120,8 +121,9 @@
     <footer class="page-footer desktop-only">
       <button
         @click="goBack"
-        class="btn btn-action w-10"
+        class="btn btn-action w-250"
       >
+        <span class="material-symbols-outlined">check</span>
         {{ $t('buttons.done') }}
       </button>
     </footer>
@@ -193,7 +195,7 @@ const goBack = () => {
 
 <style scoped>
 .settings-page {
-  padding: var(--y-20) var(--x-20);
+  padding: 30px 20px;
   max-width: 800px;
   margin: 0 auto;
 }
@@ -201,75 +203,74 @@ const goBack = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--y-10);
+  margin-bottom: 32px;
 }
 .page-title {
-  font-size: var(--xxxl);
+  font-size: var(--xxl);
   font-family: 'Roboto Condensed', sans-serif;
   color: var(--text-head);
-  margin: 0;
 }
 .desktop-only {
   display: none;
 }
-/* .mobile-only {
-  display: inline-flex;
-} */
 .settings-content {
   display: flex;
   flex-direction: column;
 }
 .settings-group {
-  padding: var(--y-05) 0;
+  padding: 16px 0;
 }
 .group-title {
-  font-size: var(--lg);
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--sm);
   font-weight: 700;
-  color: var(--text-base);
   text-align: center;
+  color: var(--text-base);
   text-transform: uppercase;
   padding-bottom: 4px;
   border-bottom: 1px solid var(--border);
 }
 .group-title .pro {
-  font-size: var(--xxl);
+  font-size: var(--md);
   color: var(--bg-pro);
   vertical-align: middle;
-  margin-left: var(--x-05);
+  margin-left: 8px;
 }
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: var(--y-30);
-  margin-top: var(--y-05);
+  height: 40px;
+  margin-top: 8px;
 }
 .setting-item label {
-  font-size: var(--xl);
+  font-size: var(--md);
   color: var(--text-title);
 }
-select {
+.setting-item select {
   max-width: 240px;
-  padding: var(--y-05) var(--x-15);
+  padding: 8px 16px;
   border-radius: 6px;
   border: 1px solid var(--border);
   background-color: var(--bg-group);
-  color: var(--base);
+  font-size: var(--sm);
+  color: var(--text-base);
 }
 .theme-switcher {
   display: flex;
   border-radius: 8px;
   background-color: var(--bg-group);
   padding: 4px;
-  gap: var(--x-05);
+  margin-top: 8px;
+  gap: 8px;
 }
 .theme-switcher button {
   display: flex;
   align-items: center;
-  gap: var(--x-05);
-  padding: var(--y-05) var(--x-10);
+  gap: 8px;
+  padding: 8px 16px;
   border-radius: 6px;
-  font-size: var(--lg);
+  font-size: var(--md);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
@@ -286,13 +287,12 @@ select {
 .slider-container span {
   font-size: var(--base);
   color: var(--text-base);
-  min-width: var(--x-20);
 }
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
-  width: var(--x-100);
-  height: var(--y-05);
+  width: 200px;
+  height: 8px;
   background: var(--bg-group);
   border-radius: 4px;
   border: 1px solid var(--border);
@@ -300,15 +300,15 @@ input[type='range'] {
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   background: var(--g3);
   cursor: pointer;
   border-radius: 50%;
 }
 input[type='range']::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   background: var(--g3);
   cursor: pointer;
   border-radius: 50%;
@@ -323,15 +323,12 @@ input[type='range']::-moz-range-thumb {
 .setting-item *:disabled::-moz-range-thumb {
   background: var(--text-base);
 }
-.btn-auto {
-  width: auto;
-}
 @media (min-width: 768px) {
   .settings-page {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    padding: var(--y-20) var(--x-20);
+    padding: 32px 0;
   }
   .mobile-only {
     display: none;
@@ -342,13 +339,16 @@ input[type='range']::-moz-range-thumb {
   .settings-content {
     flex-grow: 1;
     overflow-y: auto;
-    padding-right: var(--x-10);
+    padding-right: 8px;
+  }
+  .setting-item label {
+    font-size: var(--sm);
   }
   .page-footer {
     flex-shrink: 0;
     display: flex;
     justify-content: center;
-    padding-top: var(--y-15);
+    padding-top: 16px;
     border-top: 1px solid var(--border);
   }
 }

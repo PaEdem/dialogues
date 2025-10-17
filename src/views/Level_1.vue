@@ -50,8 +50,6 @@
         <span class="material-symbols-outlined i">arrow_back_ios</span>
       </router-link>
       <div class="header-title">
-        <!-- <h1>{{ dialog.title }}</h1>
-        <span class="badge">{{ dialog.level }}</span> -->
         <p class="description-mobile">{{ $t('level1.descriptionMobile') }}</p>
       </div>
     </header>
@@ -80,7 +78,7 @@
       >
         <template #extra-controls>
           <button
-            class="btn btn-control-mobile"
+            class="btn btn-control mobile"
             disabled
           >
             <span class="material-symbols-outlined icon">mic_off</span>
@@ -164,15 +162,15 @@ onUnmounted(() => {
   flex-direction: column;
   width: 90%;
   height: 100%;
-  gap: var(--y-10);
+  gap: 16px;
   margin: 0 auto;
-  padding-right: 0.5rem;
+  padding-right: 8px;
   overflow-y: auto;
 }
 .message-bubble-desktop {
   color: var(--text-head);
-  padding: var(--y-10) var(--x-20);
-  border-radius: var(--y-20);
+  padding: 16px 24px;
+  border-radius: 32px;
   max-width: 80%;
   border: 1px solid var(--bb);
 }
@@ -187,14 +185,14 @@ onUnmounted(() => {
   align-self: flex-end;
 }
 .finnish-text {
-  font-size: var(--xl);
+  font-size: var(--lg);
   font-weight: 600;
 }
 .russian-text {
-  font-size: var(--xl);
+  font-size: var(--lg);
   font-style: italic;
   text-align: right;
-  margin-top: var(--y-05);
+  margin-top: 8px;
 }
 
 /* ======================== МОБИЛЬНЫЙ ======================== */
@@ -206,7 +204,7 @@ onUnmounted(() => {
 .header {
   display: flex;
   align-items: center;
-  padding: var(--y-05) var(--x-05);
+  padding: 8px;
   background-color: var(--bg-side);
   border-bottom: 1px solid var(--bb);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -215,15 +213,15 @@ onUnmounted(() => {
 .header-btn {
   background: none;
   color: var(--text-head);
-  width: var(--y-25);
-  height: var(--y-25);
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .header-btn .i {
-  font-size: var(--y-25);
-  margin-left: var(--x-20);
+  font-size: 40px;
+  margin-left: 32px;
 }
 .header-title {
   flex-grow: 1;
@@ -232,31 +230,30 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: var(--y-05);
 }
 .description-mobile {
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: var(--xl);
+  font-size: var(--md);
   font-style: italic;
   font-weight: 500;
-  color: var(--r3);
+  color: var(--g3);
   text-align: center;
 }
 .content {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 16px;
   scroll-behavior: smooth;
 }
 .chat-container {
   display: flex;
   flex-direction: column;
-  gap: var(--y-05);
+  gap: 16px;
 }
 .message-bubble {
   color: var(--text-head);
-  padding: var(--y-05) var(--x-15);
-  border-radius: 1rem;
+  padding: 8px 16px;
+  border-radius: 32px;
   max-width: 80%;
   border: 1px solid var(--bb);
 }
@@ -271,27 +268,25 @@ onUnmounted(() => {
   align-self: flex-end;
 }
 .finnish-text-mobile {
-  font-size: var(--xl);
+  font-size: var(--md);
   font-weight: 600;
 }
 .russian-text-mobile {
-  font-size: var(--xl);
+  font-size: var(--md);
   font-style: italic;
   text-align: right;
-  margin-top: var(--y-05);
+  padding-left: 8px;
+  margin-top: 8px;
 }
 .actions-footer {
   flex-shrink: 0;
-  padding: 1rem;
+  padding: 16px;
   background-color: var(--y10);
   border-top: 1px solid var(--bb);
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 -4px 8px var(--shadow);
 }
-/* .no-mobile {
-  display: none;
-} */
 .end-message {
-  font-size: 1.25rem;
+  font-size: var(--md);
   text-align: center;
 }
 </style>

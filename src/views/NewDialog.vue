@@ -57,13 +57,15 @@
       <div class="submit-wrap">
         <router-link
           to="/dialogs"
-          class="btn btn-common w-10"
+          class="btn btn-common"
+          :class="isDesktop ? 'w-250' : 'mobile'"
         >
           <span class="material-symbols-outlined icon">cancel</span>
           {{ $t('buttons.cancel') }}
         </router-link>
         <button
-          class="btn btn-action w-10"
+          class="btn btn-action"
+          :class="isDesktop ? 'w-250' : 'mobile'"
           type="submit"
           :disabled="!isFormValid || trainingStore.isLoading"
         >
@@ -89,12 +91,15 @@ import { useTrainingStore } from '../stores/trainingStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useUiStore } from '../stores/uiStore';
 import { useUserStore } from '../stores/userStore';
+import { useBreakpoint } from '../composables/useBreakpoint';
 
 const router = useRouter();
 const settingsStore = useSettingsStore();
 const trainingStore = useTrainingStore();
 const uiStore = useUiStore();
 const userStore = useUserStore();
+
+const { isDesktop } = useBreakpoint();
 
 const form = ref({
   topic: '',
@@ -143,7 +148,7 @@ const saveDialog = async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: var(--y-10) var(--x-10);
+  padding: 16px;
 }
 .dialog-form {
   display: flex;
@@ -152,41 +157,40 @@ const saveDialog = async () => {
   align-items: center;
   width: 100%;
   max-width: 640px;
-  padding: var(--y-20) var(--x-15);
+  padding: 24px;
   border-radius: 4px;
   background: var(--bg-group);
   box-shadow: 0 4px 15px var(--shadow);
 }
 .title {
   text-align: center;
-  margin-bottom: var(--y-20);
-  font-size: var(--xxxl);
+  margin-bottom: 24px;
+  font-size: var(--xxl);
 }
 .form-group {
   width: 100%;
-  margin-bottom: var(--y-15);
+  margin-bottom: 16px;
 }
 label {
   display: block;
   margin-bottom: 4px;
-  font-size: var(--lg);
-  font-weight: 500;
+  font-size: var(--xs);
   color: var(--text-title);
 }
 input,
 select {
   width: 100%;
-  padding: var(--y-05) var(--x-10);
+  padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: var(--font-base);
+  font-size: var(--sm);
 }
 textarea {
   width: 100%;
-  padding: var(--y-05) var(--x-10);
+  padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: var(--lg);
+  font-size: var(--sm);
   font-family: inherit;
   resize: vertical;
 }
@@ -205,17 +209,12 @@ textarea:focus::placeholder {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: var(--y-20);
-  gap: var(--x-05);
+  margin-top: 16px;
+  gap: 16px;
 }
 .error-message {
   color: var(--r3);
-  margin-bottom: var(--y-10);
-  font-weight: 500;
+  margin-bottom: 16px;
   text-align: center;
-}
-.btn.btn-common.w-10,
-.btn.btn-action.w-10 {
-  max-width: var(--x-100);
 }
 </style>
