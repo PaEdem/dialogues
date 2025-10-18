@@ -18,7 +18,7 @@ export const useUserStore = defineStore('user', {
   }),
   getters: {
     isPro: (state) => {
-      return false;
+      return true;
     },
   },
   actions: {

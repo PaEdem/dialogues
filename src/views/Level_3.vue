@@ -1,48 +1,112 @@
 <!-- src\views\Level_3.vue -->
 <template>
-  <DialogLayout>
-    <template #sidebar-content>
-      <TrainingSidebar
-        :dialogId="props.id"
-        description='Русский перевод. Жми "Microphone" и говори. Повторно нажами на "Microphone" и проверь правильность фразы на финском.'
-        :mic-button="true"
-      >
-        <template #extra-controls>
-          <button
-            class="btn-control mic"
-            @click="trainingStore.toggleSpeechRecognition()"
-            :class="{ active: trainingStore.isMicActive }"
-            aria-label="Записать перевод"
-          >
-            <span class="material-symbols-outlined icon">{{ trainingStore.isMicActive ? 'mic' : 'mic_off' }}</span>
-            Микрофон {{ trainingStore.isMicActive ? 'ON' : 'OFF' }}
-          </button>
-        </template>
-      </TrainingSidebar>
-    </template>
+  <div v-if="isDesktop">
+    <DialogLayout>
+      <template #sidebar-content>
+        <TrainingSidebar
+          :dialogId="props.id"
+          :slogan="$t('level3.slogan')"
+          :description="$t('level3.description')"
+          :mic-button="true"
+        >
+          <template #extra-controls>
+            <button
+              class="btn btn-control mic"
+              @click="trainingStore.toggleSpeechRecognition()"
+              :class="{ active: trainingStore.isMicActive }"
+            >
+              <span class="material-symbols-outlined icon">{{ trainingStore.isMicActive ? 'mic' : 'mic_off' }}</span>
+              <span class="btn-text">{{ $t('buttons.mic') }}</span>
+            </button>
+          </template>
+        </TrainingSidebar>
+      </template>
 
-    <div class="content-wrapper">
-      <div class="dialog-text-container">
-        <div class="panel">
-          <p
-            class="finnish text"
-            v-for="(line, index) in visibleLines.fin"
-            :key="`fin-${index}`"
+      <div class="content-wrapper">
+        <div
+          class="dialog-text-container-desktop"
+          ref="desktopContent"
+        >
+          <div
+            v-for="(rusLine, index) in visibleLines.rus"
+            :key="index"
+            class="message-bubble-desktop fade-in"
+            :class="index % 2 === 0 ? 'left' : 'right'"
           >
-            {{ line }}
-          </p>
+            <p
+              v-if="visibleLines.fin[index]"
+              class="finnish-text"
+            >
+              {{ visibleLines.fin[index] }}
+            </p>
+
+            <p class="russian-text">
+              {{ rusLine }}
+            </p>
+          </div>
         </div>
-        <div class="panel">
+        <div class="div"></div>
+        <div class="recognized-text-container">
           <p
-            class="russian text"
-            v-for="(line, index) in visibleLines.rus"
-            :key="`rus-${index}`"
+            v-if="trainingStore.geminiResult"
+            class="gemini-result"
           >
-            {{ line }}
+            {{ trainingStore.geminiResult }}
+          </p>
+          <p
+            v-else
+            class="placeholder-text"
+          >
+            {{ $t('level3.info') }}
           </p>
         </div>
       </div>
-      <div class="recognized-text-container">
+    </DialogLayout>
+  </div>
+
+  <div
+    v-else-if="dialog"
+    class="page-container"
+  >
+    <header class="level-header">
+      <router-link
+        to="/dialogs"
+        class="level-header-btn"
+      >
+        <span class="material-symbols-outlined i">arrow_back_ios</span>
+      </router-link>
+      <div class="level-header-title">
+        <p class="level-description-mobile">{{ $t('level3.descriptionMobile') }}</p>
+      </div>
+    </header>
+
+    <main
+      class="content"
+      ref="mobileContent"
+    >
+      <div class="chat-container">
+        <div
+          v-for="(rusLine, index) in visibleLines.rus"
+          :key="index"
+          class="message-bubble fade-in"
+          :class="index % 2 === 0 ? 'left' : 'right'"
+        >
+          <p
+            v-if="visibleLines.fin[index]"
+            class="finnish-text-mobile"
+          >
+            {{ visibleLines.fin[index] }}
+          </p>
+
+          <p class="russian-text-mobile">
+            {{ rusLine }}
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="actions-footer">
+      <div class="recognized-text-container-mobile">
         <p
           v-if="trainingStore.geminiResult"
           class="gemini-result"
@@ -51,32 +115,46 @@
         </p>
         <p
           v-else
-          class="placeholder-text"
+          class="placeholder-text-mobile"
         >
-          Нажмите на "Микрофон", чтобы проверить свой перевод...
+          {{ $t('level3.info') }}
         </p>
       </div>
-    </div>
-  </DialogLayout>
+      <TrainingSidebar
+        :dialogId="props.id"
+        :description="$t('level3.description_mobile')"
+      >
+        <template #extra-controls>
+          <button
+            class="btn btn-control mobile mic"
+            @click="trainingStore.toggleSpeechRecognition()"
+            :class="{ active: trainingStore.isMicActive }"
+          >
+            <span class="material-symbols-outlined icon">{{ trainingStore.isMicActive ? 'mic' : 'mic_off' }}</span>
+          </button>
+        </template>
+      </TrainingSidebar>
+    </footer>
+  </div>
 
   <Teleport to="body">
     <Modal>
-      <div class="ohi">
-        <h3 class="ohi-title">Harjoitus on ohi</h3>
-        <div class="ohi-message">
-          Hyvää työtä! Voit aloittaa alusta tai valita toisen harjoituksen.<br />
-          <br />
-          Отличная работа! Можете начать заново или выбрать другую тренировку.
-        </div>
+      <template #header>
+        <h3 class="title">{{ $t('modal.title') }}</h3>
+      </template>
+
+      <div class="end-message">
+        <p>{{ $t('modal.text') }}</p>
       </div>
     </Modal>
   </Teleport>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useDialogStore } from '../stores/dialogStore';
 import { useTrainingStore } from '../stores/trainingStore';
+import { useBreakpoint } from '../composables/useBreakpoint';
 import DialogLayout from '../components/DialogLayout.vue';
 import TrainingSidebar from '../components/TrainingSidebar.vue';
 import Modal from '../components/Modal.vue';
@@ -84,15 +162,42 @@ import Modal from '../components/Modal.vue';
 const props = defineProps({ id: { type: String, required: true } });
 const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
+const { isDesktop } = useBreakpoint();
 
 const lineIndex = computed(() => trainingStore.currentLineIndex);
 const dialog = computed(() => dialogStore.currentDialog);
 
+// ✨ ЛОГИКА АВТОСКРОЛЛА
+const mobileContent = ref(null);
+const desktopContent = ref(null);
+
+watch(lineIndex, () => {
+  setTimeout(() => {
+    const container = isDesktop.value ? desktopContent.value : mobileContent.value;
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
+  }, 100);
+});
+
+// const visibleLines = computed(() => {
+//   if (!dialog.value) return { fin: [], rus: [] };
+//   return {
+//     fin: dialog.value.fin.slice(0, lineIndex.value),
+//     rus: dialog.value.rus.slice(0, lineIndex.value + 1),
+//   };
+// });
+
 const visibleLines = computed(() => {
   if (!dialog.value) return { fin: [], rus: [] };
+
+  const currentIndex = lineIndex.value;
+  const finLines = dialog.value.fin.slice(0, currentIndex);
+  const rusLines = dialog.value.rus.slice(0, currentIndex + 1);
+
   return {
-    fin: dialog.value.fin.slice(0, lineIndex.value),
-    rus: dialog.value.rus.slice(0, lineIndex.value + 1),
+    fin: finLines,
+    rus: rusLines,
   };
 });
 
@@ -103,41 +208,11 @@ onMounted(async () => {
     trainingStore.startLevel();
   }
 });
-</script>
 
-<!-- <style scoped>
-.content-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-.recognized-text-container {
-  height: 80px;
-  flex-shrink: 0; /* Не сжиматься */
-  overflow-y: auto;
-  padding: 1rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top: 2px solid var(--tiffany-70);
-}
-.recognized-text {
-  font-size: var(--subtitle);
-  font-weight: 500;
-  color: var(--tiffany-20);
-  text-align: center;
-}
-.placeholder-text {
-  font-size: var(--subtext);
-  font-style: italic;
-  color: var(--grey-50);
-}
-.gemini-result {
-  font-size: var(--text);
-  font-style: italic;
-  color: var(--red-20);
-}
-</style> -->
+onUnmounted(() => {
+  trainingStore.stopSpeech();
+});
+</script>
 
 <style scoped>
 .content-wrapper {
@@ -145,35 +220,18 @@ onMounted(async () => {
   flex-direction: column;
   height: 100%;
 }
-.dialog-text-container {
-  /* Эта часть идентична Level_1 */
+/* ======================== ДЕСКТОП ======================== */
+.dialog-text-container-desktop {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  width: 90%;
+  height: 100%;
+  gap: 16px;
+  margin: 0 auto;
+  padding-right: 8px;
   overflow-y: auto;
-  gap: 1rem;
-  padding: 1rem;
-}
-.panel {
-  flex: 1;
-}
-.text {
-  font-size: var(--font-size-base);
-  padding-bottom: 0.75rem;
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border);
-  line-height: 1.6;
-}
-.finnish {
-  font-weight: 500;
-  color: var(--color-text-primary);
-}
-.russian {
-  font-style: italic;
-  color: var(--color-text-secondary);
 }
 
-/* Уникальная нижняя плашка */
 .recognized-text-container {
   height: 90px;
   flex-shrink: 0;
@@ -182,26 +240,44 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   text-align: center;
-  border-top: 1px solid var(--color-border);
-  background-color: var(--color-bg-sidebar);
 }
 .recognized-text,
-.gemini-result,
 .placeholder-text {
-  font-size: var(--font-size-lg);
-  font-weight: 500;
-  color: var(--color-text-primary);
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--md);
+  color: var(--text-base);
 }
-.placeholder-text,
-.gemini-result {
-  font-style: italic;
-  color: var(--color-text-secondary);
+/* ======================== МОБИЛЬНЫЙ ======================== */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
-@media (min-width: 768px) {
-  .dialog-text-container {
-    flex-direction: row;
-    padding: 0;
-    gap: 2rem;
-  }
+.content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 16px;
+  scroll-behavior: smooth;
+}
+.actions-footer {
+  flex-shrink: 0;
+  padding: 8px 16px 16px;
+  background-color: var(--y10);
+  border-top: 1px solid var(--bb);
+  box-shadow: 0 -4px 8px var(--shadow);
+}
+.recognized-text-container-mobile {
+  flex-shrink: 0;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.gemini-result,
+.placeholder-text-mobile {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--md);
+  color: var(--text-head);
 }
 </style>

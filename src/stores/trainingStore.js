@@ -281,7 +281,6 @@ export const useTrainingStore = defineStore('training', {
         const prompt = this.getPromptForTranslation(rusText, finText, level);
         this.geminiResult = await fetchGeminiResponse(prompt);
       } catch (error) {
-        console.error('Ошибка проверки перевода:', error);
         this.geminiResult = 'Не удалось проверить перевод. Попробуйте еще раз.';
       } finally {
         this.isLoading = false;

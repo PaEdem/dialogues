@@ -59,15 +59,15 @@
     v-else-if="dialog"
     class="page-container"
   >
-    <header class="header">
+    <header class="level-header">
       <router-link
         to="/dialogs"
-        class="header-btn"
+        class="level-header-btn"
       >
         <span class="material-symbols-outlined i">arrow_back_ios</span>
       </router-link>
-      <div class="header-title">
-        <p class="description-mobile">{{ $t('level2.descriptionMobile') }}</p>
+      <div class="level-header-title">
+        <p class="level-description-mobile">{{ $t('level2.descriptionMobile') }}</p>
       </div>
     </header>
 
@@ -108,7 +108,7 @@
       >
         <template #extra-controls>
           <button
-            class="btn btn-control-mobile mic"
+            class="btn btn-control mobile mic"
             @click="trainingStore.toggleSpeechRecognition()"
             :class="{ active: trainingStore.isMicActive }"
           >
@@ -195,38 +195,12 @@ onUnmounted(() => {
   flex-direction: column;
   width: 90%;
   height: 100%;
-  gap: var(--y-10);
+  gap: 16px;
   margin: 0 auto;
-  padding-right: 0.5rem;
+  padding-right: 8px;
   overflow-y: auto;
 }
-.message-bubble-desktop {
-  color: var(--text-head);
-  padding: var(--y-10) var(--x-20);
-  border-radius: var(--y-20);
-  max-width: 80%;
-  border: 1px solid var(--bb);
-}
-.message-bubble-desktop.left {
-  background-color: var(--bg-chat-l);
-  border-bottom-left-radius: 2px;
-  align-self: flex-start;
-}
-.message-bubble-desktop.right {
-  background-color: var(--bg-chat-r);
-  border-bottom-right-radius: 2px;
-  align-self: flex-end;
-}
-.finnish-text {
-  font-size: var(--xl);
-  font-weight: 600;
-}
-.russian-text {
-  font-size: var(--xl);
-  font-style: italic;
-  text-align: right;
-  margin-top: var(--y-05);
-}
+
 .recognized-text-container {
   height: 90px;
   flex-shrink: 0;
@@ -238,8 +212,8 @@ onUnmounted(() => {
 }
 .recognized-text,
 .placeholder-text {
-  font-size: var(--lg);
-  font-style: italic;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--md);
   color: var(--text-base);
 }
 /* ======================== МОБИЛЬНЫЙ ======================== */
@@ -248,89 +222,18 @@ onUnmounted(() => {
   flex-direction: column;
   height: 100vh;
 }
-.header {
-  display: flex;
-  align-items: center;
-  padding: var(--y-05) var(--x-05);
-  background-color: var(--bg-side);
-  border-bottom: 1px solid var(--bb);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  flex-shrink: 0;
-}
-.header-btn {
-  background: none;
-  color: var(--text-head);
-  width: var(--y-25);
-  height: var(--y-25);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.header-btn .i {
-  font-size: var(--y-25);
-  margin-left: var(--x-20);
-}
-.header-title {
-  flex-grow: 1;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--y-05);
-}
-.description-mobile {
-  font-family: 'Roboto Condensed', sans-serif;
-  font-size: var(--xl);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--r3);
-  text-align: center;
-}
 .content {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 16px;
   scroll-behavior: smooth;
-}
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--y-05);
-}
-.message-bubble {
-  color: var(--text-head);
-  padding: var(--y-05) var(--x-15);
-  border-radius: 1rem;
-  max-width: 80%;
-  border: 1px solid var(--bb);
-}
-.message-bubble.left {
-  background-color: var(--bg-chat-l);
-  border-bottom-left-radius: 2px;
-  align-self: flex-start;
-}
-.message-bubble.right {
-  background-color: var(--bg-chat-r);
-  border-bottom-right-radius: 2px;
-  align-self: flex-end;
-}
-.finnish-text-mobile {
-  font-size: var(--xl);
-  font-weight: 600;
-}
-.russian-text-mobile {
-  font-size: var(--xl);
-  font-style: italic;
-  text-align: right;
-  margin-top: var(--y-05);
 }
 .actions-footer {
   flex-shrink: 0;
-  padding: 0.5rem 1rem;
+  padding: 8px 16px 16px;
   background-color: var(--y10);
   border-top: 1px solid var(--bb);
-  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 -4px 8px var(--shadow);
 }
 .recognized-text-container-mobile {
   height: 60px;
@@ -344,11 +247,7 @@ onUnmounted(() => {
 .recognized-text-mobile,
 .placeholder-text-mobile {
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: var(--xl);
+  font-size: var(--md);
   color: var(--text-head);
-}
-.end-message {
-  font-size: 1.25rem;
-  text-align: center;
 }
 </style>

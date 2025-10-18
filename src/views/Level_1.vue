@@ -42,15 +42,15 @@
     v-else-if="dialog"
     class="page-container"
   >
-    <header class="header">
+    <header class="level-header">
       <router-link
         to="/dialogs"
-        class="header-btn"
+        class="level-header-btn"
       >
         <span class="material-symbols-outlined i">arrow_back_ios</span>
       </router-link>
-      <div class="header-title">
-        <p class="description-mobile">{{ $t('level1.descriptionMobile') }}</p>
+      <div class="level-header-title">
+        <p class="level-description-mobile">{{ $t('level1.descriptionMobile') }}</p>
       </div>
     </header>
 
@@ -167,116 +167,17 @@ onUnmounted(() => {
   padding-right: 8px;
   overflow-y: auto;
 }
-.message-bubble-desktop {
-  color: var(--text-head);
-  padding: 16px 24px;
-  border-radius: 32px;
-  max-width: 80%;
-  border: 1px solid var(--bb);
-}
-.message-bubble-desktop.left {
-  background-color: var(--bg-chat-l);
-  border-bottom-left-radius: 2px;
-  align-self: flex-start;
-}
-.message-bubble-desktop.right {
-  background-color: var(--bg-chat-r);
-  border-bottom-right-radius: 2px;
-  align-self: flex-end;
-}
-.finnish-text {
-  font-size: var(--lg);
-  font-weight: 600;
-}
-.russian-text {
-  font-size: var(--lg);
-  font-style: italic;
-  text-align: right;
-  margin-top: 8px;
-}
-
 /* ======================== МОБИЛЬНЫЙ ======================== */
 .page-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
-.header {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  background-color: var(--bg-side);
-  border-bottom: 1px solid var(--bb);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  flex-shrink: 0;
-}
-.header-btn {
-  background: none;
-  color: var(--text-head);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.header-btn .i {
-  font-size: 40px;
-  margin-left: 32px;
-}
-.header-title {
-  flex-grow: 1;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-.description-mobile {
-  font-family: 'Roboto Condensed', sans-serif;
-  font-size: var(--md);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--g3);
-  text-align: center;
-}
 .content {
   flex-grow: 1;
   overflow-y: auto;
   padding: 16px;
   scroll-behavior: smooth;
-}
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.message-bubble {
-  color: var(--text-head);
-  padding: 8px 16px;
-  border-radius: 32px;
-  max-width: 80%;
-  border: 1px solid var(--bb);
-}
-.message-bubble.left {
-  background-color: var(--bg-chat-l);
-  border-bottom-left-radius: 2px;
-  align-self: flex-start;
-}
-.message-bubble.right {
-  background-color: var(--bg-chat-r);
-  border-bottom-right-radius: 2px;
-  align-self: flex-end;
-}
-.finnish-text-mobile {
-  font-size: var(--md);
-  font-weight: 600;
-}
-.russian-text-mobile {
-  font-size: var(--md);
-  font-style: italic;
-  text-align: right;
-  padding-left: 8px;
-  margin-top: 8px;
 }
 .actions-footer {
   flex-shrink: 0;
@@ -285,8 +186,4 @@ onUnmounted(() => {
   border-top: 1px solid var(--bb);
   box-shadow: 0 -4px 8px var(--shadow);
 }
-/* .end-message {
-  font-size: var(--md);
-  text-align: center;
-} */
 </style>

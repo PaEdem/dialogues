@@ -120,7 +120,6 @@ const trainingStore = useTrainingStore();
   flex-direction: column;
   width: 100%;
   gap: 16px;
-  margin-bottom: 8px;
 }
 .line {
   display: flex;
