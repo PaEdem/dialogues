@@ -92,7 +92,9 @@
     "description1": "You've fully used your free PRO access limit for today — that's our daily gift!",
     "description2": "To continue using all PRO features without restrictions, get a subscription.",
     "description3": "Get unlimited access now and use them as much as you need.",
-    "description4": "Switch to a PRO subscription and get maximum benefits today!"
+    "description4": "Switch to a PRO subscription and get maximum benefits today!",
+    "usePro": "PRO access used. Left: ",
+    "endPro": "Last PRO access for today used."
   },
   "new": {
     "createNew": "Create new dialog",
@@ -100,7 +102,11 @@
     "reqWords": "Required words (comma-separated)",
     "wordsPlaceholder": "word-1, word-2, word-3 ...",
     "level": "Difficulty level",
-    "lines": "Number of lines"
+    "lines": "Number of lines",
+    "usePro": "PRO access used. Generations left: ",
+    "limit1": "Daily generation limit (",
+    "limit2": ") exhausted.",
+    "error": "An error occurred while creating the dialogue. Try again."
   },
   "modal": {
     "title": "Dialogue completed.",

@@ -285,9 +285,10 @@ const handleProClick = (action) => {
   if (settingsStore.dailyPreviewCount < settingsStore.limit.useProMode) {
     settingsStore.incrementCount('view');
     const previewsLeft = settingsStore.limit.useProMode - settingsStore.dailyPreviewCount;
-    let toastMessage = `Использован PRO-доступ. Осталось: ${previewsLeft}.`;
+    const message = t('view.usePro');
+    let toastMessage = `${message}${previewsLeft}.`;
     if (previewsLeft === 0) {
-      toastMessage = 'Использован последний PRO-доступ на сегодня.';
+      toastMessage = t('view.endPro');
     }
     uiStore.showToast(toastMessage, 'warning');
     action();

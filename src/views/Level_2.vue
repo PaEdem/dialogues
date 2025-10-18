@@ -149,7 +149,6 @@ const { isDesktop } = useBreakpoint();
 const lineIndex = computed(() => trainingStore.currentLineIndex);
 const dialog = computed(() => dialogStore.currentDialog);
 
-// ✨ ЛОГИКА АВТОСКРОЛЛА
 const mobileContent = ref(null);
 const desktopContent = ref(null);
 

@@ -167,7 +167,6 @@ const { isDesktop } = useBreakpoint();
 const lineIndex = computed(() => trainingStore.currentLineIndex);
 const dialog = computed(() => dialogStore.currentDialog);
 
-// ✨ ЛОГИКА АВТОСКРОЛЛА
 const mobileContent = ref(null);
 const desktopContent = ref(null);
 
@@ -179,14 +178,6 @@ watch(lineIndex, () => {
     }
   }, 100);
 });
-
-// const visibleLines = computed(() => {
-//   if (!dialog.value) return { fin: [], rus: [] };
-//   return {
-//     fin: dialog.value.fin.slice(0, lineIndex.value),
-//     rus: dialog.value.rus.slice(0, lineIndex.value + 1),
-//   };
-// });
 
 const visibleLines = computed(() => {
   if (!dialog.value) return { fin: [], rus: [] };

@@ -147,6 +147,7 @@ const handleLogout = async () => {
   router.push({ name: 'auth' });
 };
 const handleUpgrade = () => {
+  // Здесь в дальнейшем реализуем переход на PRO-подписку
   alert('PRO-versio tulossa pian!');
 };
 const handleDeleteAccount = () => {

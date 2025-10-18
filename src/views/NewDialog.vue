@@ -85,6 +85,7 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useTrainingStore } from '../stores/trainingStore';
@@ -93,6 +94,7 @@ import { useUiStore } from '../stores/uiStore';
 import { useUserStore } from '../stores/userStore';
 import { useBreakpoint } from '../composables/useBreakpoint';
 
+const { t } = useI18n();
 const router = useRouter();
 const settingsStore = useSettingsStore();
 const trainingStore = useTrainingStore();
@@ -120,9 +122,12 @@ const handleNewClick = (action) => {
   if (settingsStore.dailyGenerationCount <= settingsStore.limit.dailyGenerations) {
     const newLeft = settingsStore.limit.dailyGenerations - settingsStore.dailyGenerationCount - 1;
     if (newLeft > 0) {
-      uiStore.showToast(`Использован PRO-доступ. Осталось генераций: ${newLeft}.`, 'info');
+      const message = t('new.usePro');
+      uiStore.showToast(`${message}${newLeft}.`, 'info');
     } else {
-      uiStore.showToast(`Дневной лимит генераций (${settingsStore.limit.dailyGenerations}) исчерпан.`, 'info');
+      const message1 = t('new.limit1');
+      const message2 = t('new.limit2');
+      uiStore.showToast(`${message1}${settingsStore.limit.dailyGenerations}${message2}`, 'info');
     }
     action();
   }
@@ -135,7 +140,7 @@ const saveDialog = async () => {
       settingsStore.incrementCount('new');
       router.push({ name: 'view-dialog', params: { id: newDialogId } });
     } else {
-      errorMessage.value = 'Произошла ошибка при создании диалога. Попробуйте ещё раз.';
+      errorMessage.value = t('new.error');
     }
   });
 };

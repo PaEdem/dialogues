@@ -1,55 +1,4 @@
 <!-- src\views\Level_4.vue -->
-<!-- <template>
-  <DialogLayout>
-    <template #sidebar-content>
-      <TrainingSidebar
-        :dialogId="props.id"
-        description="Только финская речь. Выбери правильный вариант."
-      >
-        <template #extra-controls>
-          <button
-            class="btn-control mic off"
-            disabled
-          >
-            <span class="material-symbols-outlined icon">mic_off</span>
-            Микрофон OFF
-          </button>
-        </template>
-      </TrainingSidebar>
-    </template>
-
-    <div class="quiz-content">
-      <div class="options-container">
-        <button
-          class="btn-quiz"
-          v-for="(option, index) in trainingStore.currentQuizOptions"
-          :key="`${trainingStore.currentLineIndex}-${index}`"
-          @click="handleAnswer(option)"
-          :class="{
-            correct: answerStatus[option.text] === 'correct',
-            incorrect: answerStatus[option.text] === 'incorrect',
-          }"
-          :disabled="answerStatus[option.text] === 'incorrect' || isAnswered"
-        >
-          {{ option.text }}
-        </button>
-      </div>
-    </div>
-  </DialogLayout>
-
-  <Teleport to="body">
-    <Modal>
-      <div class="ohi">
-        <h3 class="ohi-title">Harjoitus on ohi</h3>
-        <div class="ohi-message">
-          Hyvää työtä! Voit aloittaa alusta tai valita toisen harjoituksen.<br />
-          <br />
-          Отличная работа! Можете начать заново или выбрать другую тренировку.
-        </div>
-      </div>
-    </Modal>
-  </Teleport>
-</template> -->
 
 <template>
   <div v-if="isDesktop">
@@ -160,53 +109,6 @@
   </Teleport>
 </template>
 
-<!-- <script setup>
-import { ref, watch, onMounted } from 'vue';
-import { useDialogStore } from '../stores/dialogStore';
-import { useTrainingStore } from '../stores/trainingStore';
-import DialogLayout from '../components/DialogLayout.vue';
-import TrainingSidebar from '../components/TrainingSidebar.vue';
-import Modal from '../components/Modal.vue';
-
-const props = defineProps({ id: { type: String, required: true } });
-const dialogStore = useDialogStore();
-const trainingStore = useTrainingStore();
-
-const answerStatus = ref({});
-const isAnswered = ref(false);
-
-watch(
-  () => trainingStore.currentLineIndex,
-  () => {
-    answerStatus.value = {};
-    isAnswered.value = false;
-  }
-);
-
-const handleAnswer = (option) => {
-  if (isAnswered.value) return;
-
-  if (option.correct) {
-    isAnswered.value = true;
-    answerStatus.value[option.text] = 'correct';
-    setTimeout(() => {
-      trainingStore.nextLine();
-    }, 1000);
-  } else {
-    answerStatus.value[option.text] = 'incorrect';
-    trainingStore.playCurrentLineAudio();
-  }
-};
-
-onMounted(async () => {
-  trainingStore.currentTrainingType = 'level-4';
-  await dialogStore.fetchDialogById(props.id);
-  if (dialogStore.currentDialog) {
-    trainingStore.startLevel();
-  }
-});
-</script> -->
-
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -227,7 +129,6 @@ const { t } = useI18n();
 
 const dialog = computed(() => dialogStore.currentDialog);
 
-// Локальное состояние для квиза
 const answerStatus = ref({});
 const isAnswered = ref(false);
 

@@ -118,16 +118,13 @@ const { isDesktop } = useBreakpoint();
 const lineIndex = computed(() => trainingStore.currentLineIndex);
 const dialog = computed(() => dialogStore.currentDialog);
 
-// ✨ ЛОГИКА АВТОСКРОЛЛА
 const mobileContent = ref(null);
 const desktopContent = ref(null);
 
 watch(lineIndex, () => {
-  // Даём Vue время отрисовать новую реплику
   setTimeout(() => {
     const container = isDesktop.value ? desktopContent.value : mobileContent.value;
     if (container) {
-      // Плавно скроллим до самого низа контейнера
       container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
     }
   }, 100);
@@ -149,7 +146,6 @@ onMounted(async () => {
   }
 });
 
-// При уходе со страницы останавливаем озвучку
 onUnmounted(() => {
   trainingStore.stopSpeech();
 });
