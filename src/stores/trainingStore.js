@@ -1,12 +1,11 @@
 // src/stores/trainingStore.js
 import { defineStore } from 'pinia';
+import i18n from '../i18n';
 import { marked } from 'marked';
-// import { useUserStore } from './userStore';
 import { useDialogStore } from './dialogStore';
 import { useUiStore } from './uiStore';
 import { compareAndFormatTexts } from '../utils/compareTexts';
 import { fetchGeminiResponse } from '../services/geminiService';
-// import { usePermissions } from '../composables/usePermissions';
 
 export const useTrainingStore = defineStore('training', {
   state: () => ({
@@ -122,7 +121,7 @@ export const useTrainingStore = defineStore('training', {
 
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        alert('Распознавание речи не поддерживается в этом браузере.');
+        alert('Speech recognition is not supported in this browser.');
         return;
       }
 
@@ -145,7 +144,7 @@ export const useTrainingStore = defineStore('training', {
 
       this.recognition.onstart = () => {
         this.isMicActive = true;
-        this.recognitionText = 'Kuunnellaan...';
+        this.recognitionText = i18n.global.t('store.listening');
       };
 
       this.recognition.onresult = (event) => {
@@ -158,7 +157,7 @@ export const useTrainingStore = defineStore('training', {
 
       this.recognition.onerror = (event) => {
         console.error('Ошибка распознавания речи:', event.error);
-        this.recognitionText = 'Произошла ошибка';
+        this.recognitionText = i18n.global.t('store.error');
         this.isMicActive = false;
         this.recognition = null;
       };
@@ -169,7 +168,7 @@ export const useTrainingStore = defineStore('training', {
 
         const finalTranscript = this.recognitionText.trim();
 
-        if (finalTranscript && finalTranscript !== 'Kuunnellaan...') {
+        if (finalTranscript && finalTranscript !== i18n.global.t('store.listening')) {
           if (this.currentTrainingType === 'level-2') {
             const { formattedText } = compareAndFormatTexts(finText, finalTranscript);
             this.formattedRecognitionText = formattedText;
@@ -196,7 +195,7 @@ export const useTrainingStore = defineStore('training', {
 
         return newDialogId;
       } catch (error) {
-        console.error('Полный цикл генерации и создания диалога провалился:', error);
+        console.error('Full cycle of dialogue generation and creation failed:', error);
         return null;
       } finally {
         this.isLoading = false;
@@ -216,8 +215,9 @@ export const useTrainingStore = defineStore('training', {
 
         this.geminiResult = marked.parse(rawResult);
       } catch (error) {
-        console.error('Ошибка получения анализа диалога:', error);
-        this.geminiResult = '<p>Не удалось загрузить анализ. Попробуйте еще раз.</p>';
+        console.error('Error getting dialogue analysis:', error);
+        const errorMessage = i18n.global.t('store.resultError');
+        this.geminiResult = `<p>${errorMessage}</p>`;
       } finally {
         this.isLoading = false;
       }
@@ -281,7 +281,8 @@ export const useTrainingStore = defineStore('training', {
         const prompt = this.getPromptForTranslation(rusText, finText, level);
         this.geminiResult = await fetchGeminiResponse(prompt);
       } catch (error) {
-        this.geminiResult = 'Не удалось проверить перевод. Попробуйте еще раз.';
+        const errorMessage = i18n.global.t('store.trError');
+        this.geminiResult = `<p>${errorMessage}</p>`;
       } finally {
         this.isLoading = false;
       }

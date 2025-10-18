@@ -12,7 +12,7 @@ export function useBreakpoint() {
   onUnmounted(() => window.removeEventListener('resize', updateWidth));
 
   // Мы считаем десктопом всё, что шире 768px
-  const isDesktop = computed(() => screenWidth.value >= 768);
+  const isDesktop = computed(() => screenWidth.value > 768);
 
   return { isDesktop };
 }

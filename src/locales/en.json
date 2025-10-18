@@ -116,5 +116,21 @@
     "description": "Check your pronunciation and fix mistakes. Move through the dialogue step by step, repeating its parts for perfect mastery.",
     "descriptionMobile": "Speak boldly and correctly! Check your pronunciation and fix mistakes.",
     "info": "'Microphone': say the line. Press again to check for errors."
+  },
+  "level3": {
+    "slogan": "Translate and check!",
+    "description": "Translate the line, speak it into 'Microphone'. Press again to activate semantic error analysis. Perfect for training fast and accurate speaking.",
+    "descriptionMobile": "Analysis of semantic errors in your translation.",
+    "info": "'Microphone': say the line. Press again to check translation."
+  },
+  "card": {
+    "level": "Level ",
+    "lines": "Lines "
+  },
+  "store": {
+    "listening": "Listening...",
+    "error": "An error occurred",
+    "resultError": "Failed to load analysis. Try again.",
+    "trError": "Failed to verify translation. Try again."
   }
 }

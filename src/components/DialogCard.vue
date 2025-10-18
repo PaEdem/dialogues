@@ -7,8 +7,8 @@
     <div class="card-content">
       <div class="card-title">{{ dialog.title }}</div>
       <div class="card-info">
-        <span class="levelClass">Taso {{ dialog.level }}</span>
-        <span>{{ dialog.replicasCount }} riviä</span>
+        <span class="levelClass">{{ $t('card.level') }}{{ dialog.level }}</span>
+        <span>{{ $t('card.lines') }}{{ dialog.replicasCount }}</span>
       </div>
     </div>
   </router-link>

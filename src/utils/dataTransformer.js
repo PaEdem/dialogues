@@ -33,7 +33,7 @@ export function saveDialogsListToCache(dialogs) {
     }));
     localStorage.setItem(DIALOG_LIST_KEY, JSON.stringify(lightweightList));
   } catch (e) {
-    console.error('Ошибка сохранения списка диалогов в кеш:', e);
+    console.error('Error saving dialogues list to cache:', e);
   }
 }
 
@@ -46,7 +46,7 @@ export function getDialogsListFromCache() {
     const listData = localStorage.getItem(DIALOG_LIST_KEY);
     return listData ? JSON.parse(listData) : null;
   } catch (e) {
-    console.error('Ошибка получения списка диалогов из кеша:', e);
+    console.error('Error getting dialogues list from cache:', e);
     return null;
   }
 }
@@ -60,7 +60,7 @@ export function saveDialogToCache(dialog) {
   try {
     localStorage.setItem(`dialog_${dialog.id}`, JSON.stringify(dialog));
   } catch (e) {
-    console.error('Ошибка сохранения диалога в кеш:', e);
+    console.error('Error saving dialogue to cache:', e);
   }
 }
 
@@ -75,7 +75,7 @@ export function getDialogFromCache(id) {
     const dialogData = localStorage.getItem(`dialog_${id}`);
     return dialogData ? JSON.parse(dialogData) : null;
   } catch (e) {
-    console.error('Ошибка получения диалога из кеша:', e);
+    console.error('Error getting dialogue from cache:', e);
     return null;
   }
 }
@@ -90,9 +90,8 @@ export function clearAllDialogCache() {
         localStorage.removeItem(key);
       }
     });
-    console.log('Кеш диалогов очищен.');
   } catch (e) {
-    console.error('Ошибка очистки кеша:', e);
+    console.error('Error clearing cache:', e);
   }
 }
 
@@ -103,8 +102,7 @@ export function clearAllDialogCache() {
 export function resetFreeTierCache() {
   try {
     localStorage.removeItem('usage');
-    console.log('Кеш лимитов Free-тарифа сброшен!');
   } catch (e) {
-    console.error('Ошибка при сбросе кеша Free-тарифа:', e);
+    console.error('Error resetting cache:', e);
   }
 }

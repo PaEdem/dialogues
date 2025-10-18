@@ -16,8 +16,7 @@ export async function fetchGeminiResponse(prompt) {
     const response = await result.response;
     return response.text();
   } catch (error) {
-    console.error('Ошибка при запросе к Gemini:', error);
-    // Пробрасываем ошибку дальше, чтобы action в сторе мог её обработать
-    throw new Error('Не удалось получить ответ от Gemini.');
+    console.error('Error requesting Gemini:', error);
+    throw new Error('Failed to get response from Gemini.');
   }
 }

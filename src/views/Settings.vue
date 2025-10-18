@@ -133,11 +133,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useSettingsStore } from '../stores/settingsStore';
+import { useTrainingStore } from '../stores/trainingStore';
 import { useUserStore } from '../stores/userStore';
 import { useRouter } from 'vue-router';
 import { useBreakpoint } from '../composables/useBreakpoint';
 
 const settingsStore = useSettingsStore();
+const trainingStore = useTrainingStore();
 const userStore = useUserStore();
 const router = useRouter();
 
@@ -185,6 +187,7 @@ const selectedVoice = ref('default');
 const speechRate = ref(1.0);
 
 const togglePlayTest = () => {
+  trainingStore.playProDemoVoice();
   console.log('PLAY / STOP профессиональная озвучка');
 };
 

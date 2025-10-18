@@ -10,7 +10,7 @@ export const useSettingsStore = defineStore('settings', {
     limit: {
       useProMode: 2,
       dailyGenerations: 2,
-      totalDialogs: 4,
+      totalDialogs: 10,
     },
     dailyPreviewCount: 0,
     dailyGenerationCount: 0,
@@ -32,14 +32,12 @@ export const useSettingsStore = defineStore('settings', {
       localStorage.setItem('app-learning-language', lang);
     },
     incrementCount(type) {
-      // 1. Получаем существующие данные
       const usageJSON = localStorage.getItem('usage');
       let usage;
 
       if (usageJSON) {
         usage = JSON.parse(usageJSON);
       } else {
-        // Если данных нет, начинаем с базового объекта
         usage = {
           countView: 0,
           countNew: 0,
@@ -47,7 +45,6 @@ export const useSettingsStore = defineStore('settings', {
         };
       }
 
-      // 2. Обновляем нужные свойства в JavaScript-объекте
       usage.date = new Date().toDateString();
       if (type === 'view') {
         this.dailyPreviewCount++;
@@ -58,14 +55,11 @@ export const useSettingsStore = defineStore('settings', {
         usage.countNew = this.dailyGenerationCount;
       }
       if (type === 'total') {
-        this.dailyGenerationCount = this.limit.dailyGenerations + 1; // чтобы заблокировать создание новых диалогов
+        this.dailyGenerationCount = this.limit.dailyGenerations + 1;
         usage.countNew = this.dailyGenerationCount;
       }
-
-      // 3. Преобразуем измененный объект обратно в строку
       const updatedUsageJSON = JSON.stringify(usage);
 
-      // 4. Сохраняем (перезаписываем) обновленную строку
       localStorage.setItem('usage', updatedUsageJSON);
       console.log('Объект usage обновлен и сохранен');
     },
@@ -93,7 +87,7 @@ export const useSettingsStore = defineStore('settings', {
         this.dailyPreviewCount = 0;
         this.dailyGenerationCount = 0;
         this.date = new Date().toDateString();
-        localStorage.removeItem('usage'); // очищаем старые данные
+        localStorage.removeItem('usage');
       }
     },
   },

@@ -1,4 +1,5 @@
 // src/utils/compareTexts.js
+
 // Функция для разделения текста на слова, пробелы и знаки препинания
 function splitTextWithPunctuationAndSpaces(text) {
   return text.match(/\p{L}+|\s+|[.,!?;:]/gu);
@@ -106,21 +107,13 @@ export function compareAndFormatTexts(originalText, recognizedText) {
     matchIndex++;
   }
 
-  // const score = ((correctWordsCount / Math.max(originalWords.length, 1)) * 100).toFixed(0);
-
-  // return { formattedText, score };
   return { formattedText };
 }
-
-// src/utils/compareTexts.js
 
 // Функция возвращает массив объектов, описывающих каждое слово
 export function analyzeRecognition(originalText, recognizedText) {
   const originalParts = originalText.match(/(\w+)|(\s+)|[.,!?;:]/g) || [];
   const recognizedWords = recognizedText.toLowerCase().match(/\w+/g) || [];
-
-  // Здесь может быть ваш сложный алгоритм сравнения (Левенштейн и т.д.)
-  // Для примера, сделаем более простое пословное сравнение:
 
   const result = [];
   let recIndex = 0;

@@ -49,7 +49,7 @@ export const useDialogStore = defineStore('dialogs', {
         saveDialogsListToCache(dialogsFromFS);
         this.allDialogs = getDialogsListFromCache();
       } catch (error) {
-        console.error('Ошибка загрузки диалогов:', error);
+        console.error('Error loading dialogues:', error);
       } finally {
         this.isLoading = false;
       }
@@ -74,7 +74,7 @@ export const useDialogStore = defineStore('dialogs', {
           saveDialogToCache(dialogData);
         }
       } catch (error) {
-        console.error('Ошибка загрузки диалога:', error);
+        console.error('Error loading dialogue:', error);
       } finally {
         this.isLoading = false;
       }
@@ -101,7 +101,7 @@ export const useDialogStore = defineStore('dialogs', {
         await this.fetchAllDialogs();
         return docRef.id;
       } catch (error) {
-        console.error('Ошибка сохранения диалога:', error);
+        console.error('Error saving dialogue:', error);
         return null;
       } finally {
         this.isLoading = false;
@@ -119,7 +119,7 @@ export const useDialogStore = defineStore('dialogs', {
         if (this.currentDialog?.id === id) this.currentDialog = null;
         return true;
       } catch (error) {
-        console.error('Ошибка удаления документа:', error);
+        console.error('Error deleting dialogue:', error);
         return false;
       } finally {
         this.isLoading = false;

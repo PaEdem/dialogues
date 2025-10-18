@@ -54,7 +54,6 @@ const dialog = computed(() => dialogStore.currentDialog);
   padding: 16px;
   min-height: 0;
 }
-
 /* 2. Улучшения для ПЛАНШЕТОВ И БОЛЬШЕ */
 @media (min-width: 768px) {
   .dialog-layout {

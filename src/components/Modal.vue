@@ -56,7 +56,6 @@ const uiStore = useUiStore();
 </script>
 
 <style>
-/* Общие стили */
 .modal-mask {
   position: fixed;
   inset: 0;
@@ -79,7 +78,7 @@ const uiStore = useUiStore();
   /* Структура для контента */
   display: flex;
   flex-direction: column;
-  max-height: 90vh; /* Максимальная высота */
+  max-height: 90vh;
 }
 .modal-container.default {
   max-width: 640px;
@@ -125,36 +124,43 @@ const uiStore = useUiStore();
   text-align: center;
 }
 /* Стили для контента, генерируемого v-html */
-.modal-body h1,
-.modal-body h3,
-.modal-body .subtitle {
+.analysis h1,
+.analysis h3,
+.analysis .subtitle {
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: var(--xxl);
-  color: var(--g3);
+  font-size: var(--xl) !important;
+  color: var(--g3) !important;
   text-align: center;
   margin-bottom: 16px;
 }
-.modal-body ul {
+.analysis .modal-body h2,
+.analysis .modal-body h3 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--xl);
+  color: var(--text-head);
+  text-align: center;
+  margin-bottom: 8px;
+}
+.analysis .modal-body ul {
   list-style-type: none;
   padding-left: 8px;
+  margin-bottom: 32px;
 }
-.modal-body ul li {
-  font-family: 'Segoe UI', 'Roboto Condensed', sans-serif;
-  font-size: var(--xl);
+.analysis .modal-body ul li {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: var(--md);
   color: var(--text-base);
-  font-weight: 600;
-  text-align: center;
-  font-style: italic;
+  font-weight: 500;
   margin-bottom: 8px;
 }
 .modal-body li code,
 .modal-body li strong code {
-  font-family: 'Open Sans', 'Roboto', 'Segoe UI', sans-serif !important;
+  font-family: 'Roboto Condensed', sans-serif !important;
   font-weight: 600;
   color: var(--g3);
 }
 .modal-body li strong {
-  font-family: 'Open Sans', 'Roboto', 'Segoe UI', sans-serif !important;
+  font-family: 'Roboto Condensed', sans-serif !important;
   font-weight: 700;
   color: var(--r3);
 }

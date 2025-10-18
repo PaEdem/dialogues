@@ -36,7 +36,7 @@ export const useUserStore = defineStore('user', {
       try {
         await signInWithEmailAndPassword(auth, email, password);
       } catch (error) {
-        console.error('Ошибка входа:', error.code);
+        console.error('Login error:', error.code);
         throw error;
       }
     },
@@ -44,7 +44,7 @@ export const useUserStore = defineStore('user', {
       try {
         await createUserWithEmailAndPassword(auth, email, password);
       } catch (error) {
-        console.error('Ошибка регистрации:', error.code);
+        console.error('Registration error:', error.code);
         throw error;
       }
     },
@@ -52,7 +52,7 @@ export const useUserStore = defineStore('user', {
       try {
         await signInWithPopup(auth, googleProvider);
       } catch (error) {
-        console.error('Ошибка входа через Google:', error.code);
+        console.error('Google login error:', error.code);
         throw error;
       }
     },
@@ -60,7 +60,7 @@ export const useUserStore = defineStore('user', {
       try {
         await signOut(auth);
       } catch (error) {
-        console.error('Ошибка выхода:', error.code);
+        console.error('Logout error:', error.code);
         throw error;
       }
     },
