@@ -91,16 +91,15 @@ import { useRouter } from 'vue-router';
 import { useTrainingStore } from '../stores/trainingStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useUiStore } from '../stores/uiStore';
-import { useUserStore } from '../stores/userStore';
 import { useBreakpoint } from '../composables/useBreakpoint';
+import { usePermissions } from '../composables/usePermissions';
 
 const { t } = useI18n();
 const router = useRouter();
 const settingsStore = useSettingsStore();
 const trainingStore = useTrainingStore();
 const uiStore = useUiStore();
-const userStore = useUserStore();
-
+const { canNew, canTotal, canGenerate } = usePermissions();
 const { isDesktop } = useBreakpoint();
 
 const form = ref({
@@ -113,36 +112,27 @@ const errorMessage = ref('');
 const levels = ['A1', 'A2.1', 'A2.2', 'B1.1', 'B1.2', 'B2.1', 'B2.2', 'C1.1', 'C1.2', 'C2'];
 const isFormValid = computed(() => form.value.topic.trim() !== '');
 
-const handleNewClick = (action) => {
-  if (userStore.isPro) {
-    action();
-    return;
-  }
-
-  if (settingsStore.dailyGenerationCount <= settingsStore.limit.dailyGenerations) {
-    const newLeft = settingsStore.limit.dailyGenerations - settingsStore.dailyGenerationCount - 1;
-    if (newLeft > 0) {
-      const message = t('new.usePro');
-      uiStore.showToast(`${message}${newLeft}.`, 'info');
-    } else {
-      const message1 = t('new.limit1');
-      const message2 = t('new.limit2');
-      uiStore.showToast(`${message1}${settingsStore.limit.dailyGenerations}${message2}`, 'info');
-    }
-    action();
-  }
-};
 const saveDialog = async () => {
-  handleNewClick(async () => {
-    errorMessage.value = '';
+  // 1. Проверяем, можем ли мы ВООБЩЕ генерировать
+  if (canGenerate()) {
+    // 2. Если да, запускаем процесс в trainingStore
     const newDialogId = await trainingStore.generateAndCreateDialog(form.value);
+
     if (newDialogId) {
-      settingsStore.incrementCount('new');
       router.push({ name: 'view-dialog', params: { id: newDialogId } });
     } else {
       errorMessage.value = t('new.error');
     }
-  });
+  } else {
+    // 3. Если "тихая" проверка не прошла, выясняем причину и "громко" сообщаем
+    if (!canNew()) {
+      // Показываем ошибку о дневном лимите
+      uiStore.showToast(`${t('toast.dailyLimit')} (${settingsStore.limit.dailyGenerations}).`, 'warning');
+    } else if (!canTotal()) {
+      // Показываем ошибку об общем лимите
+      uiStore.showToast(`${t('toast.totalLimit')} (${settingsStore.limit.totalDialogs}).`, 'warning');
+    }
+  }
 };
 </script>
 

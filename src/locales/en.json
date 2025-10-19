@@ -13,7 +13,8 @@
     "defaultVoice": "Default voice (WaveNet, female)",
     "speechRate": "Speech rate",
     "preListening": "Pre-listening",
-    "test": "Test"
+    "test": "Test",
+    "defaultUiLang": "en"
   },
   "buttons": {
     "ok": "OK",
@@ -158,6 +159,8 @@
     "resultError": "Failed to load analysis. Try again.",
     "trError": "Failed to verify translation. Try again.",
     "delDialogError": "Failed to delete dialogue. Try again.",
-    "noData": "Not enough data for analysis."
+    "noData": "Not enough data for analysis.",
+    "noSpeechApi": "Speech recognition is not supported in this browser.",
+    "proDemo": "This is how the voice sounds in the PRO version. Much better, isn't it?"
   }
 }

@@ -70,10 +70,13 @@ export const useSettingsStore = defineStore('settings', {
       const savedUiLang = localStorage.getItem('app-ui-language');
       if (savedUiLang) {
         this.setUiLanguage(savedUiLang || 'en');
+      } else {
+        // Берем язык по умолчанию из i18n
+        this.setLearningLanguage(i18n.global.t('settings.defaultUigLang'));
       }
       const savedLearningLang = localStorage.getItem('app-learning-language');
       if (savedLearningLang) {
-        this.setLearningLanguage(savedLearningLang || 'Suomi');
+        this.setLearningLanguage(savedLearningLang);
       }
       // ЛОГИКА ЗАГРУЗКИ СЧЁТЧИКОВ
       const savedUsage = JSON.parse(localStorage.getItem('usage'));

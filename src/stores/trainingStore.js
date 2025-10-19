@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import i18n from '../i18n';
 import { marked } from 'marked';
 import { useDialogStore } from './dialogStore';
+import { useSettingsStore } from './settingsStore';
 import { useUiStore } from './uiStore';
 import { compareAndFormatTexts } from '../utils/compareTexts';
 import { fetchGeminiResponse } from '../services/geminiService';
@@ -77,13 +78,25 @@ export const useTrainingStore = defineStore('training', {
     },
     playProDemoVoice() {
       // В будущем здесь будет вызов Google Cloud TTS API
-      const proVoiceUtterance = new SpeechSynthesisUtterance(
-        'Näin ääni kuulostaa PRO-versiossa. Paljon parempi, eikö niin?'
-      );
-      proVoiceUtterance.lang = 'fi-FI';
+      const proVoiceText = i18n.global.t('store.proDemo');
+      const proVoiceUtterance = new SpeechSynthesisUtterance(proVoiceText);
+
+      // ✨ Язык из settingsStore
+      const settingsStore = useSettingsStore();
+      // Нам нужно будет создать небольшую утилиту-конвертер
+      let langCode = '';
+      if (settingsStore.uiLanguage === 'en') {
+        langCode = 'en-US';
+      } else if (settingsStore.uiLanguage === 'ru') {
+        langCode = 'ru-RU';
+      } else {
+        langCode = 'uk-UK';
+      }
+      // const langCode = settingsStore.uiLanguage === 'en' ? 'en-US' : 'fi-FI';
+      proVoiceUtterance.lang = langCode;
 
       const voices = speechSynthesis.getVoices();
-      const proVoice = voices.find((voice) => voice.lang === 'fi-FI' && voice.name.includes('Google'));
+      const proVoice = voices.find((voice) => voice.lang === langCode && voice.name.includes('Google'));
       if (proVoice) {
         proVoiceUtterance.voice = proVoice;
       }
@@ -94,9 +107,21 @@ export const useTrainingStore = defineStore('training', {
     playText(text) {
       if (!text) return;
       this.stopSpeech();
-
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'fi-FI';
+
+      // ✨ Язык из settingsStore
+      const settingsStore = useSettingsStore();
+      let langCode = '';
+      if (settingsStore.uiLanguage === 'en') {
+        langCode = 'en-US';
+      } else if (settingsStore.uiLanguage === 'ru') {
+        langCode = 'ru-RU';
+      } else {
+        langCode = 'uk-UK';
+      }
+      // const langCode = settingsStore.uiLanguage === 'en' ? 'en-US' : 'fi-FI'; // (Упрощенная логика)
+      utterance.lang = langCode;
+
       speechSynthesis.speak(utterance);
 
       utterance.onstart = () => {
@@ -121,7 +146,8 @@ export const useTrainingStore = defineStore('training', {
 
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        alert('Speech recognition is not supported in this browser.');
+        const uiStore = useUiStore();
+        uiStore.showToast(i18n.global.t('store.noSpeechApi'), 'error');
         return;
       }
 
@@ -138,7 +164,20 @@ export const useTrainingStore = defineStore('training', {
       this.geminiResult = '';
 
       this.recognition = new SpeechRecognition();
-      this.recognition.lang = 'fi-FI';
+
+      // ✨ Язык из settingsStore
+      const settingsStore = useSettingsStore();
+      let langCode = '';
+      if (settingsStore.uiLanguage === 'en') {
+        langCode = 'en-US';
+      } else if (settingsStore.uiLanguage === 'ru') {
+        langCode = 'ru-RU';
+      } else {
+        langCode = 'uk-UK';
+      }
+      // const langCode = settingsStore.uiLanguage === 'en' ? 'en-US' : 'fi-FI'; // (Упрощенная логика)
+      this.recognition.lang = langCode;
+
       this.recognition.continuous = true;
       this.recognition.interimResults = true;
 
@@ -190,8 +229,24 @@ export const useTrainingStore = defineStore('training', {
         const cleanJsonString = responseText.trim().replace(/```json|```/g, '');
         const dialogData = JSON.parse(cleanJsonString);
 
+        // ✨ ПРЕОБРАЗУЕМ НОВЫЕ КЛЮЧИ В СТАРЫЕ
+        const dataForDb = {
+          fin: dialogData.langLearn,
+          rus: dialogData.langNative,
+          options: dialogData.options,
+          culturalNote: dialogData.culturalNote,
+        };
+
         const dialogStore = useDialogStore();
-        const newDialogId = await dialogStore.createDialog(dialogData, creationParams);
+        // Передаем понятные для createDialog данные
+        const newDialogId = await dialogStore.createDialog(dataForDb, creationParams);
+
+        // ✨ ЛОГИКА СЧЁТЧИКА ПЕРЕЕХАЛА СЮДА
+        // Увеличиваем счётчик ТОЛЬКО ПОСЛЕ УСПЕШНОГО создания
+        if (newDialogId) {
+          const settingsStore = useSettingsStore();
+          settingsStore.incrementCount('new');
+        }
 
         return newDialogId;
       } catch (error) {
@@ -223,22 +278,44 @@ export const useTrainingStore = defineStore('training', {
       }
     },
     getPromptForNewDialog(params) {
-      const { topic, level, replicas, words } = params;
-      return `Create a coherent short dialogue in Finnish on the topic of "${topic}", with a parallel Russian translation for each line. The Finnish dialogue should be at the language proficiency level ${level}, using simple structures and vocabulary appropriate for that level. The entire dialogue must consist of exactly ${replicas} replicas (lines spoken by alternating speakers, like Person A and Person B). Incorporate all the following Finnish words naturally into the dialogue: ${words}.
-      
-      For each Finnish replica, you must also generate three incorrect but plausible Russian translations. These incorrect options should be plausible distractors for a language learner, for example by using words that sound similar but have different meanings, incorrect grammar, or a contextually wrong translation.
+      // Получаем языки из настроек
+      const settingsStore = useSettingsStore();
+      const learningLanguage = settingsStore.learningLanguage; // e.g., "Finnish"
+      const uiLanguage = settingsStore.uiLanguage; // e.g., "ru"
 
-      Output the response strictly in JSON format with three keys: "fin", "rus", and "options". Do not include any additional text, explanations, or keys in the JSON.
-      
-      Example output format:
-      {
-        "fin": ["Moi.", "Mitä kuuluu?"],
-        "rus": ["Привет.", "Как дела?"],
-        "options": [
-          ["Мой.", "Пока.", "Доброе утро."],
-          ["Что включено?", "Как твое имя?", "Куда ты идешь?"]
-        ]
-      }`;
+      const { topic, level, replicas, words } = params;
+
+      return `
+Create a coherent short dialogue in ${learningLanguage} on the topic of "${topic}", with a parallel ${uiLanguage} translation for each line.
+
+The dialogue MUST be realistic, practical, and reflect modern, everyday life situations.
+The ${learningLanguage} dialogue should be at the language proficiency level ${level}, using vocabulary appropriate for that level.
+The dialogue must naturally include common idioms and expressions currently used by native speakers.
+
+IMPORTANT: If the proficiency level is B1.1 or higher, the dialogue MUST also include:
+1. Appropriate colloquialisms (e.g., "puhekieli" for Finnish).
+2. Specialized or professional terms related to the topic.
+
+The entire dialogue must consist of exactly ${replicas} replicas (alternating speakers).
+Incorporate all the following ${learningLanguage} words naturally: ${words}.
+
+For each ${learningLanguage} replica, you must also generate three incorrect but plausible ${uiLanguage} translations. These incorrect options should be plausible distractors for a language learner.
+
+Finally, add a single top-level JSON key named "culturalNote". This key should contain a brief (1-2 sentences) cultural or practical tip in ${uiLanguage} related to the dialogue's content, explaining a nuance that would help a person integrate into society (e.g., etiquette, common customs).
+
+Output the response strictly in JSON format with four keys: "langLearn", "langNative", "options", and "culturalNote". Do not include any additional text or keys.
+
+Example output format for a Finnish (learning) / Russian (native) request:
+{
+  "langLearn": ["Moi.", "Mitä kuuluu?"],
+  "langNative": ["Привет.", "Как дела?"],
+  "options": [
+    ["Мой.", "Пока.", "Доброе утро."],
+    ["Что включено?", "Как твое имя?", "Куда ты идешь?"]
+  ],
+  "culturalNote": "В Финляндии не принято задавать 'Как дела?', если вы не готовы слушать подробный и честный ответ."
+}
+    `;
     },
     getPromptForTranslation(rusText, finText, level) {
       return `

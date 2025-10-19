@@ -188,7 +188,6 @@ const speechRate = ref(1.0);
 
 const togglePlayTest = () => {
   trainingStore.playProDemoVoice();
-  console.log('PLAY / STOP профессиональная озвучка');
 };
 
 const goBack = () => {

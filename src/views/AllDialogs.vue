@@ -314,8 +314,8 @@ const goToCreateDialog = () => {
 @media (min-width: 768px) {
   .page-wrapper {
     flex-direction: row;
-    height: auto;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
   }
   .desktop-sidebar {
     display: flex;
@@ -349,6 +349,8 @@ const goToCreateDialog = () => {
   }
   .content {
     padding: 32px;
+    overflow: auto;
+    flex-grow: 1;
   }
   .dialogs-list {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
