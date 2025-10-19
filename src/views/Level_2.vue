@@ -118,18 +118,6 @@
       </TrainingSidebar>
     </footer>
   </div>
-
-  <Teleport to="body">
-    <Modal>
-      <template #header>
-        <h3 class="title">{{ $t('modal.title') }}</h3>
-      </template>
-
-      <div class="end-message">
-        <p>{{ $t('modal.text') }}</p>
-      </div>
-    </Modal>
-  </Teleport>
 </template>
 
 <script setup>
@@ -139,7 +127,6 @@ import { useTrainingStore } from '../stores/trainingStore';
 import { useBreakpoint } from '../composables/useBreakpoint';
 import DialogLayout from '../components/DialogLayout.vue';
 import TrainingSidebar from '../components/TrainingSidebar.vue';
-import Modal from '../components/Modal.vue';
 
 const props = defineProps({ id: { type: String, required: true } });
 const dialogStore = useDialogStore();

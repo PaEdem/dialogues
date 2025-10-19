@@ -1,11 +1,17 @@
 <!-- \\src\App.vue -->
 <template>
   <div class="app-wrapper">
-    <Loader v-if="isLoading" />
+    <Loader v-if="isLoading"></Loader>
+
     <main class="main">
       <router-view></router-view>
     </main>
-    <ToastContainer />
+
+    <ToastContainer></ToastContainer>
+
+    <Teleport to="body">
+      <Modal></Modal>
+    </Teleport>
   </div>
 </template>
 
@@ -14,6 +20,7 @@ import { computed } from 'vue';
 import { useUiStore } from './stores/uiStore';
 import ToastContainer from './components/ToastContainer.vue';
 import Loader from './components/Loader.vue';
+import Modal from './components/Modal.vue';
 
 const uiStore = useUiStore();
 

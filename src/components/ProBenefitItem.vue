@@ -17,4 +17,9 @@
 .icon {
   color: var(--g3);
 }
+@media (min-width: 768px) {
+  .benefit-item {
+    font-size: var(--sm);
+  }
+}
 </style>

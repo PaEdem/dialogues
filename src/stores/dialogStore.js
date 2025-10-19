@@ -19,11 +19,7 @@ const getDefaultState = () => ({
 });
 
 export const useDialogStore = defineStore('dialogs', {
-  state: () => ({
-    allDialogs: [],
-    currentDialog: null,
-    isLoading: false,
-  }),
+  state: () => getDefaultState(),
   actions: {
     $reset() {
       Object.assign(this, getDefaultState());
@@ -109,7 +105,6 @@ export const useDialogStore = defineStore('dialogs', {
     },
 
     async deleteDialog(id) {
-      if (!confirm('Вы уверены, что хотите удалить этот диалог?')) return false;
       this.isLoading = true;
       try {
         await deleteDoc(doc(db, 'dialogs', id));

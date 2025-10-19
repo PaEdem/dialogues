@@ -94,38 +94,20 @@
       </TrainingSidebar>
     </footer>
   </div>
-
-  <Teleport to="body">
-    <Modal>
-      <template #header>
-        <h3 class="title">
-          {{ $t('modal.title') }}
-        </h3>
-      </template>
-      <div class="end-message">
-        <p>{{ $t('modal.text') }}</p>
-      </div>
-    </Modal>
-  </Teleport>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useDialogStore } from '../stores/dialogStore';
 import { useTrainingStore } from '../stores/trainingStore';
-import { useUiStore } from '../stores/uiStore';
 import { useBreakpoint } from '../composables/useBreakpoint';
 import DialogLayout from '../components/DialogLayout.vue';
 import TrainingSidebar from '../components/TrainingSidebar.vue';
-import Modal from '../components/Modal.vue';
 
 const props = defineProps({ id: { type: String, required: true } });
 const dialogStore = useDialogStore();
 const trainingStore = useTrainingStore();
-const uiStore = useUiStore();
 const { isDesktop } = useBreakpoint();
-const { t } = useI18n();
 
 const dialog = computed(() => dialogStore.currentDialog);
 

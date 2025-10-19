@@ -116,51 +116,6 @@
       </div>
     </footer>
   </div>
-
-  <Teleport to="body">
-    <Modal>
-      <template #header>
-        <h3
-          if="uiStore.modalContent === 'upgrade'"
-          class="title"
-        >
-          {{ $t('view.goToPro') }}
-        </h3>
-      </template>
-
-      <div
-        if="uiStore.modalContent === 'upgrade'"
-        class="pro-benefits"
-      >
-        <h4 class="subtitle">{{ $t('view.unlock') }}</h4>
-        <ul>
-          <li class="description">{{ $t('view.description1') }}</li>
-          <li class="description">{{ $t('view.description2') }}</li>
-          <li class="description">{{ $t('view.description3') }}</li>
-          <li class="description">{{ $t('view.description4') }}</li>
-        </ul>
-      </div>
-
-      <template #footer>
-        <router-link
-          to="/profile"
-          @click="uiStore.hideModal()"
-        >
-          <button class="btn btn-action w-10">
-            <span class="material-symbols-outlined">details</span>
-            {{ $t('buttons.findMore') }}
-          </button>
-        </router-link>
-        <button
-          class="btn btn-common w-10"
-          @click="uiStore.hideModal()"
-        >
-          <span class="material-symbols-outlined">close</span>
-          Sulje
-        </button>
-      </template>
-    </Modal>
-  </Teleport>
 </template>
 
 <script setup>
@@ -171,7 +126,6 @@ import { useUserStore } from '../stores/userStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useUiStore } from '../stores/uiStore';
 import DialogCard from '../components/DialogCard.vue';
-import Modal from '../components/Modal.vue';
 import { useBreakpoint } from '../composables/useBreakpoint';
 import { usePermissions } from '../composables/usePermissions';
 

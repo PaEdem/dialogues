@@ -8,7 +8,7 @@
       <div class="card-title">{{ dialog.title }}</div>
       <div class="card-info">
         <span class="levelClass">{{ $t('card.level') }}{{ dialog.level }}</span>
-        <span>{{ $t('card.lines') }}{{ dialog.replicasCount }}</span>
+        <span class="levelLines">{{ $t('card.lines') }}{{ dialog.replicasCount }}</span>
       </div>
     </div>
   </router-link>
@@ -53,15 +53,18 @@ const props = defineProps({
 .card-info {
   display: flex;
   justify-content: space-between;
-  font-size: var(--xs);
-  color: var(--text-title);
   margin-top: auto;
 }
-.levelClass {
-  font-size: var(--xs);
-  color: var(--text-title);
+.card-info .levelClass,
+.card-info .levelLines {
+  font-size: var(--sm);
+  color: var(--text-base);
 }
-.card-info span {
-  color: var(--text-title);
+@media (min-width: 768px) {
+  .card-info .levelClass,
+  .card-info .levelLines {
+    font-size: var(--xxs);
+    color: var(--text-base);
+  }
 }
 </style>

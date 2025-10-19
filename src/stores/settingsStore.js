@@ -61,7 +61,6 @@ export const useSettingsStore = defineStore('settings', {
       const updatedUsageJSON = JSON.stringify(usage);
 
       localStorage.setItem('usage', updatedUsageJSON);
-      console.log('Объект usage обновлен и сохранен');
     },
     initSettings() {
       // ЗАГРУЗКИ ТЕМЫ

@@ -27,7 +27,7 @@
           <span class="material-symbols-outlined">person</span>
         </div>
         <div class="user-details">
-          <h2 class="user-name">{{ user?.displayName || 'Käyttäjä' }}</h2>
+          <h2 class="user-name">{{ user?.displayName || 'Anonymous' }}</h2>
           <p class="user-email">{{ user?.email }}</p>
         </div>
       </section>
@@ -36,11 +36,55 @@
         <h3 class="group-title">{{ $t('profile.subscr') }}</h3>
 
         <div class="current-plan-card">
-          <p class="usage-info">
-            {{ $t('profile.yourSubscr') }}<strong>{{ userStore.isPro ? 'PRO' : 'Free' }}</strong>
-          </p>
-          <p class="usage-info">{{ $t('profile.genToday') }} {{ dialogsCreatedToday }} / {{ usage.daily.limit }}</p>
-          <p class="usage-info">{{ $t('profile.savedDialog') }} {{ usage.total.count }} / {{ usage.total.limit }}</p>
+          <div
+            v-if="userStore.isPro"
+            class="plan-pro"
+          >
+            <p class="usage-info">
+              <span>{{ $t('profile.yourSubscr') }}</span>
+              <span class="strong">PRO</span>
+            </p>
+            <p class="usage-info">
+              <span>{{ $t('profile.genToday') }}</span>
+              <span class="strong">{{ $t('profile.unlimit') }}</span>
+            </p>
+            <p class="usage-info">
+              <span>{{ $t('profile.savedDialog') }}</span>
+              <span class="strong">{{ $t('profile.unlimit') }}</span>
+            </p>
+            <p
+              v-if="userStore.subscriptionEndDate"
+              class="usage-info"
+            >
+              <span>{{ $t('profile.validUntil') }}</span>
+              <span class="strong">{{ userStore.subscriptionEndDate }}</span>
+            </p>
+            <button
+              class="btn btn-common btn-manage"
+              :class="isDesktop ? 'w-250' : 'mobile'"
+              @click="renewSubscr"
+            >
+              <span class="material-symbols-outlined">rocket_launch</span>
+              {{ $t('profile.manageSubscr') }}
+            </button>
+          </div>
+          <div
+            v-else
+            class="plan-free"
+          >
+            <p class="usage-info">
+              <span>{{ $t('profile.yourSubscr') }}</span>
+              <span class="strong">Free</span>
+            </p>
+            <p class="usage-info">
+              <span>{{ $t('profile.genToday') }}</span>
+              <span class="strong">{{ dialogsCreatedToday }} / {{ usage.daily.limit }}</span>
+            </p>
+            <p class="usage-info">
+              <span>{{ $t('profile.savedDialog') }}</span>
+              <span class="strong">{{ usage.total.count }} / {{ usage.total.limit }}</span>
+            </p>
+          </div>
         </div>
         <div
           class="pro-card"
@@ -97,14 +141,16 @@
 <script setup>
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUiStore } from '../stores/uiStore';
 import { useUserStore } from '../stores/userStore';
 import { useDialogStore } from '../stores/dialogStore';
 import { useSettingsStore } from '../stores/settingsStore.js';
 import ProBenefitItem from '../components/ProBenefitItem.vue';
 import { useBreakpoint } from '../composables/useBreakpoint.js';
-import { resetFreeTierCache, clearAllDialogCache } from '../utils/dataTransformer.js';
+import { clearAllDialogCache } from '../utils/dataTransformer.js';
 
 const router = useRouter();
+const uiStore = useUiStore();
 const userStore = useUserStore();
 const dialogStore = useDialogStore();
 const settingsStore = useSettingsStore();
@@ -140,19 +186,44 @@ const dialogsCreatedToday = computed(() => {
 const goBack = () => {
   router.back();
 };
+const renewSubscr = () => {
+  console.log('Renew Subscr!');
+};
 const handleLogout = async () => {
-  await userStore.logout();
-  clearAllDialogCache();
-  dialogStore.$reset();
-  router.push({ name: 'auth' });
+  const confirmed = await uiStore.showConfirmation({
+    title: t('profile.logoutConfirmTitle'),
+    message: t('profile.logoutConfirmMsg'),
+    confirmText: t('buttons.logOut'),
+    cancelText: t('buttons.cancel'),
+  });
+
+  if (confirmed) {
+    await userStore.logout();
+    clearAllDialogCache();
+    dialogStore.$reset();
+    router.push({ name: 'auth' });
+  }
 };
 const handleUpgrade = () => {
   // Здесь в дальнейшем реализуем переход на PRO-подписку
-  alert('PRO-versio tulossa pian!');
+  alert('Функция PRO-подписки пока не реализована.');
 };
-const handleDeleteAccount = () => {
-  resetFreeTierCache();
-  router.push({ name: 'all-dialogs' });
+const handleDeleteAccount = async () => {
+  const confirmed = await uiStore.showConfirmation({
+    title: t('profile.deleteConfirmTitle'),
+    message: t('profile.deleteConfirmMsg'),
+    confirmText: t('buttons.del'),
+    cancelText: t('buttons.cancel'),
+  });
+
+  if (confirmed) {
+    alert('Функция удаления аккаунта пока не реализована.');
+    // В БУДУЩЕМ ЗДЕСЬ БУДЕТ:
+    // 1. Вызов Firebase Function для удаления данных пользователя из Firestore.
+    // 2. Вызов функции Firebase Auth для удаления самого аккаунта.
+    // 3. Обработка ошибок.
+    // 4. Редирект на главную страницу.
+  }
 };
 </script>
 
@@ -242,13 +313,33 @@ const handleDeleteAccount = () => {
   display: flex;
   flex-direction: column;
 }
+.plan-pro {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.plan-free {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
 .usage-info {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  font-family: 'Roboto Condensed', Helvetica, sans-serif;
   font-size: var(--md);
   color: var(--text-title);
+  margin-bottom: 8px;
 }
-.usage-info strong {
+.usage-info .strong {
   color: var(--text-head);
   font-weight: 700;
+}
+.btn-manage {
+  margin: 0 auto;
+  margin-top: 32px;
 }
 /* Карточка PRO */
 .pro-card {
@@ -287,7 +378,6 @@ const handleDeleteAccount = () => {
   gap: 16px;
   margin-top: 16px;
 }
-
 /* 2. Улучшения для ДЕСКТОПОВ */
 @media (min-width: 768px) {
   .profile-page {

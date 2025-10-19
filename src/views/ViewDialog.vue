@@ -18,11 +18,7 @@
           >
             <span class="material-symbols-outlined">analytics</span>
             {{ $t('buttons.analysis') }}
-            <span
-              v-if="!userStore.isPro"
-              class="material-symbols-outlined pro"
-              >crown</span
-            >
+            <span class="material-symbols-outlined pro">crown</span>
           </button>
           <!-- кнопка прослушать диалог -->
           <button
@@ -44,7 +40,7 @@
             <span class="material-symbols-outlined">{{ level.icon }}</span>
             {{ level.text }}
             <span
-              v-if="!userStore.isPro && level.isPro"
+              v-if="level.isPro"
               class="material-symbols-outlined pro"
               >crown</span
             >
@@ -123,11 +119,7 @@
           >
             <span class="material-symbols-outlined">analytics</span>
             {{ $t('buttons.analysisM') }}
-            <span
-              v-if="!userStore.isPro"
-              class="material-symbols-outlined pro"
-              >crown</span
-            >
+            <span class="material-symbols-outlined pro">crown</span>
           </button>
           <button
             class="btn btn-menu mobile"
@@ -148,7 +140,7 @@
             <span class="material-symbols-outlined">{{ level.icon }}</span>
             {{ level.text }}
             <span
-              v-if="!userStore.isPro && level.isPro"
+              v-if="level.isPro"
               class="material-symbols-outlined pro"
               >crown</span
             >
@@ -158,7 +150,7 @@
     </div>
   </div>
 
-  <Teleport to="body">
+  <!-- <Teleport to="body">
     <Modal>
       <template #header>
         <h3
@@ -216,7 +208,7 @@
         </div>
       </template>
     </Modal>
-  </Teleport>
+  </Teleport> -->
 </template>
 
 <script setup>
@@ -231,7 +223,6 @@ import { useUserStore } from '../stores/userStore';
 import { useBreakpoint } from '../composables/useBreakpoint';
 import { usePermissions } from '../composables/usePermissions';
 import DialogLayout from '../components/DialogLayout.vue';
-import Modal from '../components/Modal.vue';
 
 const { t } = useI18n();
 const props = defineProps({ id: { type: String, required: true } });
@@ -268,9 +259,21 @@ onMounted(() => {
   dialogStore.fetchDialogById(props.id);
 });
 const handleDelete = async () => {
+  // СНАЧАЛА ВЫЗЫВАЕМ МОДАЛЬНОЕ ОКНО
+  const confirmed = await uiStore.showConfirmation({
+    title: t('buttons.delDialog'),
+    message: t('view.deleteConfirmMsg'),
+    confirmText: t('buttons.del'),
+    cancelText: t('buttons.cancel'),
+  });
+  // Если пользователь не подтвердил, ничего не делаем
+  if (!confirmed) return;
+  // Если подтвердил, вызываем action из стора
   const success = await dialogStore.deleteDialog(props.id);
   if (success) {
     router.push({ name: 'all-dialogs' });
+  } else {
+    uiStore.showToast(t('store.delDialogError'), 'error');
   }
 };
 const toggleListening = () => {

@@ -56,7 +56,7 @@ export const useTrainingStore = defineStore('training', {
         }
       } else {
         const uiStore = useUiStore();
-        uiStore.showModal();
+        uiStore.showModal('endOfLevel');
       }
     },
     repeatLevel() {
@@ -261,7 +261,7 @@ export const useTrainingStore = defineStore('training', {
     },
     getPromptInfo(fullDialogText, level) {
       if (!fullDialogText || fullDialogText.trim().length === 0) {
-        return 'Недостаточно данных для анализа.';
+        return i18n.global.t('store.noData');
       }
       return `
         You are a Finnish language expert specializing in linguistic analysis. Analyze the following dialogue in Finnish, assuming the user has a ${level} proficiency level.

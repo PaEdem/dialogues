@@ -20,6 +20,16 @@ export const useUserStore = defineStore('user', {
     isPro: (state) => {
       return true;
     },
+    subscriptionEndDate: (state) => {
+      // В будущем: получать дату из state.user.subscriptionData
+      if (state.isPro) {
+        // Возвращаем дату через год от сегодня (просто для примера)
+        const endDate = new Date();
+        endDate.setFullYear(endDate.getFullYear() + 1);
+        return endDate.toLocaleDateString(); // Форматируем в локальный формат ДД.ММ.ГГГГ
+      }
+      return null; // Для Free-пользователей возвращаем null
+    },
   },
   actions: {
     initUser() {

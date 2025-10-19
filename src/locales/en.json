@@ -16,10 +16,12 @@
     "test": "Test"
   },
   "buttons": {
+    "ok": "OK",
     "done": "Done",
     "profile": "Profile",
     "logOut": "Log out",
     "delete": "Delete account",
+    "del": "Delete",
     "startFree": "Start free trial",
     "dialogList": "Dialog List",
     "analysis": "Dialog Analysis",
@@ -75,6 +77,7 @@
     "yourSubscr": "Your subscription: ",
     "genToday": "Generations today: ",
     "savedDialog": "Saved dialogues: ",
+    "unlimit": "unlimited",
     "unlimGen": "Unlimited dialogue generations",
     "unlimStor": "Unlimited dialogue storage",
     "qualityVoice": "High-quality voices (Google Cloud)",
@@ -82,7 +85,13 @@
     "allModes": "All training modes",
     "analysis": "Lexical and grammar analysis of dialogues (AI)",
     "upgrade": "Upgrade to PRO",
-    "accountMenag": "Account management"
+    "validUntil": "Valid until",
+    "manageSubscr": "Renew",
+    "accountMenag": "Account management",
+    "logoutConfirmTitle": "Log out of account?",
+    "logoutConfirmMsg": "Are you sure you want to log out?",
+    "deleteConfirmTitle": "Delete account?",
+    "deleteConfirmMsg": "Warning! This action is irreversible. All your data and dialogues will be permanently deleted."
   },
   "view": {
     "inPro": "Dialog analysis is available in the PRO version.",
@@ -94,7 +103,8 @@
     "description3": "Get unlimited access now and use them as much as you need.",
     "description4": "Switch to a PRO subscription and get maximum benefits today!",
     "usePro": "PRO access used. Left: ",
-    "endPro": "Last PRO access for today used."
+    "endPro": "Last PRO access for today used.",
+    "deleteConfirmMsg": "Are you sure you want to delete this dialogue?"
   },
   "new": {
     "createNew": "Create new dialog",
@@ -115,7 +125,11 @@
   "level1": {
     "slogan": "Learn dialogues step by step!",
     "description": "Listen to the line, read the original and translation. Step by step. Repeat the phrase or the entire dialogue at any time.",
-    "descriptionMobile": "Listen, read, and repeat step by step."
+    "descriptionMobile": "Listen, read, and repeat step by step.",
+    "next": "next",
+    "reDialog": "from start",
+    "reLine": "repeat",
+    "endPractice": "exit"
   },
   "level2": {
     "slogan": "Speak boldly and correctly!",
@@ -129,6 +143,11 @@
     "descriptionMobile": "Analysis of semantic errors in your translation.",
     "info": "'Microphone': say the line. Press again to check translation."
   },
+  "level4": {
+    "slogan": "Listen. Choose. Understand!",
+    "description": "Listen to the line and choose the correct translation from the suggested cards. Train your listening comprehension in the context of a real dialogue.",
+    "descriptionMobile": "Check how well you understand live speech."
+  },
   "card": {
     "level": "Level ",
     "lines": "Lines "
@@ -137,6 +156,8 @@
     "listening": "Listening...",
     "error": "An error occurred",
     "resultError": "Failed to load analysis. Try again.",
-    "trError": "Failed to verify translation. Try again."
+    "trError": "Failed to verify translation. Try again.",
+    "delDialogError": "Failed to delete dialogue. Try again.",
+    "noData": "Not enough data for analysis."
   }
 }
