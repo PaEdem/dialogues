@@ -7,6 +7,33 @@ import { useSettingsStore } from './settingsStore';
 import { useUiStore } from './uiStore';
 import { compareAndFormatTexts } from '../utils/compareTexts';
 import { fetchGeminiResponse } from '../services/geminiService';
+import { getLangCode, getDemoPhrase } from '../utils/languageUtils';
+
+function getUiLanguageName(langCode) {
+  const names = {
+    en: 'English',
+    es: 'Spanish',
+    fr: 'French',
+    de: 'German',
+    it: 'Italian',
+    ru: 'Russian',
+    pt: 'Portuguese',
+    nl: 'Dutch',
+    sv: 'Swedish',
+    pl: 'Polish',
+    uk: 'Ukrainian',
+    cs: 'Czech',
+    hu: 'Hungarian',
+    fi: 'Finnish',
+    no: 'Norwegian',
+    da: 'Danish',
+    ro: 'Romanian',
+    hr: 'Croatian',
+    sl: 'Slovene',
+    // ... можно добавить еще
+  };
+  return names[langCode] || 'English';
+}
 
 export const useTrainingStore = defineStore('training', {
   state: () => ({
@@ -77,26 +104,18 @@ export const useTrainingStore = defineStore('training', {
       }
     },
     playProDemoVoice() {
-      // В будущем здесь будет вызов Google Cloud TTS API
-      const proVoiceText = i18n.global.t('store.proDemo');
-      const proVoiceUtterance = new SpeechSynthesisUtterance(proVoiceText);
-
-      // ✨ Язык из settingsStore
       const settingsStore = useSettingsStore();
-      // Нам нужно будет создать небольшую утилиту-конвертер
-      let langCode = '';
-      if (settingsStore.uiLanguage === 'en') {
-        langCode = 'en-US';
-      } else if (settingsStore.uiLanguage === 'ru') {
-        langCode = 'ru-RU';
-      } else {
-        langCode = 'uk-UK';
-      }
-      // const langCode = settingsStore.uiLanguage === 'en' ? 'en-US' : 'fi-FI';
+      const langName = settingsStore.learningLanguage;
+      const langCode = getLangCode(langName);
+      const demoText = getDemoPhrase(langName);
+
+      const proVoiceUtterance = new SpeechSynthesisUtterance(demoText);
       proVoiceUtterance.lang = langCode;
 
       const voices = speechSynthesis.getVoices();
-      const proVoice = voices.find((voice) => voice.lang === langCode && voice.name.includes('Google'));
+      const proVoice = voices.find(
+        (voice) => voice.lang === langCode && (voice.name.includes('Google') || voice.name.includes('WaveNet'))
+      );
       if (proVoice) {
         proVoiceUtterance.voice = proVoice;
       }
@@ -107,21 +126,12 @@ export const useTrainingStore = defineStore('training', {
     playText(text) {
       if (!text) return;
       this.stopSpeech();
-      const utterance = new SpeechSynthesisUtterance(text);
 
-      // ✨ Язык из settingsStore
       const settingsStore = useSettingsStore();
-      let langCode = '';
-      if (settingsStore.uiLanguage === 'en') {
-        langCode = 'en-US';
-      } else if (settingsStore.uiLanguage === 'ru') {
-        langCode = 'ru-RU';
-      } else {
-        langCode = 'uk-UK';
-      }
-      // const langCode = settingsStore.uiLanguage === 'en' ? 'en-US' : 'fi-FI'; // (Упрощенная логика)
-      utterance.lang = langCode;
+      const langCode = getLangCode(settingsStore.learningLanguage);
 
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = langCode;
       speechSynthesis.speak(utterance);
 
       utterance.onstart = () => {
@@ -159,25 +169,15 @@ export const useTrainingStore = defineStore('training', {
       const rusText = currentDialog.rus[this.currentLineIndex];
       const level = currentDialog.level;
 
+      const settingsStore = useSettingsStore();
+      const langCode = getLangCode(settingsStore.learningLanguage);
+
       this.recognitionText = '';
       this.formattedRecognitionText = '';
       this.geminiResult = '';
 
       this.recognition = new SpeechRecognition();
-
-      // ✨ Язык из settingsStore
-      const settingsStore = useSettingsStore();
-      let langCode = '';
-      if (settingsStore.uiLanguage === 'en') {
-        langCode = 'en-US';
-      } else if (settingsStore.uiLanguage === 'ru') {
-        langCode = 'ru-RU';
-      } else {
-        langCode = 'uk-UK';
-      }
-      // const langCode = settingsStore.uiLanguage === 'en' ? 'en-US' : 'fi-FI'; // (Упрощенная логика)
       this.recognition.lang = langCode;
-
       this.recognition.continuous = true;
       this.recognition.interimResults = true;
 
@@ -195,7 +195,8 @@ export const useTrainingStore = defineStore('training', {
       };
 
       this.recognition.onerror = (event) => {
-        console.error('Ошибка распознавания речи:', event.error);
+        const message = i18n.global.t('store.errRec');
+        console.error(message, event.error);
         this.recognitionText = i18n.global.t('store.error');
         this.isMicActive = false;
         this.recognition = null;
@@ -318,37 +319,73 @@ Example output format for a Finnish (learning) / Russian (native) request:
     `;
     },
     getPromptForTranslation(rusText, finText, level) {
+      const settingsStore = useSettingsStore();
+      const learningLanguage = settingsStore.learningLanguage;
+      const uiLanguageName = getUiLanguageName(settingsStore.uiLanguage);
+
+      const feedback_perfect = i18n.global.t('feedback.perfect');
+      const feedback_natural = i18n.global.t('feedback.natural');
+      const feedback_minor = i18n.global.t('feedback.minor');
+      const feedback_wrong = i18n.global.t('feedback.wrong');
+
       return `
-        You are an expert Finnish language tutor specializing in dialogue translations. Your task is to evaluate a user's spoken Finnish translation of a Russian dialogue line by comparing it to the provided correct Finnish version taking into account the language level of the user of the corresponding ${level}. You will receive three inputs:
+You are an expert ${learningLanguage} language tutor.
+Your task is to evaluate a ${level} user's spoken ${learningLanguage} translation of a ${uiLanguageName} dialogue line.
 
-        Original Russian: ${rusText}.
-        Correct Finnish: ${finText}.
-        User's Spoken Finnish (transcription): ${this.recognitionText}.
-        
-        Analyze the user's transcription for semantic accuracy, naturalness, and key errors in meaning or phrasing. Ignore the presence or absence of punctuation marks, capital letters, and pauses.
+You will receive three inputs:
+1. Original ${uiLanguageName}: ${rusText}
+2. Correct ${learningLanguage} (for reference): ${finText}
+3. User's Spoken ${learningLanguage} (transcription): ${this.recognitionText}
 
-        If the meaning is accurately conveyed (minor pronunciation/word choice issues are okay if intent is clear): Say something like "Отлично, смысл понятен!"
-        
-        If there are small errors (e.g., wrong word but overall meaning intact): Point out 1-2 specific issues briefly, e.g., "Хорошо, но вместо 'hyvää' лучше 'hyvin' для точности."
-        
-        If the meaning doesn't match: State "Смысл не тот" and give a short suggestion on how to say it better, e.g., "Смысл не тот — попробуй: [brief correct phrasing]."
+Analyze the user's transcription.
+Your entire response MUST be written in ${uiLanguageName}, in 2-3 sentences maximum.
 
-        Respond ONLY in Russian, in 2-3 sentences maximum. Keep feedback encouraging and concise.
+Choose ONE of the following four response types:
+
+1.  **If the translation is accurate AND natural:**
+    (Respond with a variation of: "${feedback_perfect}")
+
+2.  **If the translation is accurate BUT unnatural or too literal:**
+    (Respond with a variation of: "${feedback_natural} [the more natural phrase in ${learningLanguage}].")
+
+3.  **If the translation has minor errors:**
+    (Respond with a variation of: "${feedback_minor} [the brief correction in ${learningLanguage}].")
+
+4.  **If the translation is semantically wrong:**
+    (Respond with a variation of: "${feedback_wrong} [the correct phrase in ${learningLanguage}].")
       `;
     },
     getPromptInfo(fullDialogText, level) {
       if (!fullDialogText || fullDialogText.trim().length === 0) {
         return i18n.global.t('store.noData');
       }
+
+      const settingsStore = useSettingsStore();
+      const learningLanguage = settingsStore.learningLanguage;
+      const uiLanguageName = getUiLanguageName(settingsStore.uiLanguage);
+
       return `
-        You are a Finnish language expert specializing in linguistic analysis. Analyze the following dialogue in Finnish, assuming the user has a ${level} proficiency level.
-        Provide a concise analysis in Russian, suitable for a learner at this level.
-        Focus the analysis on the most interesting and non-obvious linguistic features, including:
-           1.  **Interesting Vocabulary:** Identify unique or culturally specific words/phrases. Explain their meaning, usage, and why they are interesting for a learner.
-           2.  **Grammatical Features:** Highlight notable grammatical structures, such as case usage, verb conjugations, or sentence structures. Explain their function and impact in simple terms.
-        Do NOT include a long introductory sentence. Do NOT quote full sentences from the dialogue. Mention words or grammatical features and provide a brief explanation.
-        Format the output strictly using Markdown headings and bullet points for readability.
-        Dialogue: ${fullDialogText}
+You are an expert ${learningLanguage} language tutor.
+Analyze the following dialogue in ${learningLanguage}, assuming the user has a ${level} proficiency level.
+
+Your task is to provide a concise analysis.
+IMPORTANT: Your entire response, including all headings and explanations, MUST be written strictly in ${uiLanguageName}.
+
+Focus the analysis on these four key areas (translate these headings into ${uiLanguageName}):
+
+1.  **Interesting Vocabulary:** (Provide explanation in ${uiLanguageName})
+2.  **Colloquialisms & Idioms:** (Provide explanation in ${uiLanguageName})
+3.  **Grammatical Features:** (Provide explanation in ${uiLanguageName})
+4.  **Pragmatics & Politeness:** (Provide explanation in ${uiLanguageName})
+
+RULES:
+- Respond ONLY in ${uiLanguageName}.
+- Do NOT include a long introductory sentence.
+- Do NOT quote full sentences from the dialogue.
+- Format the output strictly using Markdown headings and bullet points.
+
+Dialogue:
+${fullDialogText}
       `;
     },
     async checkUserTranslation(rusText, finText, level) {
